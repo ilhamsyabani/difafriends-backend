@@ -8,13 +8,27 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
     /** @use HasFactory<CategoryFactory> */
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $guarded = [];
+    // protected $guarded = [];
+    protected $fillable = [
+        'parent_id',
+        'name',
+        'slug',
+        'image',
+        'description',
+        'is_active',
+        'sort_order',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
 
     public function parent(): BelongsTo
     {
@@ -33,10 +47,25 @@ class Category extends Model
         return $query->whereNull('parent_id');
     }
 
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('is_active', true);
+    }
+
     // Cek apakah ini kategori utama
     public function isRoot(): bool
     {
         return is_null($this->parent_id);
+    }
+
+    public function courses(): HasMany
+    {
+        return $this->hasMany(Course::class);
+    }
+
+    public function hasChildren(): bool
+    {
+        return $this->children()->exists();
     }
 }
 
