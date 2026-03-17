@@ -14,10 +14,10 @@ import { store } from '@/routes/register';
 
 <template>
     <AuthBase
-        title="Create an account"
-        description="Enter your details below to create your account"
+        title="Daftar Akun DifaFriends"
+        description="Isi data di bawah untuk membuat akun baru"
     >
-        <Head title="Register" />
+        <Head title="Daftar" />
 
         <Form
             v-bind="store.form()"
@@ -26,28 +26,45 @@ import { store } from '@/routes/register';
             class="flex flex-col gap-6"
         >
             <div class="grid gap-6">
+                <!-- First Name + Last Name dalam satu baris -->
+                <!-- <div class="grid grid-cols-2 gap-4"> -->
                 <div class="grid gap-2">
-                    <Label for="name">Name</Label>
+                    <Label for="first_name">Nama Depan</Label>
                     <Input
-                        id="name"
+                        id="first_name"
                         type="text"
                         required
                         autofocus
                         :tabindex="1"
-                        autocomplete="name"
-                        name="name"
-                        placeholder="Full name"
+                        autocomplete="given-name"
+                        name="first_name"
+                        placeholder="Nama depan"
                     />
-                    <InputError :message="errors.name" />
+                    <InputError :message="errors.first_name" />
                 </div>
 
                 <div class="grid gap-2">
-                    <Label for="email">Email address</Label>
+                    <Label for="last_name">Nama Belakang</Label>
+                    <Input
+                        id="last_name"
+                        type="text"
+                        required
+                        :tabindex="2"
+                        autocomplete="family-name"
+                        name="last_name"
+                        placeholder="Nama belakang"
+                    />
+                    <InputError :message="errors.last_name" />
+                </div>
+                <!-- </div> -->
+
+                <div class="grid gap-2">
+                    <Label for="email">Alamat Email</Label>
                     <Input
                         id="email"
                         type="email"
                         required
-                        :tabindex="2"
+                        :tabindex="3"
                         autocomplete="email"
                         name="email"
                         placeholder="email@example.com"
@@ -60,7 +77,7 @@ import { store } from '@/routes/register';
                     <PasswordInput
                         id="password"
                         required
-                        :tabindex="3"
+                        :tabindex="4"
                         autocomplete="new-password"
                         name="password"
                         placeholder="Password"
@@ -69,14 +86,16 @@ import { store } from '@/routes/register';
                 </div>
 
                 <div class="grid gap-2">
-                    <Label for="password_confirmation">Confirm password</Label>
+                    <Label for="password_confirmation"
+                        >Konfirmasi Password</Label
+                    >
                     <PasswordInput
                         id="password_confirmation"
                         required
-                        :tabindex="4"
+                        :tabindex="5"
                         autocomplete="new-password"
                         name="password_confirmation"
-                        placeholder="Confirm password"
+                        placeholder="Ulangi password"
                     />
                     <InputError :message="errors.password_confirmation" />
                 </div>
@@ -84,22 +103,22 @@ import { store } from '@/routes/register';
                 <Button
                     type="submit"
                     class="mt-2 w-full"
-                    tabindex="5"
+                    tabindex="6"
                     :disabled="processing"
                     data-test="register-user-button"
                 >
                     <Spinner v-if="processing" />
-                    Create account
+                    Buat Akun
                 </Button>
             </div>
 
             <div class="text-center text-sm text-muted-foreground">
-                Already have an account?
+                Sudah punya akun?
                 <TextLink
                     :href="login()"
                     class="underline underline-offset-4"
-                    :tabindex="6"
-                    >Log in</TextLink
+                    :tabindex="7"
+                    >Masuk</TextLink
                 >
             </div>
         </Form>
