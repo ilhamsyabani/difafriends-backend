@@ -1,12 +1,25 @@
 <?php
 
+use App\Models\Category;
+use App\Models\Course;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Inertia\Inertia;
 
-Route::inertia('/', 'Welcome', [
-    'canRegister' => Features::enabled(Features::registration()),
-])->name('home');
+Route::get('/', function () {
+    return Inertia::render('Welcome', [
+        'categories' => Category::whereNull('parent_id')
+            ->where('is_active', true)
+            ->with('children')
+            ->orderBy('sort_order')
+            ->get(),
+        'featuredCourses' => Course::with(['category', 'instructor'])
+            ->where('status', 'published')
+            ->where('is_featured', true)
+            ->limit(6)
+            ->get(),
+    ]);
+})->name('home');
 
 // Route::middleware(['auth', 'verified'])->group(function () {
 //     Route::inertia('dashboard', 'Dashboard')->name('dashboard');

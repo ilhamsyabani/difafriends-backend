@@ -28,6 +28,7 @@ return new class extends Migration
             $table->text('prerequisites')->nullable();
             $table->boolean('is_featured')->default(false);
             $table->string('status')->default(CourseStatus::Draft);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
