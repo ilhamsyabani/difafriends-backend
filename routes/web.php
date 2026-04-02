@@ -4,6 +4,7 @@ use App\Models\Category;
 use App\Models\Course;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
+use App\Http\Controllers\CourseController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -61,4 +62,7 @@ Route::middleware(['auth', 'verified', 'role:companion'])
             return Inertia::render('companion/Dashboard');
         })->name('dashboard');
     });
+
+Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
 require __DIR__ . '/settings.php';
