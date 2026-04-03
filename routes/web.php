@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\LearnController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -73,7 +74,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
          ->name('orders.store');
     Route::get('/orders', [OrderController::class, 'index'])
          ->name('orders.index');
+    Route::get('/learn/{course:slug}', [LearnController::class, 'show'])
+              ->name('learn.show');
+    Route::post('/learn/{course:slug}/progress', [LearnController::class, 'updateProgress'])
+              ->name('learn.progress');
 });
+
 
 // Webhook Midtrans — tidak perlu auth (dari server Midtrans)
 Route::post('/webhook/midtrans', [OrderController::class, 'webhook'])
