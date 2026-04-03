@@ -5,6 +5,7 @@ use App\Models\Course;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\OrderController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -65,4 +66,18 @@ Route::middleware(['auth', 'verified', 'role:companion'])
 
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
+
+// Order — perlu login
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::post('/orders', [OrderController::class, 'store'])
+         ->name('orders.store');
+    Route::get('/orders', [OrderController::class, 'index'])
+         ->name('orders.index');
+});
+
+// Webhook Midtrans — tidak perlu auth (dari server Midtrans)
+Route::post('/webhook/midtrans', [OrderController::class, 'webhook'])
+     ->name('webhook.midtrans')
+     ->withoutMiddleware(['web']); // skip CSRF
+
 require __DIR__ . '/settings.php';
