@@ -7,6 +7,12 @@ use Laravel\Fortify\Features;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\LearnController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\CourseController as AdminCourseController;
+use App\Http\Controllers\Instructor\CourseController as InstructorCourseController;
+use App\Http\Controllers\Companion\ScheduleController as CompanionScheduleController;
+use App\Http\Controllers\Companion\BookingController as CompanionBookingController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -24,15 +30,24 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-// Route::middleware(['auth', 'verified'])->group(function () {
-//     Route::inertia('dashboard', 'Dashboard')->name('dashboard');
-// });
 
 // ── Dashboard default (user biasa) ─────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+
+    //Order
+    Route::post('/orders', [OrderController::class, 'store'])
+         ->name('orders.store');
+    Route::get('/orders', [OrderController::class, 'index'])
+         ->name('orders.index');
+
+    //Lern
+    Route::get('/learn/{course:slug}', [LearnController::class, 'show'])
+              ->name('learn.show');
+    Route::post('/learn/{course:slug}/progress', [LearnController::class, 'updateProgress'])
+              ->name('learn.progress');
 });
 
 // ── Admin routes ───────────────────────────────────────
@@ -43,6 +58,14 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         Route::get('/dashboard', function () {
             return Inertia::render('admin/Dashboard');
         })->name('dashboard');
+        Route::resource('users', AdminUserController::class);
+        Route::resource('categories', AdminCategoryController::class);
+        Route::resource('courses', AdminCourseController::class);
+        Route::get('/orders', [Admin\OrderController::class, 'index'])->name('orders.index');
+
+        // Approve / reject course
+        Route::patch('/courses/{course}/approve', [AdminCourseController::class, 'approve'])->name('courses.approve');
+        Route::patch('/courses/{course}/reject',  [AdminCourseController::class, 'reject'])->name('courses.reject');
     });
 
 // ── Instructor routes ──────────────────────────────────
@@ -53,6 +76,14 @@ Route::middleware(['auth', 'verified', 'role:instructor'])
         Route::get('/dashboard', function () {
             return Inertia::render('instructor/Dashboard');
         })->name('dashboard');
+        Route::resource('courses', InstructorCourseController::class);
+        Route::resource('courses.sections', InstructorCourseController::class);
+        Route::resource('courses.sections.lectures', InstructorCourseController::class);
+
+        Route::get('/courses/{course}/manage', function (App\Models\Course $course) {
+            $course->load(['sections' => fn($q) => $q->orderBy('sort_order'), 'sections.lectures' => fn($q) => $q->orderBy('sort_order')]);
+            return inertia('instructor/courses/Manage', ['course' => $course]);
+        })->name('courses.manage');
     });
 
 // ── Companion routes ───────────────────────────────────
@@ -63,27 +94,18 @@ Route::middleware(['auth', 'verified', 'role:companion'])
         Route::get('/dashboard', function () {
             return Inertia::render('companion/Dashboard');
         })->name('dashboard');
+        Route::put('/schedules/{schedule}/toggle-status', [CompanionScheduleController::class, 'toggleStatus'])->name('schedules.toggle-status');
+        Route::resource('schedules', CompanionScheduleController::class);
+        Route::get('/bookings', [CompanionBookingController::class, 'index'])->name('bookings.index');
     });
 
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
 
-// Order — perlu login
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::post('/orders', [OrderController::class, 'store'])
-         ->name('orders.store');
-    Route::get('/orders', [OrderController::class, 'index'])
-         ->name('orders.index');
-    Route::get('/learn/{course:slug}', [LearnController::class, 'show'])
-              ->name('learn.show');
-    Route::post('/learn/{course:slug}/progress', [LearnController::class, 'updateProgress'])
-              ->name('learn.progress');
-});
-
 
 // Webhook Midtrans — tidak perlu auth (dari server Midtrans)
 Route::post('/webhook/midtrans', [OrderController::class, 'webhook'])
      ->name('webhook.midtrans')
-     ->withoutMiddleware(['web']); // skip CSRF
+     ->withoutMiddleware(['web']);
 
 require __DIR__ . '/settings.php';
