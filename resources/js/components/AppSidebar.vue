@@ -50,10 +50,16 @@ const companionNav: NavItem[] = [
     { title: 'Booking', href: '/companion/bookings', icon: ClipboardList },
 ];
 
+// const userNav: NavItem[] = [
+//     { title: 'Dashboard', href: '/dashboard', icon: LayoutGrid },
+//     { title: 'Kelas Saya', href: '/dashboard/courses', icon: BookOpen },
+//     { title: 'Riwayat', href: '/orders', icon: ShoppingCart },
+// ];
+//
 const userNav: NavItem[] = [
     { title: 'Dashboard', href: '/dashboard', icon: LayoutGrid },
-    { title: 'Kelas Saya', href: '/dashboard/courses', icon: BookOpen },
-    { title: 'Riwayat', href: '/orders', icon: ShoppingCart },
+    { title: 'Kelas Saya', href: '/user/enrollments', icon: BookOpen },
+    { title: 'Riwayat Order', href: '/user/orders', icon: ShoppingCart },
 ];
 
 const mainNavItems =

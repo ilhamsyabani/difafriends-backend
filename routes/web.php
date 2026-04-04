@@ -6,7 +6,9 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\UserOrderController;
 use App\Http\Controllers\LearnController;
+use App\Http\Controllers\CompanionController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
@@ -38,16 +40,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     //Order
-    Route::post('/orders', [OrderController::class, 'store'])
-         ->name('orders.store');
-    Route::get('/orders', [OrderController::class, 'index'])
-         ->name('orders.index');
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 
     //Lern
-    Route::get('/learn/{course:slug}', [LearnController::class, 'show'])
-              ->name('learn.show');
-    Route::post('/learn/{course:slug}/progress', [LearnController::class, 'updateProgress'])
-              ->name('learn.progress');
+    Route::get('/learn/{course:slug}', [LearnController::class, 'show'])->name('learn.show');
+    Route::post('/learn/{course:slug}/progress', [LearnController::class, 'updateProgress'])->name('learn.progress');
+
+    //Booking
+    Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+    Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
+    Route::get('/user/orders', [UserOrderController::class, 'index'])->name('user.orders');
+    Route::get('/user/enrollments', [UserOrderController::class, 'enrollments'])->name('user.enrollments');
 });
 
 // ── Admin routes ───────────────────────────────────────
@@ -101,6 +105,8 @@ Route::middleware(['auth', 'verified', 'role:companion'])
 
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
+Route::get('/companions', [CompanionController::class, 'index'])->name('companions.index');
+Route::get('/companions/{user}', [CompanionController::class, 'show'])->name('companions.show');
 
 
 // Webhook Midtrans — tidak perlu auth (dari server Midtrans)
