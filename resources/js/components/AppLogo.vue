@@ -1,16 +1,23 @@
 <script setup lang="ts">
-import AppLogoIcon from '@/components/AppLogoIcon.vue';
+// import AppLogoIcon from '@/components/AppLogoIcon.vue';
 </script>
 
 <template>
-    <div
-        class="flex aspect-square size-8 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground"
-    >
-        <AppLogoIcon class="size-5 fill-current text-white dark:text-black" />
-    </div>
-    <div class="ml-1 grid flex-1 text-left text-sm">
-        <span class="mb-0.5 truncate leading-tight font-semibold"
-            >Laravel Starter Kit</span
+    <div class="flex items-center gap-2">
+        <div
+            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-purple-600"
         >
+            <span class="text-sm font-bold text-white">DF</span>
+        </div>
+        <div class="grid flex-1 text-left leading-tight">
+            <span
+                class="truncate font-bold text-purple-700 dark:text-purple-400"
+            >
+                DifaFriends
+            </span>
+            <span class="truncate text-xs text-gray-400">
+                Platform Edukasi Inklusif
+            </span>
+        </div>
     </div>
 </template>

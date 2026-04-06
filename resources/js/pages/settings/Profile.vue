@@ -39,74 +39,137 @@ const user = computed(() => page.props.auth.user);
         <h1 class="sr-only">Profile settings</h1>
 
         <SettingsLayout>
-            <div class="flex flex-col space-y-6">
+            <div class="flex flex-col space-y-8">
                 <Heading
                     variant="small"
-                    title="Profile information"
-                    description="Update your name and email address"
+                    title="Profile Information"
+                    description="Update your personal details, location, and bio."
                 />
 
                 <Form
                     v-bind="ProfileController.update.form()"
-                    class="space-y-6"
+                    class="space-y-8"
                     v-slot="{ errors, processing, recentlySuccessful }"
                 >
-                    <div class="grid gap-2">
-                        <Label for="name">Name</Label>
-                        <Input
-                            id="name"
-                            class="mt-1 block w-full"
-                            name="name"
-                            :default-value="user.name"
-                            required
-                            autocomplete="name"
-                            placeholder="Full name"
-                        />
-                        <InputError class="mt-2" :message="errors.name" />
+                    <!-- Section: Names (Grid 2 Kolom) -->
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        <div class="grid gap-2">
+                            <Label for="first_name">First Name</Label>
+                            <Input
+                                id="first_name"
+                                name="first_name"
+                                :default-value="user.first_name"
+                                required
+                                autocomplete="given-name"
+                                placeholder="e.g. John"
+                            />
+                            <InputError :message="errors.first_name" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <Label for="last_name">Last Name</Label>
+                            <Input
+                                id="last_name"
+                                name="last_name"
+                                :default-value="user.last_name"
+                                required
+                                autocomplete="family-name"
+                                placeholder="e.g. Doe"
+                            />
+                            <InputError :message="errors.last_name" />
+                        </div>
                     </div>
 
+                    <!-- Section: Contact & Location (Grid 2 Kolom) -->
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        <div class="grid gap-2">
+                            <Label for="phone">Phone Number</Label>
+                            <Input
+                                id="phone"
+                                name="phone"
+                                type="tel"
+                                :default-value="user.phone"
+                                placeholder="+62..."
+                            />
+                            <InputError :message="errors.phone" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <Label for="city">City</Label>
+                            <Input
+                                id="city"
+                                name="city"
+                                :default-value="user.city"
+                                placeholder="e.g. Jakarta"
+                            />
+                            <InputError :message="errors.city" />
+                        </div>
+                    </div>
+
+                    <!-- Section: Email (Full Width) -->
                     <div class="grid gap-2">
-                        <Label for="email">Email address</Label>
+                        <Label for="email">Email Address</Label>
                         <Input
                             id="email"
                             type="email"
-                            class="mt-1 block w-full"
                             name="email"
                             :default-value="user.email"
                             required
-                            autocomplete="username"
-                            placeholder="Email address"
+                            autocomplete="email"
+                            placeholder="email@example.com"
                         />
-                        <InputError class="mt-2" :message="errors.email" />
+                        <InputError :message="errors.email" />
                     </div>
 
-                    <div v-if="mustVerifyEmail && !user.email_verified_at">
-                        <p class="-mt-4 text-sm text-muted-foreground">
+                    <!-- Section: Bio (Full Width) -->
+                    <div class="grid gap-2">
+                        <Label for="bio">Bio</Label>
+                        <textarea
+                            id="bio"
+                            name="bio"
+                            :default-value="user.bio"
+                            rows="4"
+                            placeholder="Tell us a little about yourself..."
+                            class="resize-none"
+                        />
+                        <p class="text-xs text-muted-foreground">
+                            Brief description for your profile.
+                        </p>
+                        <InputError :message="errors.bio" />
+                    </div>
+
+                    <!-- Email Verification Notice -->
+                    <div
+                        v-if="mustVerifyEmail && !user.email_verified_at"
+                        class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-900 dark:bg-yellow-900/20"
+                    >
+                        <p class="text-sm text-yellow-800 dark:text-yellow-200">
                             Your email address is unverified.
                             <Link
                                 :href="send()"
                                 as="button"
-                                class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
+                                class="font-semibold underline underline-offset-4 hover:text-yellow-700"
                             >
-                                Click here to resend the verification email.
+                                Click here to resend verification.
                             </Link>
                         </p>
-
                         <div
                             v-if="status === 'verification-link-sent'"
                             class="mt-2 text-sm font-medium text-green-600"
                         >
-                            A new verification link has been sent to your email
-                            address.
+                            A new verification link has been sent.
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-4">
+                    <!-- Submit Button Area -->
+                    <div class="flex items-center gap-4 border-t pt-6">
                         <Button
+                            type="submit"
                             :disabled="processing"
-                            data-test="update-profile-button"
-                            >Save</Button
+                            class="px-8"
                         >
+                            Save Changes
+                        </Button>
 
                         <Transition
                             enter-active-class="transition ease-in-out"
@@ -116,14 +179,19 @@ const user = computed(() => page.props.auth.user);
                         >
                             <p
                                 v-show="recentlySuccessful"
-                                class="text-sm text-neutral-600"
+                                class="text-sm font-medium text-green-600"
                             >
-                                Saved.
+                                ✓ Changes saved successfully.
                             </p>
                         </Transition>
                     </div>
                 </Form>
             </div>
+
+            <!-- Divider -->
+            <div
+                class="my-10 border-t border-neutral-200 dark:border-neutral-800"
+            ></div>
 
             <DeleteUser />
         </SettingsLayout>

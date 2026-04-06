@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Notifications\OrderPaidNotification;
 use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\Category;
@@ -129,6 +130,7 @@ class CourseController extends Controller
     public function approve(Course $course)
     {
         $course->update(['status' => CourseStatus::Published->value]);
+        $course->instructor->notify(new CourseApprovedNotification($course));
 
         return back()->with('success', "Kelas '{$course->title}' berhasil dipublikasikan.");
     }

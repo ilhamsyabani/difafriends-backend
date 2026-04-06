@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, router } from '@inertiajs/vue3';
-import { ref, computed, watch } from 'vue';
 import axios from 'axios';
+import { ref, computed, watch } from 'vue';
 
 const props = defineProps<{
     course: {

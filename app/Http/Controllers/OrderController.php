@@ -11,6 +11,7 @@ use App\Models\Order;
 use App\Models\Payment;
 use App\Services\MidtransService;
 use App\Services\OrderService;
+use App\Notifications\OrderPaidNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
@@ -141,6 +142,8 @@ class OrderController extends Controller
 
         $order->update(['status' => OrderStatus::Paid]);
         $this->activateEnrollment($order);
+
+        $order->user->notify(new OrderPaidNotification($order));
     }
 
     private function handleExpired(Order $order): void
