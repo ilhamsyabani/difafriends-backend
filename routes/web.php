@@ -147,7 +147,10 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         // Approve / reject course
         Route::patch('/courses/{course}/approve', [AdminCourseController::class, 'approve'])->name('courses.approve');
         Route::patch('/courses/{course}/reject',  [AdminCourseController::class, 'reject'])->name('courses.reject');
-    });
+
+        //ArticleController
+        Route::resource('/articles', \App\Http\Controllers\Admin\ArticleController::class);
+});
 
 // ── Instructor routes ──────────────────────────────────
 
@@ -204,8 +207,7 @@ Route::middleware(['auth', 'verified', 'role:instructor'])
 });
 
 // ── Companion routes ───────────────────────────────────
-Route::middleware(['auth', 'verified', 'role:companion'])
-    ->prefix('companion')
+Route::middleware(['auth', 'verified', 'role:companion'])->prefix('companion')
     ->name('companion.')
     ->group(function () {
         Route::get('/dashboard', function (Request $request) {
@@ -236,6 +238,8 @@ Route::middleware(['auth', 'verified', 'role:companion'])
 });
 
 
+Route::get('/articles', [\App\Http\Controllers\ArticleController::class, 'index'])->name('articles.index');
+Route::get('/articles/{slug}', [\App\Http\Controllers\ArticleController::class, 'show'])->name('articles.show');
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
 Route::get('/companions', [CompanionController::class, 'index'])->name('companions.index');

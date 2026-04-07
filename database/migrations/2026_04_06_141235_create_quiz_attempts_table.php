@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Enums\QuizAttemptStatus;
 
 return new class extends Migration
 {
@@ -16,7 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('quiz_id')->constrained('quizzes')->cascadeOnDelete();
             $table->unsignedInteger('score')->nullable();
-            $table->enum('status', ['pending', 'graded'])->default('pending');
+            $table->string('status')->default(QuizAttemptStatus::Pending);
             $table->timestamp('started_at')->useCurrent();
             $table->timestamp('submitted_at')->nullable();
             $table->timestamps();

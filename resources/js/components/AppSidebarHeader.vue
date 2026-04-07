@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { Link, router } from '@inertiajs/vue3';
+import { LogOut } from 'lucide-vue-next';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import NotificationBell from '@/components/NotificationBell.vue';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { logout } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
 
 withDefaults(
@@ -12,6 +15,9 @@ withDefaults(
         breadcrumbs: () => [],
     },
 );
+const handleLogout = () => {
+    router.flushAll();
+};
 </script>
 
 <template>
@@ -29,6 +35,15 @@ withDefaults(
         <!-- Kanan: Notification Bell -->
         <div class="ml-auto flex items-center gap-4">
             <NotificationBell />
+            <Link
+                class="relative rounded-lg p-2.5 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+                :href="logout()"
+                @click="handleLogout"
+                as="button"
+                data-test="logout-button"
+            >
+                <LogOut class="h-4 w-4" />
+            </Link>
         </div>
     </header>
 </template>

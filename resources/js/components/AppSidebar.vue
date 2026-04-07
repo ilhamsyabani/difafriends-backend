@@ -2,6 +2,7 @@
 import { Link, usePage } from '@inertiajs/vue3';
 import {
     LayoutGrid,
+    Newspaper,
     Users,
     Tag,
     BookOpen,
@@ -14,7 +15,6 @@ import AppLogo from '@/components/AppLogo.vue';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
-import NotificationBell from '@/components/NotificationBell.vue';
 import {
     Sidebar,
     SidebarContent,
@@ -35,6 +35,7 @@ const role = user?.role ?? 'user';
 const adminNav: NavItem[] = [
     { title: 'Dashboard', href: '/admin/dashboard', icon: LayoutGrid },
     { title: 'Kelola User', href: '/admin/users', icon: Users },
+    { title: 'Kelola Post', href: '/admin/articles', icon: Newspaper },
     { title: 'Kategori', href: '/admin/categories', icon: Tag },
     { title: 'Kelas', href: '/admin/courses', icon: BookOpen },
     { title: 'Transaksi', href: '/admin/orders', icon: ShoppingCart },
