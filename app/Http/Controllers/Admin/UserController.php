@@ -20,8 +20,6 @@ class UserController extends Controller
             ->when($request->sort, function ($query, $sort) use ($request) {
                 $direction = $request->direction === 'desc' ? 'desc' : 'asc';
                 $query->orderBy($sort, $direction);
-            }, function ($query) {
-                $query->orderBy('sort_order');
             })
             ->paginate(5)
             ->withQueryString();
