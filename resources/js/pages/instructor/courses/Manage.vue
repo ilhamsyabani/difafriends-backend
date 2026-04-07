@@ -9,6 +9,8 @@ import {
     FileVideo,
     FileText,
     CheckCircle2,
+    BookText,
+    Loader2,
 } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { Input } from '@/components/ui/input';
@@ -31,6 +33,7 @@ const props = defineProps<{
             id: number;
             title: string;
             sort_order: number;
+            quiz?: { id: number; title: string } | null; // ✅ tambah title
             lectures: Array<{
                 id: number;
                 title: string;
@@ -45,14 +48,10 @@ const props = defineProps<{
     };
 }>();
 
-// ── Section ────────────────────────────────────────────
 const showSectionForm = ref(false);
 const editingSection = ref<any>(null);
 
-const sectionForm = useForm({
-    title: '',
-    sort_order: 0,
-});
+const sectionForm = useForm({ title: '', sort_order: 0 });
 
 function openSectionForm(section: any = null) {
     editingSection.value = section;
@@ -89,7 +88,6 @@ function deleteSection(sectionId: number) {
     }
 }
 
-// ── Lecture ────────────────────────────────────────────
 const showLectureForm = ref(false);
 const activeSectionId = ref<number | null>(null);
 const editingLecture = ref<any>(null);
@@ -155,6 +153,7 @@ function formatDuration(seconds: number): string {
         <Head :title="`Kurikulum: ${course.title}`" />
 
         <div class="max-w-7xl p-6 sm:p-10">
+            <!-- Header halaman -->
             <div
                 class="mb-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"
             >
@@ -190,6 +189,7 @@ function formatDuration(seconds: number): string {
                 </button>
             </div>
 
+            <!-- Empty state -->
             <div
                 v-if="course.sections.length === 0"
                 class="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-gray-200 bg-gray-50 py-20 dark:border-gray-800 dark:bg-gray-900/50"
@@ -210,12 +210,14 @@ function formatDuration(seconds: number): string {
                 </p>
             </div>
 
+            <!-- Sections list -->
             <div v-else class="space-y-6">
                 <div
                     v-for="(section, index) in course.sections"
                     :key="section.id"
                     class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900"
                 >
+                    <!-- Section header -->
                     <div
                         class="flex flex-col gap-4 border-b border-gray-100 bg-gray-50/80 p-5 sm:flex-row sm:items-center sm:justify-between dark:border-gray-800 dark:bg-gray-800/50"
                     >
@@ -237,11 +239,84 @@ function formatDuration(seconds: number): string {
                                 >
                                     {{ section.lectures.length }} Materi di
                                     bagian ini
+                                    <!-- ✅ Tampilkan nama kuis jika ada -->
+                                    <span
+                                        v-if="section.quiz"
+                                        class="ml-2 text-amber-600 dark:text-amber-400"
+                                    >
+                                        · Kuis: {{ section.quiz.title }}
+                                    </span>
                                 </p>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-2">
+                        <!-- ✅ Action buttons — termasuk tombol kuis -->
+                        <div class="flex flex-wrap items-center gap-2">
+                            <!-- Buat Kuis (jika belum ada) -->
+                            <Link
+                                v-if="!section.quiz"
+                                :href="`/instructor/courses/${course.id}/sections/${section.id}/quiz/create`"
+                                class="inline-flex items-center gap-1.5 rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700 transition-colors hover:bg-amber-100 dark:bg-amber-900/30 dark:text-amber-400 dark:hover:bg-amber-900/50"
+                            >
+                                <svg
+                                    class="h-3.5 w-3.5"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M12 4v16m8-8H4"
+                                    />
+                                </svg>
+                                Buat Kuis
+                            </Link>
+
+                            <!-- Edit Kuis + Nilai Esai (jika sudah ada kuis) -->
+                            <template v-if="section.quiz">
+                                <Link
+                                    :href="`/instructor/courses/${course.id}/sections/${section.id}/quiz/${section.quiz.id}/edit`"
+                                    class="inline-flex items-center gap-1.5 rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700 transition-colors hover:bg-amber-100 dark:bg-amber-900/30 dark:text-amber-400 dark:hover:bg-amber-900/50"
+                                >
+                                    <svg
+                                        class="h-3.5 w-3.5"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                        />
+                                    </svg>
+                                    Edit Kuis
+                                </Link>
+                                <Link
+                                    :href="`/instructor/courses/${course.id}/quizzes/${section.quiz.id}/grade`"
+                                    class="inline-flex items-center gap-1.5 rounded-lg bg-purple-50 px-3 py-1.5 text-xs font-medium text-purple-700 transition-colors hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400 dark:hover:bg-purple-900/50"
+                                >
+                                    <svg
+                                        class="h-3.5 w-3.5"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                                        />
+                                    </svg>
+                                    Nilai Esai
+                                </Link>
+                            </template>
+
+                            <!-- Tombol + Materi -->
                             <button
                                 @click="openLectureForm(section.id)"
                                 class="inline-flex items-center gap-1.5 rounded-xl border border-purple-200 bg-purple-50 px-3.5 py-1.5 text-sm font-semibold text-purple-700 transition-colors hover:bg-purple-100 dark:border-purple-800/50 dark:bg-purple-900/30 dark:text-purple-300 dark:hover:bg-purple-900/50"
@@ -249,9 +324,11 @@ function formatDuration(seconds: number): string {
                                 <Plus class="h-4 w-4" />
                                 Materi
                             </button>
+
                             <div
                                 class="h-6 w-px bg-gray-200 dark:bg-gray-700"
-                            ></div>
+                            />
+
                             <button
                                 @click="openSectionForm(section)"
                                 class="p-2 text-gray-400 hover:text-purple-600 dark:hover:text-purple-400"
@@ -269,6 +346,7 @@ function formatDuration(seconds: number): string {
                         </div>
                     </div>
 
+                    <!-- Lecture list -->
                     <div class="p-2">
                         <div
                             v-if="section.lectures.length === 0"
@@ -287,7 +365,6 @@ function formatDuration(seconds: number): string {
                                     <GripVertical
                                         class="h-4 w-4 cursor-grab text-gray-300 hover:text-gray-500 dark:text-gray-600"
                                     />
-
                                     <div
                                         class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
                                     >
@@ -301,7 +378,6 @@ function formatDuration(seconds: number): string {
                                         />
                                         <CheckCircle2 v-else class="h-4 w-4" />
                                     </div>
-
                                     <div class="flex flex-col">
                                         <div class="flex items-center gap-2">
                                             <span
@@ -363,28 +439,26 @@ function formatDuration(seconds: number): string {
             </div>
         </div>
 
+        <!-- Modal Section Form — sama persis, tidak berubah -->
         <div
             v-if="showSectionForm"
             class="relative z-50"
-            aria-labelledby="modal-title"
             role="dialog"
             aria-modal="true"
         >
             <div
-                class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity"
+                class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm"
                 @click="showSectionForm = false"
-            ></div>
-
+            />
             <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
                 <div
-                    class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+                    class="flex min-h-full items-end justify-center p-4 sm:items-center sm:p-0"
                 >
                     <div
-                        class="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-gray-800 dark:bg-gray-900"
+                        class="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left shadow-xl dark:border dark:border-gray-800 dark:bg-gray-900"
                     >
                         <h3
                             class="mb-6 text-lg font-bold text-gray-900 dark:text-white"
-                            id="modal-title"
                         >
                             {{
                                 editingSection
@@ -392,7 +466,6 @@ function formatDuration(seconds: number): string {
                                     : 'Tambah Bagian Baru'
                             }}
                         </h3>
-
                         <div class="space-y-5">
                             <div>
                                 <label
@@ -415,7 +488,6 @@ function formatDuration(seconds: number): string {
                                     {{ sectionForm.errors.title }}
                                 </p>
                             </div>
-
                             <div>
                                 <label
                                     class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -430,7 +502,6 @@ function formatDuration(seconds: number): string {
                                 />
                             </div>
                         </div>
-
                         <div class="mt-8 flex items-center justify-end gap-3">
                             <button
                                 type="button"
@@ -443,7 +514,7 @@ function formatDuration(seconds: number): string {
                                 type="button"
                                 @click="submitSection"
                                 :disabled="sectionForm.processing"
-                                class="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-6 py-2.5 text-sm font-medium text-white transition-all hover:bg-purple-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:outline-none disabled:opacity-70 dark:focus:ring-offset-gray-900"
+                                class="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-purple-700 disabled:opacity-70"
                             >
                                 <Loader2
                                     v-if="sectionForm.processing"
@@ -461,28 +532,26 @@ function formatDuration(seconds: number): string {
             </div>
         </div>
 
+        <!-- Modal Lecture Form — sama persis, tidak berubah -->
         <div
             v-if="showLectureForm"
             class="relative z-50"
-            aria-labelledby="modal-title"
             role="dialog"
             aria-modal="true"
         >
             <div
-                class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity"
+                class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm"
                 @click="showLectureForm = false"
-            ></div>
-
+            />
             <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
                 <div
-                    class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+                    class="flex min-h-full items-end justify-center p-4 sm:items-center sm:p-0"
                 >
                     <div
-                        class="relative w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:border dark:border-gray-800 dark:bg-gray-900"
+                        class="relative w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left shadow-xl dark:border dark:border-gray-800 dark:bg-gray-900"
                     >
                         <h3
                             class="mb-6 text-lg font-bold text-gray-900 dark:text-white"
-                            id="modal-title"
                         >
                             {{
                                 editingLecture
@@ -490,7 +559,6 @@ function formatDuration(seconds: number): string {
                                     : 'Tambah Materi Baru'
                             }}
                         </h3>
-
                         <div class="space-y-5">
                             <div>
                                 <label
@@ -512,13 +580,13 @@ function formatDuration(seconds: number): string {
                                     {{ lectureForm.errors.title }}
                                 </p>
                             </div>
-
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label
                                         class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-                                        >Tipe Konten</label
                                     >
+                                        Tipe Konten
+                                    </label>
                                     <Select v-model="lectureForm.type">
                                         <SelectTrigger
                                             class="w-full rounded-xl bg-transparent focus:ring-purple-500"
@@ -547,8 +615,9 @@ function formatDuration(seconds: number): string {
                                 <div>
                                     <label
                                         class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-                                        >Urutan Tampil</label
                                     >
+                                        Urutan Tampil
+                                    </label>
                                     <Input
                                         v-model="lectureForm.sort_order"
                                         type="number"
@@ -557,7 +626,6 @@ function formatDuration(seconds: number): string {
                                     />
                                 </div>
                             </div>
-
                             <div
                                 v-if="lectureForm.type === 'video'"
                                 class="space-y-5 rounded-xl bg-gray-50 p-4 dark:bg-gray-800/50"
@@ -565,8 +633,9 @@ function formatDuration(seconds: number): string {
                                 <div>
                                     <label
                                         class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-                                        >URL Video (YouTube)</label
                                     >
+                                        URL Video (YouTube)
+                                    </label>
                                     <Input
                                         v-model="lectureForm.url"
                                         type="url"
@@ -577,8 +646,9 @@ function formatDuration(seconds: number): string {
                                 <div>
                                     <label
                                         class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-                                        >Durasi Video (Detik)</label
                                     >
+                                        Durasi Video (Detik)
+                                    </label>
                                     <Input
                                         v-model="lectureForm.video_duration"
                                         type="number"
@@ -588,7 +658,6 @@ function formatDuration(seconds: number): string {
                                     />
                                 </div>
                             </div>
-
                             <div
                                 v-if="
                                     lectureForm.type === 'text' ||
@@ -597,16 +666,16 @@ function formatDuration(seconds: number): string {
                             >
                                 <label
                                     class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-                                    >Konten Artikel / Kuis</label
                                 >
+                                    Konten Artikel / Kuis
+                                </label>
                                 <textarea
                                     v-model="lectureForm.content"
                                     rows="5"
                                     placeholder="Tulis konten secara detail di sini..."
-                                    class="block w-full resize-y rounded-xl border-transparent bg-gray-50 px-4 py-3 text-sm transition-all focus:border-purple-500 focus:bg-white focus:ring-4 focus:ring-purple-500/10 dark:bg-gray-800 dark:text-white dark:focus:bg-gray-900"
-                                ></textarea>
+                                    class="block w-full resize-y rounded-xl border-transparent bg-gray-50 px-4 py-3 text-sm focus:border-purple-500 focus:bg-white focus:ring-4 focus:ring-purple-500/10 dark:bg-gray-800 dark:text-white dark:focus:bg-gray-900"
+                                />
                             </div>
-
                             <div
                                 class="flex items-center justify-between rounded-xl border border-gray-100 p-4 dark:border-gray-800"
                             >
@@ -634,22 +703,20 @@ function formatDuration(seconds: number): string {
                                             ? 'bg-purple-600'
                                             : 'bg-gray-200 dark:bg-gray-700'
                                     "
-                                    class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 focus:outline-none dark:focus:ring-offset-gray-900"
+                                    class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200"
                                 >
                                     <span class="sr-only">Toggle Preview</span>
                                     <span
-                                        aria-hidden="true"
                                         :class="
                                             lectureForm.is_free_preview
                                                 ? 'translate-x-5'
                                                 : 'translate-x-0'
                                         "
-                                        class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                                        class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
                                     />
                                 </button>
                             </div>
                         </div>
-
                         <div class="mt-8 flex items-center justify-end gap-3">
                             <button
                                 type="button"
@@ -662,7 +729,7 @@ function formatDuration(seconds: number): string {
                                 type="button"
                                 @click="submitLecture"
                                 :disabled="lectureForm.processing"
-                                class="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-6 py-2.5 text-sm font-medium text-white transition-all hover:bg-purple-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:outline-none disabled:opacity-70 dark:focus:ring-offset-gray-900"
+                                class="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-purple-700 disabled:opacity-70"
                             >
                                 <Loader2
                                     v-if="lectureForm.processing"

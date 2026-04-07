@@ -91,6 +91,11 @@ class Course extends Model
         return $this->morphMany(Order::class, 'orderable');
     }
 
+    public function quiz(): HasOne
+    {
+        return $this->hasOne(Quiz::class, 'section_id');
+    }
+
     public function scopePublished(Builder $query): Builder
     {
         return $query->where('status', CourseStatus::Published);

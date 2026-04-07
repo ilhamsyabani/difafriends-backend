@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Quiz;
+use App\Models\CourseLecture;
+use App\Models\Course;
 
 class CourseSection extends Model
 {
@@ -30,6 +33,11 @@ class CourseSection extends Model
     {
         return $this->hasMany(CourseLecture::class, 'section_id')
             ->orderBy('sort_order');
+    }
+
+    public function quiz(): HasOne
+    {
+        return $this->hasOne(Quiz::class, 'section_id');
     }
 
     public function scopeOrdered($query)

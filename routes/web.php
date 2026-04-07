@@ -2,6 +2,8 @@
 
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\User;
+use App\Enums\Roles;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use App\Http\Controllers\CourseController;
@@ -31,6 +33,22 @@ Route::get('/', function () {
             ->where('is_featured', true)
             ->limit(6)
             ->get(),
+        'companions' => User::where('role', Roles::Companion->value)
+                    ->where('is_active', true)
+                    ->with('schedules')
+                    ->inRandomOrder()
+                    ->take(3)
+                    ->get()
+                    ->map(function ($companion) {
+                        return [
+                            'id' => $companion->id,
+                            'first_name' => $companion->first_name,
+                            'last_name' => $companion->last_name,
+                            'photo' => $companion->photo ? $companion->photo : null,
+                            'bio' => $companion->bio ?? 'Berpengalaman mengajar dan memberikan intervensi untuk anak difabel.',
+                            'starting_price' => $companion->schedules->min('price') ?? 50000,
+                        ];
+                    }),
     ]);
 })->name('home');
 
@@ -54,6 +72,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
     Route::get('/user/orders', [UserOrderController::class, 'index'])->name('user.orders');
     Route::get('/user/enrollments', [UserOrderController::class, 'enrollments'])->name('user.enrollments');
+
+    Route::get('/learn/{course:slug}/quiz/{quiz}',
+        [\App\Http\Controllers\Student\QuizController::class, 'show']
+    )->name('quiz.show');
+
+    Route::post('/learn/{course:slug}/quiz/{quiz}/start',
+        [\App\Http\Controllers\Student\QuizController::class, 'start']
+    )->name('quiz.start');
+
+    Route::post('/learn/{course:slug}/quiz/{quiz}/submit',
+        [\App\Http\Controllers\Student\QuizController::class, 'submit']
+    )->name('quiz.submit');
+
+    Route::get('/learn/{course:slug}/quiz/{quiz}/result',
+        [\App\Http\Controllers\Student\QuizController::class, 'result']
+    )->name('quiz.result');
 
     //Notifications
     Route::get('/notifications', function (Request $request) {
@@ -105,7 +139,10 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         Route::resource('users', AdminUserController::class);
         Route::resource('categories', AdminCategoryController::class);
         Route::resource('courses', AdminCourseController::class);
+
         Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/export', [AdminOrderController::class, 'export'])->name('orders.export');
+        Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
 
         // Approve / reject course
         Route::patch('/courses/{course}/approve', [AdminCourseController::class, 'approve'])->name('courses.approve');
@@ -145,6 +182,25 @@ Route::middleware(['auth', 'verified', 'role:instructor'])
             $course->load(['sections' => fn($q) => $q->orderBy('sort_order'), 'sections.lectures' => fn($q) => $q->orderBy('sort_order')]);
             return inertia('instructor/courses/Manage', ['course' => $course]);
         })->name('courses.manage');
+
+        Route::resource('courses.sections.quiz',
+            \App\Http\Controllers\Instructor\QuizController::class
+        )->except(['index', 'show']);
+
+        // Questions per quiz
+        Route::resource('courses.sections.quiz.questions',
+            \App\Http\Controllers\Instructor\QuizQuestionController::class
+        )->except(['index', 'show']);
+
+        // Grading esai
+        Route::get('courses/{course}/quizzes/{quiz}/grade',
+            [\App\Http\Controllers\Instructor\QuizGradeController::class, 'index']
+        )->name('quiz.grade');
+
+        Route::post('quiz-answers/{answer}/grade',
+            [\App\Http\Controllers\Instructor\QuizGradeController::class, 'grade']
+        )->name('quiz.answer.grade');
+
 });
 
 // ── Companion routes ───────────────────────────────────

@@ -31,7 +31,9 @@ class LearnController extends Controller
         $course->load([
             'sections' => fn($q) => $q->orderBy('sort_order'),
             'sections.lectures' => fn($q) => $q->orderBy('sort_order'),
+            'sections.quiz',
             'instructor',
+
         ]);
 
         // Ambil progress user

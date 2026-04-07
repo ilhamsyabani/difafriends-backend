@@ -7,6 +7,7 @@ const isOpen = ref(false);
 const unreadCount = ref(0);
 const notifications = ref<any[]>([]);
 const loading = ref(false);
+const bellContainer = ref<HTMLElement | null>(null);
 
 async function fetchNotifications() {
     try {

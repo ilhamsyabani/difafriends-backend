@@ -130,7 +130,7 @@ function destroy(id: number) {
     <AppLayout>
         <Head title="Kelola Kelas" />
 
-        <div class="mx-auto max-w-6xl p-6 sm:p-10">
+        <div class="max-w-7xl p-6 sm:p-10">
             <!-- Header & Action -->
             <div
                 class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"
