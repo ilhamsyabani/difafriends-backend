@@ -36,7 +36,7 @@ import { login, register } from '@/routes';
                             Home
                         </Link>
                         <Link
-                            href="/"
+                            href="/articles"
                             class="text-gray-600 transition-colors hover:text-purple-600 dark:text-gray-400"
                         >
                             Artikel

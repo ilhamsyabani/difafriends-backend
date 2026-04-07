@@ -3,7 +3,9 @@
 use App\Models\Category;
 use App\Models\Course;
 use App\Models\User;
+use App\Models\Article;
 use App\Enums\Roles;
+use App\Enums\ArticlesStatus;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use App\Http\Controllers\CourseController;
@@ -49,6 +51,7 @@ Route::get('/', function () {
                             'starting_price' => $companion->schedules->min('price') ?? 50000,
                         ];
                     }),
+        'articles' => Article::with('author')->where('status', ArticlesStatus::Published)->latest()->limit(3)->get(),
     ]);
 })->name('home');
 

@@ -2,7 +2,7 @@
 import { Head, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import GuestLayout from '@/layouts/GuestLayout.vue';
-import { login, register } from '@/routes';
+import { register } from '@/routes';
 
 defineProps<{
     canRegister: boolean;
@@ -31,6 +31,13 @@ defineProps<{
         bio: string;
         starting_price: number;
     }>;
+    articles: Array<{
+        id: number;
+        title: string;
+        author: { first_name: string; last_name: string };
+        thumbnail: string | null;
+        content: string;
+    }>;
 }>();
 
 const isMobileMenuOpen = ref(false);
@@ -55,6 +62,13 @@ function getInitials(firstName: string, lastName: string): string {
     const f = firstName ? firstName.charAt(0) : '';
     const l = lastName ? lastName.charAt(0) : '';
     return (f + l).toUpperCase();
+}
+
+function stripHtml(html: string) {
+    if (!html) return '';
+    let tmp = document.createElement('DIV');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
 }
 </script>
 
@@ -425,7 +439,6 @@ function getInitials(firstName: string, lastName: string): string {
                 </div>
             </section>
 
-            <!-- ── PEMESANAN TENTOR (Statik dari HTML) ───────────────────────── -->
             <!-- ── PEMESANAN TENTOR ───────────────────────── -->
             <section class="bg-slate-100 py-20 dark:bg-gray-950">
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -573,133 +586,123 @@ function getInitials(firstName: string, lastName: string): string {
             </section>
 
             <!-- ── ARTIKEL ────────────────────────────────────────────────── -->
+            <!-- ── ARTIKEL TERBARU ────────────────────────────────────────── -->
             <section id="article" class="bg-white py-20 dark:bg-gray-800">
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <h2
-                        class="mb-10 text-3xl font-bold text-gray-800 dark:text-white"
+                    <!-- Header Section -->
+                    <div class="mb-12 flex items-end justify-between">
+                        <div>
+                            <h2
+                                class="mb-4 text-3xl font-bold text-gray-900 dark:text-white"
+                            >
+                                Artikel Terbaru
+                            </h2>
+                            <p class="text-gray-600 dark:text-gray-400">
+                                Wawasan dan tips seputar pendidikan anak
+                                berkebutuhan khusus.
+                            </p>
+                        </div>
+                        <a
+                            href="/articles"
+                            class="hidden items-center gap-1 font-medium text-purple-600 hover:text-purple-700 md:flex"
+                        >
+                            Lihat semua &rarr;
+                        </a>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div
+                        v-if="articles?.length === 0"
+                        class="py-10 text-center text-gray-500"
                     >
-                        Artikel
-                    </h2>
-                    <div class="grid gap-8 md:grid-cols-3">
-                        <!-- Card 1 -->
-                        <div
-                            class="flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-950"
-                        >
-                            <img
-                                src="https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1532&auto=format&fit=crop"
-                                class="h-48 w-full object-cover"
-                            />
-                            <div class="flex flex-1 flex-col p-6">
-                                <span
-                                    class="mb-3 inline-block self-start rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700"
-                                    >Pendidikan</span
-                                >
-                                <h3
-                                    class="mb-2 text-lg leading-snug font-bold text-gray-900 dark:text-white"
-                                >
-                                    <a
-                                        href="https://www.kompasiana.com/annisna/669f747134777c6a09312a42/inklusivitas-dalam-pendidikan-merayakan-hari-anak-nasional-dengan-memperjuangkan-hak-anak-berkebutuhan-khusus"
-                                        target="_blank"
-                                        class="transition-colors hover:text-purple-600"
-                                    >
-                                        Inklusivitas dalam Pendidikan: Merayakan
-                                        Hari Anak Nasional
-                                    </a>
-                                </h3>
-                                <p class="mb-6 flex-1 text-sm text-gray-500">
-                                    Hari Anak Nasional merupakan momentum untuk
-                                    memperjuangkan hak anak berkebutuhan
-                                    khusus...
-                                </p>
-                                <div
-                                    class="mt-auto flex items-center gap-4 text-xs text-gray-400"
-                                >
-                                    <span>21 Sep, 2020</span>
-                                    <span>&bull;</span>
-                                    <span>10 Min Read</span>
-                                </div>
-                            </div>
-                        </div>
+                        Belum ada artikel yang dipublikasikan.
+                    </div>
 
-                        <!-- Card 2 -->
-                        <div
-                            class="flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-950"
+                    <!-- Grid Artikel -->
+                    <div v-else class="grid gap-8 md:grid-cols-3">
+                        <Link
+                            v-for="article in articles"
+                            :key="article.id"
+                            :href="`/articles/${article.slug}`"
+                            class="group flex flex-col overflow-hidden rounded-[24px] border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-purple-200 hover:shadow-xl dark:border-gray-800 dark:bg-gray-950 dark:hover:border-purple-800"
                         >
-                            <img
-                                src="https://images.unsplash.com/photo-1529245814698-dd66c442bfef?q=80&w=1470&auto=format&fit=crop"
-                                class="h-48 w-full object-cover"
-                            />
-                            <div class="flex flex-1 flex-col p-6">
-                                <span
-                                    class="mb-3 inline-block self-start rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700"
-                                    >Pendidikan</span
-                                >
-                                <h3
-                                    class="mb-2 text-lg leading-snug font-bold text-gray-900 dark:text-white"
-                                >
-                                    <a
-                                        href="https://www.kompasiana.com/annisna/647f446c08a8b52f4b2ad622/penting-pendidikan-seks-bagi-anak-berkebutuhan-khusus"
-                                        target="_blank"
-                                        class="transition-colors hover:text-purple-600"
-                                    >
-                                        Penting! Pendidikan Seks bagi Anak
-                                        Berkebutuhan Khusus
-                                    </a>
-                                </h3>
-                                <p class="mb-6 flex-1 text-sm text-gray-500">
-                                    Kasus pemerkosaan remaja 15 tahun di
-                                    Sulawesi Tengah menjadi peringatan
-                                    pentingnya edukasi...
-                                </p>
+                            <!-- Thumbnail -->
+                            <div
+                                class="relative aspect-[16/10] w-full overflow-hidden bg-gray-100 dark:bg-gray-800"
+                            >
+                                <img
+                                    v-if="article.thumbnail"
+                                    :src="`/storage/${article.thumbnail}`"
+                                    :alt="article.title"
+                                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                />
                                 <div
-                                    class="mt-auto flex items-center gap-4 text-xs text-gray-400"
+                                    v-else
+                                    class="flex h-full w-full items-center justify-center bg-purple-50 dark:bg-purple-900/20"
                                 >
-                                    <span>21 Sep, 2020</span>
-                                    <span>&bull;</span>
-                                    <span>10 Min Read</span>
+                                    <span
+                                        class="text-2xl font-bold text-purple-200 dark:text-purple-900/50"
+                                        >DifaFriends</span
+                                    >
                                 </div>
+                                <span
+                                    class="absolute top-4 left-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-purple-700 shadow-sm backdrop-blur dark:bg-gray-900/90 dark:text-purple-300"
+                                >
+                                    Pendidikan
+                                </span>
                             </div>
-                        </div>
 
-                        <!-- Card 3 -->
-                        <div
-                            class="flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-950"
-                        >
-                            <img
-                                src="https://assets.kompasiana.com/items/category/44-1628767815.jpg?t=o&v=770"
-                                class="h-48 w-full bg-gray-100 object-cover"
-                            />
+                            <!-- Konten -->
                             <div class="flex flex-1 flex-col p-6">
-                                <span
-                                    class="mb-3 inline-block self-start rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700"
-                                    >Pendidikan</span
-                                >
                                 <h3
-                                    class="mb-2 text-lg leading-snug font-bold text-gray-900 dark:text-white"
+                                    class="mb-3 line-clamp-2 text-xl leading-snug font-bold text-gray-900 transition-colors group-hover:text-purple-600 dark:text-white dark:group-hover:text-purple-400"
                                 >
-                                    <a
-                                        href="https://www.kompasiana.com/annisna/647732868221990a672c5493/activity-daily-living-bagi-"
-                                        target="_blank"
-                                        class="transition-colors hover:text-purple-600"
-                                    >
-                                        Activity Daily Living bagi Anak
-                                        Berkebutuhan Khusus
-                                    </a>
+                                    {{ article.title }}
                                 </h3>
-                                <p class="mb-6 flex-1 text-sm text-gray-500">
-                                    Activities Daily Living (ADLs) adalah
-                                    sekelompok aktivitas rutinitas harian yang
-                                    sangat krusial...
-                                </p>
-                                <div
-                                    class="mt-auto flex items-center gap-4 text-xs text-gray-400"
+
+                                <p
+                                    class="mb-6 line-clamp-3 flex-1 text-sm leading-relaxed text-gray-500 dark:text-gray-400"
                                 >
-                                    <span>21 Sep, 2020</span>
-                                    <span>&bull;</span>
-                                    <span>10 Min Read</span>
+                                    {{ stripHtml(article.content) }}
+                                </p>
+
+                                <!-- Meta Footer -->
+                                <div
+                                    class="mt-auto flex items-center justify-between border-t border-gray-100 pt-5 dark:border-gray-800"
+                                >
+                                    <div class="flex items-center gap-2.5">
+                                        <!-- Avatar Penulis -->
+                                        <div
+                                            class="flex h-7 w-7 items-center justify-center rounded-full bg-purple-100 text-[10px] font-bold text-purple-600 dark:bg-purple-900/30"
+                                        >
+                                            {{
+                                                article.author?.first_name?.charAt(
+                                                    0,
+                                                ) || 'A'
+                                            }}
+                                        </div>
+                                        <span
+                                            class="text-xs font-semibold text-gray-900 dark:text-gray-300"
+                                        >
+                                            {{ article.author?.first_name }}
+                                            {{ article.author?.last_name }}
+                                        </span>
+                                    </div>
+                                    <span
+                                        class="text-[11px] font-medium text-gray-400"
+                                    >
+                                        {{
+                                            new Date(
+                                                article.created_at,
+                                            ).toLocaleDateString('id-ID', {
+                                                day: 'numeric',
+                                                month: 'short',
+                                            })
+                                        }}
+                                    </span>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     </div>
                 </div>
             </section>
