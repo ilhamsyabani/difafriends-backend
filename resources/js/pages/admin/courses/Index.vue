@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, Link, router, usePage } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import {
     FilePenLine,
     Trash2,
@@ -13,10 +13,11 @@ import {
     CheckCircle,
     XCircle,
 } from 'lucide-vue-next';
-import { computed, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import SortIcon from '@/components/SortIcon.vue';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { useConfirm } from '@/composables/useConfirm';
 
 const props = defineProps<{
     categories: Array<{ id: number; name: string }>;
@@ -53,14 +54,9 @@ const props = defineProps<{
         rating?: string;
     };
 
-    // console.log(categories);
 }>();
 
-// Mengatasi error TypeScript pada flash message
-const page = usePage();
-const flash = computed(
-    () => page.props.flash as { success?: string; error?: string },
-);
+const { confirm } = useConfirm();
 
 // State untuk input pencarian
 const search = ref(props.filters.search ?? '');
@@ -95,25 +91,24 @@ watch(
     },
 );
 
-function approve(id: number) {
-    if (confirm('Setujui dan publikasikan Kelas ini?')) {
-        // Gunakan post/patch/put sesuai dengan route di web.php kamu
-        router.post(
-            `/admin/courses/${id}/approve`,
-            {},
-            { preserveScroll: true },
-        );
-    }
+async function approve(id: number) {
+    const ok = await confirm({
+        title: 'Publikasikan Kelas?',
+        description: 'Kelas ini akan dipublikasikan dan dapat dilihat oleh semua pengguna.',
+        confirmLabel: 'Ya, Publikasikan',
+        variant: 'default',
+    });
+    if (ok) router.patch(`/admin/courses/${id}/approve`, {}, { preserveScroll: true });
 }
 
-function reject(id: number) {
-    if (confirm('Kembalikan Kelas ini ke status Draft?')) {
-        router.post(
-            `/admin/courses/${id}/reject`,
-            {},
-            { preserveScroll: true },
-        );
-    }
+async function reject(id: number) {
+    const ok = await confirm({
+        title: 'Kembalikan ke Draft?',
+        description: 'Kelas ini akan dikembalikan ke status Draft dan disembunyikan dari publik.',
+        confirmLabel: 'Ya, Jadikan Draft',
+        variant: 'destructive',
+    });
+    if (ok) router.patch(`/admin/courses/${id}/reject`, {}, { preserveScroll: true });
 }
 
 // Fungsi untuk menangani klik pada header tabel
@@ -142,10 +137,14 @@ function sortBy(field: string) {
     );
 }
 
-function destroy(id: number) {
-    if (confirm('Yakin hapus Kelas ini?')) {
-        router.delete(`/admin/courses/${id}`);
-    }
+async function destroy(id: number) {
+    const ok = await confirm({
+        title: 'Hapus Kelas?',
+        description: 'Kelas yang dihapus tidak dapat dikembalikan. Semua data terkait akan ikut terhapus.',
+        confirmLabel: 'Ya, Hapus',
+        variant: 'destructive',
+    });
+    if (ok) router.delete(`/admin/courses/${id}`);
 }
 </script>
 
@@ -257,20 +256,6 @@ function destroy(id: number) {
                         Kelas Baru
                     </Link>
                 </div>
-            </div>
-
-            <!-- Flash message dengan desain modern -->
-            <div
-                v-if="flash.success"
-                class="mb-6 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700 dark:border-green-900/50 dark:bg-green-900/20 dark:text-green-400"
-            >
-                {{ flash.success }}
-            </div>
-            <div
-                v-if="flash.error"
-                class="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400"
-            >
-                {{ flash.error }}
             </div>
 
             <!-- Table Container (Senada dengan form) -->
