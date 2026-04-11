@@ -43,16 +43,15 @@ class HandleInertiaRequests extends Middleware
             ],
             'flash' => [
                 'success' => $request->session()->get('success'),
-                'error'   => $request->session()->get('error'),
+                'error' => $request->session()->get('error'),
             ],
-            'notifications' => [
-                'unread_count' => $request->user()
-                    ? $request->user()->unreadNotifications()->count()
-                    : 0,
-                'latest' => $request->user()
-                    ? $request->user()->notifications()->limit(5)->get()
-                    : [],
-            ],
+            // Satu query COUNT ringan, pakai once() agar tidak duplikat
+            // dalam satu request. Tidak ada lazy-load array notifikasi —
+            // NotificationBell fetch mandiri via axios saat dibutuhkan.
+            'unread_count' => once(fn () => $request->user()
+                ? $request->user()->unreadNotifications()->count()
+                : 0
+            ),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

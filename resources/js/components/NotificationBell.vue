@@ -1,13 +1,24 @@
 <script setup lang="ts">
-import { router } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
 import axios from 'axios';
-import { ref, onMounted, onUnmounted } from 'vue';
+import { onUnmounted, ref, watch } from 'vue';
 
-const isOpen = ref(false);
-const unreadCount = ref(0);
+const page = usePage();
+
+// Inisialisasi dari shared prop — tidak perlu fetch saat mount
+const unreadCount = ref<number>((page.props as any).unread_count ?? 0);
 const notifications = ref<any[]>([]);
+const isOpen = ref(false);
 const loading = ref(false);
 const bellContainer = ref<HTMLElement | null>(null);
+
+// Sync count kalau halaman berubah via Inertia (setelah aksi, reload, dsb.)
+watch(
+    () => (page.props as any).unread_count,
+    (val: number) => {
+        unreadCount.value = val ?? 0;
+    },
+);
 
 async function fetchNotifications() {
     try {
@@ -24,14 +35,10 @@ async function fetchNotifications() {
 
 async function markAsRead(id: string, url: string) {
     await axios.post(`/notifications/${id}/read`);
-
-    // Update local state
     const notif = notifications.value.find((n) => n.id === id);
     if (notif) notif.read_at = new Date().toISOString();
     unreadCount.value = Math.max(0, unreadCount.value - 1);
-
     isOpen.value = false;
-
     if (url) router.visit(url);
 }
 
@@ -41,21 +48,35 @@ async function markAllRead() {
     unreadCount.value = 0;
 }
 
-// Close dropdown kalau klik di luar
 function handleClickOutside(e: MouseEvent) {
-    if (
-        bellContainer.value &&
-        !bellContainer.value.contains(e.target as Node)
-    ) {
+    if (bellContainer.value && !bellContainer.value.contains(e.target as Node)) {
         isOpen.value = false;
     }
 }
 
-// Auto polling setiap 30 detik
-let interval: any;
+// Poll count saja setiap 30 detik — ringan, satu query COUNT
+let interval: ReturnType<typeof setInterval>;
+
+function startPolling() {
+    interval = setInterval(async () => {
+        try {
+            const res = await axios.get('/notifications/count');
+            unreadCount.value = res.data.unread_count;
+        } catch {}
+    }, 30_000);
+}
+
+function toggleOpen() {
+    isOpen.value = !isOpen.value;
+    if (isOpen.value && notifications.value.length === 0) {
+        fetchNotifications();
+    }
+}
+
+import { onMounted } from 'vue';
+
 onMounted(() => {
-    fetchNotifications();
-    interval = setInterval(fetchNotifications, 30000);
+    startPolling();
     document.addEventListener('click', handleClickOutside);
 });
 
@@ -63,11 +84,6 @@ onUnmounted(() => {
     clearInterval(interval);
     document.removeEventListener('click', handleClickOutside);
 });
-
-function toggleOpen() {
-    isOpen.value = !isOpen.value;
-    if (isOpen.value) fetchNotifications();
-}
 
 function iconPath(icon: string): string {
     const icons: Record<string, string> = {
@@ -85,10 +101,10 @@ function iconPath(icon: string): string {
 
 <template>
     <div ref="bellContainer" class="relative">
-        <!-- Bell Button -->
         <button
             @click="toggleOpen"
             class="relative rounded-lg p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+            aria-label="Notifikasi"
         >
             <svg
                 class="h-5 w-5 text-gray-600 dark:text-gray-400"
@@ -104,21 +120,18 @@ function iconPath(icon: string): string {
                 />
             </svg>
 
-            <!-- Badge -->
             <span
                 v-if="unreadCount > 0"
-                class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white"
+                class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white"
             >
                 {{ unreadCount > 9 ? '9+' : unreadCount }}
             </span>
         </button>
 
-        <!-- Dropdown -->
         <div
             v-if="isOpen"
-            class="absolute top-full right-0 z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800"
+            class="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800"
         >
-            <!-- Header -->
             <div
                 class="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-gray-700"
             >
@@ -132,12 +145,10 @@ function iconPath(icon: string): string {
                 </button>
             </div>
 
-            <!-- Loading -->
             <div v-if="loading" class="py-8 text-center text-sm text-gray-400">
                 Memuat...
             </div>
 
-            <!-- Empty -->
             <div
                 v-else-if="notifications.length === 0"
                 class="py-10 text-center text-gray-400"
@@ -158,7 +169,6 @@ function iconPath(icon: string): string {
                 <p class="text-sm">Tidak ada notifikasi</p>
             </div>
 
-            <!-- List -->
             <div
                 v-else
                 class="max-h-80 divide-y divide-gray-100 overflow-y-auto dark:divide-gray-700"
@@ -169,12 +179,9 @@ function iconPath(icon: string): string {
                     @click="markAsRead(notif.id, notif.data.url)"
                     :class="[
                         'flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50',
-                        !notif.read_at
-                            ? 'bg-purple-50/50 dark:bg-purple-900/10'
-                            : '',
+                        !notif.read_at ? 'bg-purple-50/50 dark:bg-purple-900/10' : '',
                     ]"
                 >
-                    <!-- Icon -->
                     <div
                         :class="[
                             'mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
@@ -184,12 +191,7 @@ function iconPath(icon: string): string {
                         ]"
                     >
                         <svg
-                            :class="[
-                                'h-4 w-4',
-                                !notif.read_at
-                                    ? 'text-purple-600'
-                                    : 'text-gray-400',
-                            ]"
+                            :class="['h-4 w-4', !notif.read_at ? 'text-purple-600' : 'text-gray-400']"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -203,7 +205,6 @@ function iconPath(icon: string): string {
                         </svg>
                     </div>
 
-                    <!-- Content -->
                     <div class="min-w-0 flex-1">
                         <p
                             :class="[
@@ -215,17 +216,12 @@ function iconPath(icon: string): string {
                         >
                             {{ notif.data.title }}
                         </p>
-                        <p
-                            class="mt-0.5 line-clamp-2 text-xs text-gray-500 dark:text-gray-400"
-                        >
+                        <p class="mt-0.5 line-clamp-2 text-xs text-gray-500 dark:text-gray-400">
                             {{ notif.data.message }}
                         </p>
-                        <p class="mt-1 text-xs text-gray-400">
-                            {{ notif.created_at }}
-                        </p>
+                        <p class="mt-1 text-xs text-gray-400">{{ notif.created_at }}</p>
                     </div>
 
-                    <!-- Unread dot -->
                     <div
                         v-if="!notif.read_at"
                         class="mt-2 h-2 w-2 shrink-0 rounded-full bg-purple-600"

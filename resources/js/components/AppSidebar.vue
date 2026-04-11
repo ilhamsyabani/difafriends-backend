@@ -10,6 +10,7 @@ import {
     Calendar,
     ClipboardList,
     Settings,
+    BarChart2,
 } from 'lucide-vue-next';
 import AppLogo from '@/components/AppLogo.vue';
 import NavFooter from '@/components/NavFooter.vue';
@@ -40,6 +41,7 @@ const adminNav: NavItem[] = [
     { title: 'Jadwal Sesi', href: '/admin/schedules', icon: Calendar },
     { title: 'Artikel', href: '/admin/articles', icon: Newspaper },
     { title: 'Transaksi', href: '/admin/orders', icon: ShoppingCart },
+    { title: 'Laporan', href: '/admin/reports', icon: BarChart2 },
 ];
 
 const instructorNav: NavItem[] = [
