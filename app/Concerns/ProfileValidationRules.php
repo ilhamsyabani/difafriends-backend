@@ -15,9 +15,14 @@ trait ProfileValidationRules
     protected function profileRules(?int $userId = null): array
     {
         return [
-            'first_name'    => $this->firstNameRules(),
-            'last_name'     => $this->lastNameRules(),
-            'email'         => $this->emailRules($userId),
+            'first_name' => $this->firstNameRules(),
+            'last_name' => $this->lastNameRules(),
+            'email' => $this->emailRules($userId),
+            'phone' => ['nullable', 'string', 'max:20'],
+            'bio' => ['nullable', 'string', 'max:500'],
+            'city' => ['nullable', 'string', 'max:100'],
+            'birth_date' => ['nullable', 'date', 'before:today'],
+            'gender' => ['nullable', 'in:male,female,other'],
         ];
     }
 

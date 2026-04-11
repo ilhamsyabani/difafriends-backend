@@ -3,10 +3,8 @@
 namespace App\Models;
 
 use App\Enums\Roles;
-use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -22,6 +20,7 @@ class User extends Authenticatable
         'email',
         'password',
         'photo',
+        'bio',
         'phone',
         'birth_date',
         'gender',
@@ -40,12 +39,12 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'email_verified_at'       => 'datetime',
-        'password'                => 'hashed',
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
         'two_factor_confirmed_at' => 'datetime',
-        'birth_date'              => 'date',
-        'is_active'               => 'boolean',
-        'role'                    => Roles::class,
+        'birth_date' => 'date',
+        'is_active' => 'boolean',
+        'role' => Roles::class,
     ];
 
     // ── Relationships: sebagai User/Student ───────────────
@@ -152,15 +151,15 @@ class User extends Authenticatable
     public function isEnrolledIn(Course $course): bool
     {
         return $this->enrollments()
-                    ->where('course_id', $course->id)
-                    ->exists();
+            ->where('course_id', $course->id)
+            ->exists();
     }
 
     // Ambil enrollment untuk course tertentu
     public function enrollmentFor(Course $course): ?Enrollment
     {
         return $this->enrollments()
-                    ->where('course_id', $course->id)
-                    ->first();
+            ->where('course_id', $course->id)
+            ->first();
     }
 }
