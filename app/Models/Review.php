@@ -25,7 +25,7 @@ class Review extends Model
     ];
 
     protected $casts = [
-        'rating'       => 'integer',
+        'rating' => 'integer',
         'is_published' => 'boolean',
         'published_at' => 'datetime',
     ];
@@ -59,13 +59,13 @@ class Review extends Model
         ]);
     }
 
-    public function addReply(string $replyText): void  // ✅ rename
+    public function addReply(string $replyText): void
     {
         $this->update(['reply' => $replyText]);
     }
 
     public function hasReply(): bool
     {
-        return !is_null($this->reply);
+        return ! is_null($this->reply);
     }
 }
