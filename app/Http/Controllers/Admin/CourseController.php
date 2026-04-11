@@ -2,144 +2,189 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\CourseStatus;
+use App\Enums\Roles;
 use App\Http\Controllers\Controller;
-use App\Notifications\OrderPaidNotification;
-use Illuminate\Http\Request;
-use App\Models\Course;
 use App\Models\Category;
-use Inertia\Response;
+use App\Models\Course;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class CourseController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-     public function index(Request $request): Response
-     {
-         $query = Course::query()
-             ->select('id', 'title', 'slug', 'thumbnail', 'price', 'discount_price', 'status', 'is_featured', 'category_id', 'instructor_id')
-             ->with([
-                 'category:id,name',
-                 'instructor:id,first_name,last_name,photo'
-             ])
-             ->withCount(['enrollments', 'lectures'])
-             ->withAvg('reviews', 'rating')
-             ->when($request->category_id, function ($q, $categoryId) {
-                 $q->where('category_id', $categoryId);
-             })
-             ->when($request->status, function ($q, $status) {
-                 $q->where('status', $status);
-             })
-             ->when($request->rating, function ($q, $rating) {
-                 $q->where(function ($subquery) {
-                     $subquery->selectRaw('avg(rating)')
-                              ->from('reviews')
-                              ->whereColumn('reviewable_id', 'courses.id')
-                              ->where('reviewable_type', Course::class)
-                              // Tambahkan baris di bawah INI JIKA model Review memakai SoftDeletes
-                              ->whereNull('deleted_at');
-                 }, '>=', $rating);
-             });
-
-         // Search by judul
-         if ($request->filled('search')) {
-             $query->where('title', 'like', '%' . $request->search . '%');
-         }
-
-         // Filter by harga
-         if ($request->filled('price')) {
-             match($request->price) {
-                 'free'    => $query->where('price', 0),
-                 'paid'    => $query->where('price', '>', 0),
-                 default   => null,
-             };
-         }
-
-         // Sort
-         match($request->get('sort', 'latest')) {
-             'popular'    => $query->orderByDesc('enrollments_count'),
-             'price_low'  => $query->orderBy('price'),
-             'price_high' => $query->orderByDesc('price'),
-             default      => $query->latest(),
-         };
-
-         $courses = $query->paginate(12)->withQueryString();
-
-         $categories = Category::whereNull('parent_id')
-             ->where('is_active', true)
-             ->with('children')
-             ->orderBy('sort_order')
-             ->get();
-
-         return Inertia::render('admin/courses/Index', [
-             'courses'    => $courses,
-             'categories' => $categories,
-             'filters'    => $request->only(['search', 'category_id', 'status', 'rating', 'price', 'sort']),
-         ]);
-     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(Request $request): Response
     {
-        //
+        $query = Course::query()
+            ->with(['category', 'instructor'])
+            ->withCount(['enrollments', 'lectures'])
+            ->withAvg('reviews', 'rating');
+
+        // 1. Fitur Pencarian (Search)
+        $query->when($request->search, function ($q, $search) {
+            $q->where('title', 'like', "%{$search}%");
+        });
+
+        // 2. Filter Kategori
+        $query->when($request->category_id, function ($q, $categoryId) {
+            $q->where('category_id', $categoryId);
+        });
+
+        // 3. Filter Status
+        $query->when($request->status, function ($q, $status) {
+            $q->where('status', $status);
+        });
+
+        // 4. Filter Rating
+        $query->when($request->rating, function ($q, $rating) {
+            $q->whereRaw('(SELECT AVG(rating) FROM reviews WHERE reviews.course_id = courses.id) >= ?', [$rating]);
+        });
+
+        $sort = $request->get('sort');
+        $direction = $request->get('direction', 'asc');
+
+        $allowedSorts = ['title', 'price', 'status'];
+
+        if ($sort && in_array($sort, $allowedSorts)) {
+            $query->orderBy($sort, $direction === 'desc' ? 'desc' : 'asc');
+        } else {
+            $query->latest();
+        }
+
+        // 6. Pagination & Append Query String
+        $courses = $query->paginate(15)->withQueryString();
+
+        return Inertia::render('admin/courses/Index', [
+            'courses' => $courses,
+            'categories' => $this->getCategories(),
+            'filters' => $request->only(['search', 'category_id', 'status', 'rating', 'sort', 'direction']),
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function create(): Response
+    {
+        return Inertia::render('admin/courses/Form', [
+            'course'      => null,
+            'categories'  => $this->getCategories(),
+            'instructors' => $this->getInstructors(),
+        ]);
+    }
+
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'instructor_id'    => 'required|exists:users,id',
+            'title'            => 'required|string|max:255',
+            'category_id'      => 'required|exists:categories,id',
+            'description'      => 'required|string',
+            'price'            => 'required|numeric|min:0',
+            'discount_price'   => 'nullable|numeric|min:0',
+            'duration_minutes' => 'required|integer|min:1',
+            'has_certificate'  => 'boolean',
+            'is_featured'      => 'boolean',
+            'prerequisites'    => 'nullable|string',
+            'status'           => 'required|in:draft,review,published,archived',
+            'thumbnail'        => 'nullable|image|mimes:jpeg,png,webp|max:2048',
+        ]);
+
+        if ($request->hasFile('thumbnail')) {
+            $validated['thumbnail'] = $request->file('thumbnail')
+                ->store('courses/thumbnails', 'public');
+        }
+
+        $validated['slug'] = Str::slug($validated['title']) . '-' . Str::random(5);
+
+        Course::create($validated);
+
+        return redirect()->route('admin.courses.index')
+            ->with('success', 'Kelas berhasil dibuat.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(Course $course): Response
     {
-        //
+        return Inertia::render('admin/courses/Form', [
+            'course'      => $course,
+            'categories'  => $this->getCategories(),
+            'instructors' => $this->getInstructors(),
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, Course $course)
     {
-        //
+        $validated = $request->validate([
+            'instructor_id'    => 'required|exists:users,id',
+            'title'            => 'required|string|max:255',
+            'category_id'      => 'required|exists:categories,id',
+            'description'      => 'required|string',
+            'price'            => 'required|numeric|min:0',
+            'discount_price'   => 'nullable|numeric|min:0',
+            'duration_minutes' => 'required|integer|min:1',
+            'has_certificate'  => 'boolean',
+            'is_featured'      => 'boolean',
+            'prerequisites'    => 'nullable|string',
+            'status'           => 'required|in:draft,review,published,archived',
+            'thumbnail'        => 'nullable|image|mimes:jpeg,png,webp|max:2048',
+        ]);
+
+        if ($request->hasFile('thumbnail')) {
+            if ($course->thumbnail) {
+                Storage::disk('public')->delete($course->thumbnail);
+            }
+            $validated['thumbnail'] = $request->file('thumbnail')
+                ->store('courses/thumbnails', 'public');
+        }
+
+        $course->update($validated);
+
+        return redirect()->route('admin.courses.index')
+            ->with('success', 'Kelas berhasil diupdate.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(Course $course)
     {
-        //
-    }
+        if ($course->enrollments()->count() > 0) {
+            return back()->with('error', 'Kelas tidak bisa dihapus karena sudah ada yang mendaftar.');
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        if ($course->thumbnail) {
+            Storage::disk('public')->delete($course->thumbnail);
+        }
+
+        $course->delete();
+
+        return redirect()->route('admin.courses.index')
+            ->with('success', 'Kelas berhasil dihapus.');
     }
 
     public function approve(Course $course)
     {
         $course->update(['status' => CourseStatus::Published->value]);
-        $course->instructor->notify(new CourseApprovedNotification($course));
-
-        return back()->with('success', "Kelas '{$course->title}' berhasil dipublikasikan.");
+        return back()->with('success', "Kelas '{$course->title}' dipublikasikan.");
     }
 
-    public function reject(Request $request, Course $course)
+    public function reject(Course $course)
     {
-        $request->validate(['reason' => 'nullable|string']);
         $course->update(['status' => CourseStatus::Draft->value]);
-
         return back()->with('success', "Kelas '{$course->title}' dikembalikan ke draft.");
+    }
+
+    // ── Helpers ─────────────────────────────────────────
+    private function getCategories()
+    {
+        return Category::with('parent')
+            ->whereNotNull('parent_id')
+            ->orderBy('name')
+            ->get(['id', 'name', 'parent_id']);
+    }
+
+    private function getInstructors()
+    {
+        return User::where('role', Roles::Instructor->value)
+            ->where('is_active', true)
+            ->orderBy('first_name')
+            ->get(['id', 'first_name', 'last_name', 'email']);
     }
 }

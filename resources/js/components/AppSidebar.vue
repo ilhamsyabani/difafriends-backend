@@ -35,9 +35,10 @@ const role = user?.role ?? 'user';
 const adminNav: NavItem[] = [
     { title: 'Dashboard', href: '/admin/dashboard', icon: LayoutGrid },
     { title: 'Kelola User', href: '/admin/users', icon: Users },
-    { title: 'Kelola Post', href: '/admin/articles', icon: Newspaper },
     { title: 'Kategori', href: '/admin/categories', icon: Tag },
     { title: 'Kelas', href: '/admin/courses', icon: BookOpen },
+    { title: 'Jadwal Sesi', href: '/admin/schedules', icon: Calendar },
+    { title: 'Artikel', href: '/admin/articles', icon: Newspaper },
     { title: 'Transaksi', href: '/admin/orders', icon: ShoppingCart },
 ];
 

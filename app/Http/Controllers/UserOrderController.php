@@ -30,7 +30,10 @@ class UserOrderController extends Controller
     public function enrollments(Request $request): Response
     {
         $enrollments = Enrollment::where('user_id', $request->user()->id)
-            ->with(['course' => fn($q) => $q->with(['instructor', 'category'])])
+            ->with([
+                'course' => fn($q) => $q->with(['instructor', 'category']),
+                'course.certificate' => fn($q) => $q->where('user_id', $request->user()->id),
+            ])
             ->latest('enrolled_at')
             ->paginate(10);
 

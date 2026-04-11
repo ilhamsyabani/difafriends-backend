@@ -16,6 +16,7 @@ defineProps<{
                 thumbnail: string | null;
                 instructor: { first_name: string; last_name: string };
                 category: { name: string };
+                has_certificate: boolean;
             };
         }>;
         links: any[];
@@ -161,6 +162,18 @@ function statusColor(status: string): string {
                                     : 'Lanjut Belajar'
                             }}
                         </Link>
+
+                        <a
+                            v-if="
+                                enrollment.status === 'completed' &&
+                                enrollment.course.has_certificate
+                            "
+                            :href="`/certificates/${enrollment.id}/download`"
+                            target="_blank"
+                            class="mt-2 block w-full rounded-xl border border-purple-200 py-2 text-center text-sm font-medium text-purple-600 transition-colors hover:bg-purple-50 dark:border-purple-800 dark:hover:bg-purple-900/20"
+                        >
+                            ⬇ Download Sertifikat
+                        </a>
                     </div>
                 </div>
             </div>

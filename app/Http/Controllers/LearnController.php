@@ -10,6 +10,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Jobs\GenerateCertificateJob;
+
 
 class LearnController extends Controller
 {
@@ -90,9 +92,15 @@ class LearnController extends Controller
             ]
         );
 
+        $percent = $this->calculateProgress($user->id, $course->id);
+
+        if ($percent === 100 && $course->has_certificate) {
+            GenerateCertificateJob::dispatch($user, $course);
+        }
+
         return response()->json([
             'success'          => true,
-            'progress_percent' => $this->calculateProgress($user->id, $course->id),
+            'progress_percent' => $percent,
         ]);
     }
 

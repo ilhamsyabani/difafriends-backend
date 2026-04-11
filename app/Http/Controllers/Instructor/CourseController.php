@@ -8,6 +8,10 @@ use App\Models\Course;
 use App\Models\Category;
 use Inertia\Response;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
+use App\Enums\CourseStatus;
+use Illuminate\Support\Str;
+
 
 class CourseController extends Controller
 {
@@ -107,11 +111,18 @@ class CourseController extends Controller
             'duration_minutes' => 'required|integer|min:1',
             'has_certificate'  => 'boolean',
             'prerequisites'    => 'nullable|string',
+            'thumbnail'        => 'nullable|image|mimes:jpeg,png,webp|max:2048',
         ]);
+
+        // Handle upload thumbnail
+        if ($request->hasFile('thumbnail')) {
+            $validated['thumbnail'] = $request->file('thumbnail')
+                ->store('courses/thumbnails', 'public');
+        }
 
         $validated['instructor_id'] = $request->user()->id;
         $validated['status']        = CourseStatus::Draft->value;
-        $validated['slug']          = Str::slug($validated['title']). '-' . Str::random(5);
+        $validated['slug']          = Str::slug($validated['title']) . '-' . Str::random(5);
 
         Course::create($validated);
 
@@ -150,13 +161,33 @@ class CourseController extends Controller
     {
         abort_if($course->instructor_id !== $request->user()->id, 403);
 
-        return Inertia::render('instructor/courses/Form', [
-            'course'     => $course,
-            'categories' => Category::with('parent')
-                ->whereNotNull('parent_id')
-                ->orderBy('name')
-                ->get(['id', 'name', 'parent_id']),
+        $validated = $request->validate([
+            'title'            => 'required|string|max:255',
+            'category_id'      => 'required|exists:categories,id',
+            'description'      => 'required|string',
+            'price'            => 'required|numeric|min:0',
+            'discount_price'   => 'nullable|numeric|min:0',
+            'duration_minutes' => 'required|integer|min:1',
+            'has_certificate'  => 'boolean',
+            'prerequisites'    => 'nullable|string',
+            'status'           => 'in:draft,review',
+            'thumbnail'        => 'nullable|image|mimes:jpeg,png,webp|max:2048', // ✅
         ]);
+
+        // Handle upload thumbnail baru
+        if ($request->hasFile('thumbnail')) {
+            // Hapus thumbnail lama jika ada
+            if ($course->thumbnail) {
+                Storage::disk('public')->delete($course->thumbnail);
+            }
+            $validated['thumbnail'] = $request->file('thumbnail')
+                ->store('courses/thumbnails', 'public');
+        }
+
+        $course->update($validated);
+
+        return redirect()->route('instructor.courses.index')
+            ->with('success', 'Kelas berhasil diupdate.');
     }
 
     /**

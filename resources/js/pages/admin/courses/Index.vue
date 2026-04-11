@@ -10,6 +10,8 @@ import {
     BookText,
     Flame,
     Filter,
+    CheckCircle,
+    XCircle,
 } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 import SortIcon from '@/components/SortIcon.vue';
@@ -92,6 +94,27 @@ watch(
         }, 300);
     },
 );
+
+function approve(id: number) {
+    if (confirm('Setujui dan publikasikan Kelas ini?')) {
+        // Gunakan post/patch/put sesuai dengan route di web.php kamu
+        router.post(
+            `/admin/courses/${id}/approve`,
+            {},
+            { preserveScroll: true },
+        );
+    }
+}
+
+function reject(id: number) {
+    if (confirm('Kembalikan Kelas ini ke status Draft?')) {
+        router.post(
+            `/admin/courses/${id}/reject`,
+            {},
+            { preserveScroll: true },
+        );
+    }
+}
 
 // Fungsi untuk menangani klik pada header tabel
 function sortBy(field: string) {
@@ -502,6 +525,29 @@ function destroy(id: number) {
                                     <div
                                         class="flex items-center justify-end gap-3"
                                     >
+                                        <button
+                                            v-if="
+                                                course.status === 'draft' ||
+                                                course.status === 'review'
+                                            "
+                                            @click="approve(course.id)"
+                                            class="text-gray-400 transition-colors hover:text-green-500 dark:hover:text-green-400"
+                                            title="Approve & Publish"
+                                        >
+                                            <span class="sr-only">Approve</span>
+                                            <CheckCircle class="h-4 w-4" />
+                                        </button>
+
+                                        <button
+                                            v-if="course.status === 'published'"
+                                            @click="reject(course.id)"
+                                            class="text-gray-400 transition-colors hover:text-amber-500 dark:hover:text-amber-400"
+                                            title="Jadikan Draft"
+                                        >
+                                            <span class="sr-only">Reject</span>
+                                            <XCircle class="h-4 w-4" />
+                                        </button>
+
                                         <Link
                                             :href="`/admin/courses/${course.id}/edit`"
                                             class="text-gray-400 transition-colors hover:text-purple-600 dark:hover:text-purple-400"

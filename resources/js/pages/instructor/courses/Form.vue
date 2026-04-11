@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, useForm, Link } from '@inertiajs/vue3';
-import { ArrowLeft, Save, Loader2 } from 'lucide-vue-next';
+import { ArrowLeft, Save, Loader2, Upload, X, Image } from 'lucide-vue-next';
+import { ref } from 'vue';
 import { Input } from '@/components/ui/input';
 import {
     Select,
@@ -18,12 +19,12 @@ const props = defineProps<{
         title: string;
         category_id: number;
         description: string;
+        thumbnail: string | null;
         price: number;
         discount_price: number | null;
         duration_minutes: number;
         has_certificate: boolean;
         prerequisites: string | null;
-        is_featured: boolean;
         status: string;
     } | null;
     categories: Array<{
@@ -37,19 +38,62 @@ const isEdit = !!props.course;
 
 const form = useForm({
     title: props.course?.title ?? '',
-    category_id: props.course?.category_id ?? '',
+    category_id: props.course?.category_id?.toString() ?? '',
     description: props.course?.description ?? '',
     price: props.course?.price ?? 0,
-    discount_price: props.course?.discount_price ?? '',
+    discount_price: props.course?.discount_price ?? null,
     duration_minutes: props.course?.duration_minutes ?? 60,
     has_certificate: props.course?.has_certificate ?? false,
     prerequisites: props.course?.prerequisites ?? '',
     status: props.course?.status ?? 'draft',
+    thumbnail: null as File | null,
 });
 
+// ── Dropzone state ─────────────────────────────────────
+const isDragging = ref(false);
+const previewUrl = ref<string | null>(
+    props.course?.thumbnail ? `/storage/${props.course.thumbnail}` : null,
+);
+
+function onDrop(e: DragEvent) {
+    isDragging.value = false;
+    const file = e.dataTransfer?.files[0];
+    if (file) handleFile(file);
+}
+
+function onFileInput(e: Event) {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) handleFile(file);
+}
+
+function handleFile(file: File) {
+    // Validasi tipe
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+        alert('Format file harus JPG, PNG, atau WebP.');
+        return;
+    }
+    // Validasi ukuran (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+        alert('Ukuran file maksimal 2MB.');
+        return;
+    }
+
+    form.thumbnail = file;
+    previewUrl.value = URL.createObjectURL(file);
+}
+
+function removeThumbnail() {
+    form.thumbnail = null;
+    previewUrl.value = null;
+}
+
+// ── Submit ─────────────────────────────────────────────
 function submit() {
     if (isEdit) {
-        form.put(`/instructor/courses/${props.course!.id}`);
+        form.transform((data) => ({
+            ...data,
+            _method: 'put',
+        })).post(`/instructor/courses/${props.course!.id}`);
     } else {
         form.post('/instructor/courses');
     }
@@ -85,7 +129,7 @@ function submit() {
             </div>
 
             <form @submit.prevent="submit" class="space-y-10">
-                <!-- Section 1: Informasi Dasar -->
+                <!-- ── Section 1: Informasi Dasar ──────────────── -->
                 <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
                     <div class="md:col-span-1">
                         <h2
@@ -106,7 +150,7 @@ function submit() {
                         class="rounded-2xl border border-gray-100 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] md:col-span-2 dark:border-gray-800 dark:bg-gray-900"
                     >
                         <div class="space-y-6">
-                            <!-- Judul Kelas -->
+                            <!-- Judul -->
                             <div>
                                 <label
                                     class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -121,7 +165,7 @@ function submit() {
                                     :class="[
                                         'w-full rounded-xl',
                                         form.errors.title
-                                            ? 'border-red-300 focus-visible:ring-red-500'
+                                            ? 'border-red-300'
                                             : '',
                                     ]"
                                 />
@@ -133,38 +177,35 @@ function submit() {
                                 </p>
                             </div>
 
-                            <!-- Kategori -->
+                            <!-- Kategori — ✅ fix v-model dari parent_id ke category_id -->
                             <div>
                                 <label
                                     class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
                                 >
                                     Kategori <span class="text-red-500">*</span>
                                 </label>
-                                <Select v-model="form.parent_id">
-                                    <!-- Class di sini disamakan persis dengan input nama -->
+                                <Select v-model="form.category_id">
                                     <SelectTrigger
-                                        :class="[
-                                            'mt-1 w-full rounded-xl border-transparent bg-gray-50 px-4 py-5 text-sm transition-all focus:border-purple-500 focus:bg-white focus:ring-4 focus:ring-purple-500/10 dark:bg-gray-800 dark:text-white dark:focus:bg-gray-900',
-                                            form.errors.parent_id
-                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-500/10'
-                                                : '',
-                                        ]"
+                                        class="mt-1 w-full rounded-xl border-transparent bg-gray-50 px-4 py-5 text-sm transition-all focus:border-purple-500 focus:bg-white focus:ring-4 focus:ring-purple-500/10 dark:bg-gray-800 dark:text-white dark:focus:bg-gray-900"
                                     >
                                         <SelectValue
-                                            placeholder="Pilih kategori induk..."
+                                            placeholder="Pilih kategori..."
                                         />
                                     </SelectTrigger>
-
                                     <SelectContent
                                         class="rounded-xl border-gray-100 shadow-lg dark:border-gray-800"
                                     >
                                         <SelectGroup>
                                             <SelectItem
-                                                v-for="categori in categories"
-                                                :key="categori.id"
-                                                :value="categori.id.toString()"
+                                                v-for="cat in categories"
+                                                :key="cat.id"
+                                                :value="cat.id.toString()"
                                             >
-                                                {{ categori.name }}
+                                                {{
+                                                    cat.parent
+                                                        ? `${cat.parent.name} → `
+                                                        : ''
+                                                }}{{ cat.name }}
                                             </SelectItem>
                                         </SelectGroup>
                                     </SelectContent>
@@ -190,7 +231,7 @@ function submit() {
                                     rows="5"
                                     placeholder="Jelaskan isi kelas, siapa yang cocok mengikutinya, dan apa manfaatnya..."
                                     class="block w-full resize-y rounded-xl border-transparent bg-gray-50 px-4 py-3 text-sm transition-all focus:border-purple-500 focus:bg-white focus:ring-4 focus:ring-purple-500/10 dark:bg-gray-800 dark:text-white dark:focus:bg-gray-900"
-                                ></textarea>
+                                />
                                 <p
                                     v-if="form.errors.description"
                                     class="mt-1.5 text-sm text-red-500"
@@ -214,16 +255,133 @@ function submit() {
                                     rows="3"
                                     placeholder="Apa yang perlu dimiliki/diketahui sebelum mengikuti kelas ini?"
                                     class="block w-full resize-y rounded-xl border-transparent bg-gray-50 px-4 py-3 text-sm transition-all focus:border-purple-500 focus:bg-white focus:ring-4 focus:ring-purple-500/10 dark:bg-gray-800 dark:text-white dark:focus:bg-gray-900"
-                                ></textarea>
+                                />
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Pemisah -->
-                <div class="h-px w-full bg-gray-100 dark:bg-gray-800"></div>
+                <div class="h-px w-full bg-gray-100 dark:bg-gray-800" />
 
-                <!-- Section 2: Harga & Durasi -->
+                <!-- ── Section 2: Thumbnail ─────────────────────── -->
+                <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+                    <div class="md:col-span-1">
+                        <h2
+                            class="text-base font-semibold text-gray-900 dark:text-white"
+                        >
+                            Thumbnail Kelas
+                        </h2>
+                        <p
+                            class="mt-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400"
+                        >
+                            Gambar cover yang akan ditampilkan di katalog kelas.
+                            Format JPG, PNG, atau WebP. Maks. 2MB.
+                        </p>
+                    </div>
+
+                    <div
+                        class="rounded-2xl border border-gray-100 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] md:col-span-2 dark:border-gray-800 dark:bg-gray-900"
+                    >
+                        <!-- Preview jika sudah ada gambar -->
+                        <div v-if="previewUrl" class="relative">
+                            <img
+                                :src="previewUrl"
+                                alt="Preview thumbnail"
+                                class="h-48 w-full rounded-xl object-cover"
+                            />
+                            <!-- Overlay saat hover -->
+                            <div
+                                class="absolute inset-0 flex items-center justify-center gap-3 rounded-xl bg-black/50 opacity-0 transition-opacity hover:opacity-100"
+                            >
+                                <!-- Ganti gambar -->
+                                <label
+                                    class="flex cursor-pointer items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
+                                >
+                                    <Upload class="h-4 w-4" />
+                                    Ganti Gambar
+                                    <input
+                                        type="file"
+                                        accept="image/jpeg,image/png,image/webp"
+                                        class="hidden"
+                                        @change="onFileInput"
+                                    />
+                                </label>
+                                <!-- Hapus gambar -->
+                                <button
+                                    type="button"
+                                    @click="removeThumbnail"
+                                    class="flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-600"
+                                >
+                                    <X class="h-4 w-4" />
+                                    Hapus
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Dropzone jika belum ada gambar -->
+                        <label
+                            v-else
+                            @dragover.prevent="isDragging = true"
+                            @dragleave.prevent="isDragging = false"
+                            @drop.prevent="onDrop"
+                            :class="[
+                                'flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-12 text-center transition-all',
+                                isDragging
+                                    ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
+                                    : 'border-gray-200 hover:border-purple-300 hover:bg-gray-50 dark:border-gray-700 dark:hover:border-purple-700 dark:hover:bg-gray-800/50',
+                            ]"
+                        >
+                            <!-- Icon -->
+                            <div
+                                :class="[
+                                    'mb-4 flex h-14 w-14 items-center justify-center rounded-full transition-colors',
+                                    isDragging
+                                        ? 'bg-purple-100 dark:bg-purple-900/40'
+                                        : 'bg-gray-100 dark:bg-gray-800',
+                                ]"
+                            >
+                                <Image
+                                    :class="[
+                                        'h-7 w-7 transition-colors',
+                                        isDragging
+                                            ? 'text-purple-600'
+                                            : 'text-gray-400',
+                                    ]"
+                                />
+                            </div>
+
+                            <p
+                                class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                            >
+                                <span class="text-purple-600"
+                                    >Klik untuk upload</span
+                                >
+                                atau drag & drop di sini
+                            </p>
+                            <p class="mt-1 text-xs text-gray-400">
+                                JPG, PNG, WebP · Rasio 16:9 · Maks. 2MB
+                            </p>
+
+                            <input
+                                type="file"
+                                accept="image/jpeg,image/png,image/webp"
+                                class="hidden"
+                                @change="onFileInput"
+                            />
+                        </label>
+
+                        <p
+                            v-if="form.errors.thumbnail"
+                            class="mt-2 text-sm text-red-500"
+                        >
+                            {{ form.errors.thumbnail }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="h-px w-full bg-gray-100 dark:bg-gray-800" />
+
+                <!-- ── Section 3: Harga & Durasi ───────────────── -->
                 <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
                     <div class="md:col-span-1">
                         <h2
@@ -243,7 +401,6 @@ function submit() {
                         class="rounded-2xl border border-gray-100 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] md:col-span-2 dark:border-gray-800 dark:bg-gray-900"
                     >
                         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                            <!-- Harga Normal -->
                             <div>
                                 <label
                                     class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -259,7 +416,7 @@ function submit() {
                                     :class="[
                                         'w-full rounded-xl',
                                         form.errors.price
-                                            ? 'border-red-300 focus-visible:ring-red-500'
+                                            ? 'border-red-300'
                                             : '',
                                     ]"
                                 />
@@ -271,7 +428,6 @@ function submit() {
                                 </p>
                             </div>
 
-                            <!-- Harga Diskon -->
                             <div>
                                 <label
                                     class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -290,7 +446,6 @@ function submit() {
                                 />
                             </div>
 
-                            <!-- Durasi -->
                             <div class="sm:col-span-2">
                                 <label
                                     class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -309,10 +464,9 @@ function submit() {
                     </div>
                 </div>
 
-                <!-- Pemisah -->
-                <div class="h-px w-full bg-gray-100 dark:bg-gray-800"></div>
+                <div class="h-px w-full bg-gray-100 dark:bg-gray-800" />
 
-                <!-- Section 3: Pengaturan Tambahan -->
+                <!-- ── Section 4: Pengaturan Tambahan ──────────── -->
                 <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
                     <div class="md:col-span-1">
                         <h2
@@ -360,24 +514,23 @@ function submit() {
                                             ? 'bg-purple-600'
                                             : 'bg-gray-200 dark:bg-gray-700'
                                     "
-                                    class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 focus:outline-none dark:focus:ring-offset-gray-900"
+                                    class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200"
                                 >
                                     <span class="sr-only"
                                         >Toggle Sertifikat</span
                                     >
                                     <span
-                                        aria-hidden="true"
                                         :class="
                                             form.has_certificate
                                                 ? 'translate-x-5'
                                                 : 'translate-x-0'
                                         "
-                                        class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                                        class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
                                     />
                                 </button>
                             </div>
 
-                            <!-- Status (Hanya Muncul Saat Edit) -->
+                            <!-- Status -->
                             <div
                                 v-if="isEdit"
                                 class="rounded-xl bg-gray-50 p-4 dark:bg-gray-800/50"
@@ -389,28 +542,24 @@ function submit() {
                                 </label>
                                 <Select v-model="form.status">
                                     <SelectTrigger
-                                        :class="[
-                                            'mt-1 flex w-full items-center justify-between rounded-xl border-transparent bg-gray-50 px-4 py-3 text-sm transition-all focus:border-purple-500 focus:bg-white focus:ring-4 focus:ring-purple-500/10 dark:bg-gray-800 dark:text-white dark:focus:bg-gray-900',
-                                            form.errors.status
-                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-500/10'
-                                                : '',
-                                        ]"
+                                        class="mt-1 w-full rounded-xl border-transparent bg-white px-4 py-3 text-sm focus:ring-2 focus:ring-purple-500 dark:bg-gray-900 dark:text-white"
                                     >
                                         <SelectValue
                                             placeholder="Pilih status kelas..."
                                         />
                                     </SelectTrigger>
-
                                     <SelectContent
                                         class="rounded-xl border-gray-100 shadow-lg dark:border-gray-800"
                                     >
                                         <SelectGroup>
-                                            <SelectItem value="draft">
-                                                Draft (Masih dikonsep)
-                                            </SelectItem>
-                                            <SelectItem value="review">
-                                                Ajukan Review ke Admin
-                                            </SelectItem>
+                                            <SelectItem value="draft"
+                                                >Draft (Masih
+                                                dikonsep)</SelectItem
+                                            >
+                                            <SelectItem value="review"
+                                                >Ajukan Review ke
+                                                Admin</SelectItem
+                                            >
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
@@ -418,8 +567,7 @@ function submit() {
                                     class="mt-2 text-xs text-gray-500 dark:text-gray-400"
                                 >
                                     Pilih "Ajukan Review" jika materi sudah
-                                    lengkap dan siap dinilai oleh Admin sebelum
-                                    diterbitkan.
+                                    lengkap dan siap dinilai oleh Admin.
                                 </p>
                             </div>
                         </div>
@@ -437,7 +585,7 @@ function submit() {
                     <button
                         type="submit"
                         :disabled="form.processing"
-                        class="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-purple-700 hover:shadow focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-70 dark:focus:ring-offset-gray-900"
+                        class="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-purple-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:outline-none disabled:opacity-70 dark:focus:ring-offset-gray-900"
                     >
                         <Loader2
                             v-if="form.processing"
