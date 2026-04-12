@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\CompanionController as AdminCompanionController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\QuizGradeController as AdminQuizGradeController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ScheduleController as AdminScheduleController;
 // ── Controllers ──────────────────────────────────────
@@ -229,6 +230,15 @@ Route::middleware(['auth', 'verified', 'role:admin'])
 
         // Articles
         Route::resource('articles', App\Http\Controllers\Admin\ArticleController::class);
+
+        // Quiz Grading
+        Route::get('/courses/{course}/quizzes/{quiz}/grade',
+            [AdminQuizGradeController::class, 'index']
+        )->name('courses.quiz.grade');
+
+        Route::post('/quiz-answers/{answer}/grade',
+            [AdminQuizGradeController::class, 'grade']
+        )->name('quiz.answer.grade');
     });
 
 // ── Instructor Routes ─────────────────────────────────

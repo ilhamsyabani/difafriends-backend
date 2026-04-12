@@ -40,7 +40,13 @@ class CourseController extends Controller
 
         // 4. Filter Rating
         $query->when($request->rating, function ($q, $rating) {
-            $q->whereRaw('(SELECT AVG(rating) FROM reviews WHERE reviews.course_id = courses.id) >= ?', [$rating]);
+            $q->where(function ($subquery) {
+                $subquery->selectRaw('AVG(rating)')
+                    ->from('reviews')
+                    ->whereColumn('reviewable_id', 'courses.id')
+                    ->where('reviewable_type', Course::class)
+                    ->whereNull('deleted_at');
+            }, '>=', $rating);
         });
 
         $sort = $request->get('sort');
@@ -67,8 +73,8 @@ class CourseController extends Controller
     public function create(): Response
     {
         return Inertia::render('admin/courses/Form', [
-            'course'      => null,
-            'categories'  => $this->getCategories(),
+            'course' => null,
+            'categories' => $this->getCategories(),
             'instructors' => $this->getInstructors(),
         ]);
     }
@@ -76,18 +82,18 @@ class CourseController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'instructor_id'    => 'required|exists:users,id',
-            'title'            => 'required|string|max:255',
-            'category_id'      => 'required|exists:categories,id',
-            'description'      => 'required|string',
-            'price'            => 'required|numeric|min:0',
-            'discount_price'   => 'nullable|numeric|min:0',
+            'instructor_id' => 'required|exists:users,id',
+            'title' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'discount_price' => 'nullable|numeric|min:0',
             'duration_minutes' => 'required|integer|min:1',
-            'has_certificate'  => 'boolean',
-            'is_featured'      => 'boolean',
-            'prerequisites'    => 'nullable|string',
-            'status'           => 'required|in:draft,review,published,archived',
-            'thumbnail'        => 'nullable|image|mimes:jpeg,png,webp|max:2048',
+            'has_certificate' => 'boolean',
+            'is_featured' => 'boolean',
+            'prerequisites' => 'nullable|string',
+            'status' => 'required|in:draft,review,published,archived',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,webp|max:2048',
         ]);
 
         if ($request->hasFile('thumbnail')) {
@@ -95,7 +101,7 @@ class CourseController extends Controller
                 ->store('courses/thumbnails', 'public');
         }
 
-        $validated['slug'] = Str::slug($validated['title']) . '-' . Str::random(5);
+        $validated['slug'] = Str::slug($validated['title']).'-'.Str::random(5);
 
         Course::create($validated);
 
@@ -106,8 +112,8 @@ class CourseController extends Controller
     public function edit(Course $course): Response
     {
         return Inertia::render('admin/courses/Form', [
-            'course'      => $course,
-            'categories'  => $this->getCategories(),
+            'course' => $course,
+            'categories' => $this->getCategories(),
             'instructors' => $this->getInstructors(),
         ]);
     }
@@ -115,18 +121,18 @@ class CourseController extends Controller
     public function update(Request $request, Course $course)
     {
         $validated = $request->validate([
-            'instructor_id'    => 'required|exists:users,id',
-            'title'            => 'required|string|max:255',
-            'category_id'      => 'required|exists:categories,id',
-            'description'      => 'required|string',
-            'price'            => 'required|numeric|min:0',
-            'discount_price'   => 'nullable|numeric|min:0',
+            'instructor_id' => 'required|exists:users,id',
+            'title' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'discount_price' => 'nullable|numeric|min:0',
             'duration_minutes' => 'required|integer|min:1',
-            'has_certificate'  => 'boolean',
-            'is_featured'      => 'boolean',
-            'prerequisites'    => 'nullable|string',
-            'status'           => 'required|in:draft,review,published,archived',
-            'thumbnail'        => 'nullable|image|mimes:jpeg,png,webp|max:2048',
+            'has_certificate' => 'boolean',
+            'is_featured' => 'boolean',
+            'prerequisites' => 'nullable|string',
+            'status' => 'required|in:draft,review,published,archived',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,webp|max:2048',
         ]);
 
         if ($request->hasFile('thumbnail')) {
@@ -162,12 +168,14 @@ class CourseController extends Controller
     public function approve(Course $course)
     {
         $course->update(['status' => CourseStatus::Published->value]);
+
         return back()->with('success', "Kelas '{$course->title}' dipublikasikan.");
     }
 
     public function reject(Course $course)
     {
         $course->update(['status' => CourseStatus::Draft->value]);
+
         return back()->with('success', "Kelas '{$course->title}' dikembalikan ke draft.");
     }
 

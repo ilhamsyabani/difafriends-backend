@@ -7,9 +7,9 @@ use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Order;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -107,9 +107,9 @@ class ReportController extends Controller
             ->get();
 
         // Kelompokkan dan jumlahkan via PHP Collection (Aman di semua Database)
-        $grouped = $orders->groupBy(function($order) {
-            return \Carbon\Carbon::parse($order->created_at)->format('n');
-        })->map(function($group) {
+        $grouped = $orders->groupBy(function ($order) {
+            return Carbon::parse($order->created_at)->format('n');
+        })->map(function ($group) {
             return $group->sum('final_amount');
         })->toArray();
 
@@ -122,9 +122,9 @@ class ReportController extends Controller
             ->whereYear('created_at', $year)
             ->get();
 
-        $grouped = $enrollments->groupBy(function($enrollment) {
-            return \Carbon\Carbon::parse($enrollment->created_at)->format('n');
-        })->map(function($group) {
+        $grouped = $enrollments->groupBy(function ($enrollment) {
+            return Carbon::parse($enrollment->created_at)->format('n');
+        })->map(function ($group) {
             return $group->count();
         })->toArray();
 
@@ -137,9 +137,9 @@ class ReportController extends Controller
             ->whereYear('created_at', $year)
             ->get();
 
-        $grouped = $users->groupBy(function($user) {
-            return \Carbon\Carbon::parse($user->created_at)->format('n');
-        })->map(function($group) {
+        $grouped = $users->groupBy(function ($user) {
+            return Carbon::parse($user->created_at)->format('n');
+        })->map(function ($group) {
             return $group->count();
         })->toArray();
 
@@ -148,13 +148,8 @@ class ReportController extends Controller
 
     private function topCoursesByRevenue(): array
     {
-        // Query ini aman di semua DB karena hanya menggunakan standar COUNT, SUM, GROUP BY, dan ORDER BY
         return Order::query()
-            ->select(
-                'item_name',
-                DB::raw('COUNT(*) as total_orders'),
-                DB::raw('SUM(final_amount) as total_revenue')
-            )
+            ->selectRaw('item_name, COUNT(*) as total_orders, SUM(final_amount) as total_revenue')
             ->where('status', 'paid')
             ->where('orderable_type', Course::class)
             ->groupBy('item_name')
@@ -198,7 +193,7 @@ class ReportController extends Controller
     private function availableYears(): array
     {
         $oldestOrderDate = Order::whereNull('deleted_at')->min('created_at');
-        $earliest = $oldestOrderDate ? \Carbon\Carbon::parse($oldestOrderDate)->format('Y') : now()->year;
+        $earliest = $oldestOrderDate ? Carbon::parse($oldestOrderDate)->format('Y') : now()->year;
 
         return range((int) $earliest, now()->year);
     }
