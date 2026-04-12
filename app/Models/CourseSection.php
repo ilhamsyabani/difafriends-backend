@@ -6,9 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\Quiz;
-use App\Models\CourseLecture;
-use App\Models\Course;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class CourseSection extends Model
 {

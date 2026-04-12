@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\Roles;
 use App\Models\Booking;
 use App\Models\Course;
+use App\Models\Enrollment;
 use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -20,18 +21,38 @@ class ReviewController extends Controller
             'comment' => 'nullable|string|max:1000',
         ]);
 
-        // 1. Tentukan target Model berdasarkan tipe
+        // 1. Tentukan target Model berdasarkan tipe + validasi eligibility
         if ($validated['type'] === 'course') {
             $model = Course::findOrFail($validated['id']);
             $modelClass = Course::class;
 
+            // Hanya user yang sudah terdaftar (enrolled) boleh review
+            $isEnrolled = Enrollment::where('user_id', $request->user()->id)
+                ->where('course_id', $model->id)
+                ->where('status', 'active')
+                ->exists();
+
+            if (! $isEnrolled) {
+                return back()->with('error', 'Anda harus terdaftar di kelas ini sebelum memberikan ulasan.');
+            }
         } elseif ($validated['type'] === 'booking') {
-            $model = Booking::findOrFail($validated['id']);
+            $model = Booking::where('student_id', $request->user()->id)
+                ->findOrFail($validated['id']);
             $modelClass = Booking::class;
 
         } elseif ($validated['type'] === 'companion') {
             $model = User::where('role', Roles::Companion->value)->findOrFail($validated['id']);
             $modelClass = User::class;
+
+            // Pastikan user pernah booking companion ini
+            $hasBooked = Booking::where('student_id', $request->user()->id)
+                ->where('tutor_id', $model->id)
+                ->where('status', 'completed')
+                ->exists();
+
+            if (! $hasBooked) {
+                return back()->with('error', 'Anda harus pernah menyelesaikan sesi dengan guru ini sebelum memberikan ulasan.');
+            }
         }
 
         // 2. Cek agar user tidak spam review berkali-kali untuk target yang sama

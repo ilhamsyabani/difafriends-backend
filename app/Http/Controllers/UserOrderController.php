@@ -13,7 +13,7 @@ class UserOrderController extends Controller
     public function index(Request $request): Response
     {
         $orders = Order::where('user_id', $request->user()->id)
-            ->with(['payments' => fn($q) => $q->latest()->limit(1)])
+            ->with(['payments' => fn ($q) => $q->latest()->limit(1)])
             ->latest()
             ->paginate(10);
 
@@ -31,8 +31,8 @@ class UserOrderController extends Controller
     {
         $enrollments = Enrollment::where('user_id', $request->user()->id)
             ->with([
-                'course' => fn($q) => $q->with(['instructor', 'category']),
-                'course.certificate' => fn($q) => $q->where('user_id', $request->user()->id),
+                'course' => fn ($q) => $q->with(['instructor', 'category']),
+                'course.certificates' => fn ($q) => $q->where('user_id', $request->user()->id),
             ])
             ->latest('enrolled_at')
             ->paginate(10);

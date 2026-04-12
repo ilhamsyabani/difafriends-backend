@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Course extends Model
 {
-   use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'category_id',
@@ -34,11 +34,11 @@ class Course extends Model
     ];
 
     protected $casts = [
-        'price'            => 'decimal:2',
-        'discount_amount'  => 'decimal:2',
-        'has_certificate'  => 'boolean',
-        'is_featured'      => 'boolean',
-        'status'           => CourseStatus::class,
+        'price' => 'decimal:2',
+        'discount_price' => 'decimal:2',
+        'has_certificate' => 'boolean',
+        'is_featured' => 'boolean',
+        'status' => CourseStatus::class,
     ];
 
     public function instructor(): BelongsTo

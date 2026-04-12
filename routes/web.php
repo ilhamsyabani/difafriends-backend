@@ -100,8 +100,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/learn/{course:slug}', [LearnController::class, 'show'])->name('learn.show');
     Route::post('/learn/{course:slug}/progress', [LearnController::class, 'updateProgress'])->name('learn.progress');
 
-    // Reviews — harus auth agar user tidak null
-    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+    // Reviews — auth + throttle 5 review per menit (cegah spam)
+    Route::post('/reviews', [ReviewController::class, 'store'])
+        ->middleware('throttle:5,1')
+        ->name('reviews.store');
 
     // Quiz
     Route::get('/learn/{course:slug}/quiz/{quiz}',
@@ -138,7 +140,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'notifications' => $request->user()->notifications()->limit(10)->get()
                 ->map(fn ($n) => [
                     'id' => $n->id,
-                    'data' => $n->data,
+                    // Whitelist field — jangan expose seluruh data object
+                    'title' => $n->data['title'] ?? '',
+                    'message' => $n->data['message'] ?? '',
+                    'icon' => $n->data['icon'] ?? 'default',
+                    'url' => $n->data['url'] ?? null,
                     'read_at' => $n->read_at,
                     'created_at' => $n->created_at->diffForHumans(),
                 ]),

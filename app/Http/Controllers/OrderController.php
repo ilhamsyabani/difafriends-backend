@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Enums\OrderStatus;
-use App\Enums\PaymentStatus;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Notifications\OrderPaidNotification;
 use App\Services\MidtransService;
 use App\Services\OrderService;
-use App\Notifications\OrderPaidNotification;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -33,7 +31,7 @@ class OrderController extends Controller
         ]);
 
         $course = Course::findOrFail($request->course_id);
-        $user   = $request->user();
+        $user = $request->user();
 
         // Cek sudah enroll
         if ($user->isEnrolledIn($course)) {
@@ -47,8 +45,9 @@ class OrderController extends Controller
         // Kalau gratis — langsung aktifkan
         if ($order->final_amount == 0) {
             $this->activateEnrollment($order);
+
             return response()->json([
-                'free'     => true,
+                'free' => true,
                 'redirect' => "/courses/{$course->slug}",
             ]);
         }
@@ -56,17 +55,17 @@ class OrderController extends Controller
         // Ambil snap token dari Midtrans
         try {
             $snapToken = $this->midtransService->createSnapToken($order);
-            $order->update(['snap_token' => $snapToken ?? null]);
 
             return response()->json([
-                'snap_token'   => $snapToken,
-                'client_key'   => config('midtrans.client_key'),
-                'order_id'     => $order->id,
-                'invoice'      => $order->invoice_number,
-                'amount'       => $order->final_amount,
+                'snap_token' => $snapToken,
+                'client_key' => config('midtrans.client_key'),
+                'order_id' => $order->id,
+                'invoice' => $order->invoice_number,
+                'amount' => $order->final_amount,
             ]);
         } catch (\Exception $e) {
-            Log::error('Midtrans error: ' . $e->getMessage());
+            Log::error('Midtrans error: '.$e->getMessage());
+
             return response()->json([
                 'message' => 'Gagal menghubungi payment gateway. Coba lagi.',
             ], 500);
@@ -92,22 +91,23 @@ class OrderController extends Controller
         $payload = $request->all();
 
         // Verifikasi signature
-        $serverKey         = config('midtrans.server_key');
-        $signatureKey      = hash('sha512',
-            $payload['order_id'] .
-            $payload['status_code'] .
-            $payload['gross_amount'] .
+        $serverKey = config('midtrans.server_key');
+        $signatureKey = hash('sha512',
+            $payload['order_id'].
+            $payload['status_code'].
+            $payload['gross_amount'].
             $serverKey
         );
 
         if ($signatureKey !== $payload['signature_key']) {
             Log::warning('Midtrans webhook: invalid signature');
+
             return response()->json(['message' => 'Invalid signature'], 403);
         }
 
         $order = Order::where('invoice_number', $payload['order_id'])->first();
 
-        if (!$order) {
+        if (! $order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
 
@@ -115,22 +115,22 @@ class OrderController extends Controller
         Payment::updateOrCreate(
             ['midtrans_transaction_id' => $payload['transaction_id']],
             [
-                'order_id'              => $order->id,
-                'payment_type'          => $payload['payment_type'] ?? null,
-                'amount'                => $payload['gross_amount'],
-                'status'                => $payload['transaction_status'],
-                'midtrans_response'     => $payload,
-                'paid_at'               => $payload['transaction_status'] === 'settlement'
+                'order_id' => $order->id,
+                'payment_type' => $payload['payment_type'] ?? null,
+                'amount' => $payload['gross_amount'],
+                'status' => $payload['transaction_status'],
+                'midtrans_response' => $payload,
+                'paid_at' => $payload['transaction_status'] === 'settlement'
                     ? now() : null,
             ]
         );
 
         // Handle status
-        match($payload['transaction_status']) {
+        match ($payload['transaction_status']) {
             'settlement', 'capture' => $this->handleSuccess($order),
-            'expire', 'cancel'      => $this->handleExpired($order),
-            'fraud'                 => $this->handleFraud($order),
-            default                 => null,
+            'expire', 'cancel' => $this->handleExpired($order),
+            'fraud' => $this->handleFraud($order),
+            default => null,
         };
 
         return response()->json(['message' => 'OK']);
@@ -138,7 +138,9 @@ class OrderController extends Controller
 
     private function handleSuccess(Order $order): void
     {
-        if ($order->status === OrderStatus::Paid) return;
+        if ($order->status === OrderStatus::Paid) {
+            return;
+        }
 
         $order->update(['status' => OrderStatus::Paid]);
         $this->activateEnrollment($order);
@@ -161,12 +163,12 @@ class OrderController extends Controller
     {
         Enrollment::firstOrCreate(
             [
-                'user_id'   => $order->user_id,
+                'user_id' => $order->user_id,
                 'course_id' => $order->orderable_id,
             ],
             [
-                'order_id'    => $order->id,
-                'status'      => 'active',
+                'order_id' => $order->id,
+                'status' => 'active',
                 'enrolled_at' => now(),
             ]
         );

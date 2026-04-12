@@ -29,3 +29,4 @@ yarn-error.log
 .claude
 .codex
 .cursor
+storage/debugbar/

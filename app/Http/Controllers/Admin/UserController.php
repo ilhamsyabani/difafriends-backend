@@ -2,23 +2,25 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\Roles;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Hash;
-use Inertia\Inertia;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request) : \Inertia\Response
+    public function index(Request $request): Response
     {
         $users = User::when($request->search, function ($query, $search) {
-                $query->where('name', 'like', "%{$search}%");
-            })
+            $query->where('name', 'like', "%{$search}%");
+        })
             ->when($request->sort, function ($query, $sort) use ($request) {
                 $direction = $request->direction === 'desc' ? 'desc' : 'asc';
                 $query->orderBy($sort, $direction);
@@ -47,18 +49,25 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
-            'last_name'  => 'required|string|max:255',
-            'email'      => 'required|email|unique:users,email',
-            'password'   => 'required|string|min:8',
-            'role'       => 'required|in:user,instructor,companion,admin',
-            'phone'      => 'nullable|string',
-            'city'       => 'nullable|string',
-            'gender'     => 'nullable|in:male,female,other',
-            'is_active'  => 'boolean',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8',
+            'role' => 'required|in:user,instructor,companion,admin',
+            'phone' => 'nullable|string',
+            'city' => 'nullable|string',
+            'gender' => 'nullable|in:male,female,other',
+            'is_active' => 'boolean',
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
-        User::create($validated);
+
+        // role dan is_active tidak ada di $fillable — set via forceFill
+        $role = Roles::from($validated['role']);
+        $isActive = $validated['is_active'] ?? true;
+        unset($validated['role'], $validated['is_active']);
+
+        $user = User::create($validated);
+        $user->forceFill(['role' => $role, 'is_active' => $isActive])->save();
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User successfully created.');
@@ -87,14 +96,14 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
-            'last_name'  => 'required|string|max:255',
-            'email'      => 'required|email|unique:users,email,' . $user->id,
-            'password'   => 'nullable|string|min:8',
-            'role'       => 'required|in:user,instructor,companion,admin',
-            'phone'      => 'nullable|string',
-            'city'       => 'nullable|string',
-            'gender'     => 'nullable|in:male,female,other',
-            'is_active'  => 'boolean',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,'.$user->id,
+            'password' => 'nullable|string|min:8',
+            'role' => 'required|in:user,instructor,companion,admin',
+            'phone' => 'nullable|string',
+            'city' => 'nullable|string',
+            'gender' => 'nullable|in:male,female,other',
+            'is_active' => 'boolean',
         ]);
 
         if (empty($validated['password'])) {
@@ -103,7 +112,13 @@ class UserController extends Controller
             $validated['password'] = Hash::make($validated['password']);
         }
 
+        // role dan is_active hanya boleh diubah oleh admin via forceFill
+        $role = Roles::from($validated['role']);
+        $isActive = $validated['is_active'] ?? $user->is_active;
+        unset($validated['role'], $validated['is_active']);
+
         $user->update($validated);
+        $user->forceFill(['role' => $role, 'is_active' => $isActive])->save();
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User updated successfully.');
@@ -115,6 +130,7 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         $user->delete();
+
         return redirect()->route('admin.users.index')
             ->with('success', 'User has been successfully deleted.');
     }

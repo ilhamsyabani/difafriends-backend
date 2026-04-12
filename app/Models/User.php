@@ -27,8 +27,9 @@ class User extends Authenticatable
         'address',
         'city',
         'country',
-        'role',
-        'is_active',
+        // 'role' dan 'is_active' SENGAJA tidak ada di sini.
+        // Keduanya hanya boleh diubah melalui metode khusus (assignRole, activate, deactivate)
+        // untuk mencegah mass-assignment privilege escalation.
     ];
 
     protected $hidden = [
@@ -144,6 +145,23 @@ class User extends Authenticatable
     public function isProvider(): bool
     {
         return $this->role->isProvider();
+    }
+
+    // ── Privileged Setters (hanya dipanggil dari Admin/konteks terpercaya) ──
+
+    public function assignRole(Roles $role): void
+    {
+        $this->forceFill(['role' => $role])->save();
+    }
+
+    public function activate(): void
+    {
+        $this->forceFill(['is_active' => true])->save();
+    }
+
+    public function deactivate(): void
+    {
+        $this->forceFill(['is_active' => false])->save();
     }
 
     // ── Enrollment Helpers ─────────────────────────────────

@@ -8,6 +8,7 @@ use App\Models\Enrollment;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -19,14 +20,17 @@ class ReportController extends Controller
     {
         $year = (int) $request->get('year', now()->year);
 
+        // Cache 1 jam per tahun — data historis tidak berubah sering
+        $ttl = $year < now()->year ? 86400 : 3600;
+
         return Inertia::render('admin/reports/Index', [
             'year' => $year,
             'availableYears' => $this->availableYears(),
-            'revenueChart' => $this->revenueByMonth($year),
-            'enrollmentChart' => $this->enrollmentsByMonth($year),
-            'userGrowth' => $this->userGrowthByMonth($year),
-            'topCourses' => $this->topCoursesByRevenue(),
-            'summary' => $this->summary($year),
+            'revenueChart' => Cache::remember("report:revenue:{$year}", $ttl, fn () => $this->revenueByMonth($year)),
+            'enrollmentChart' => Cache::remember("report:enroll:{$year}", $ttl, fn () => $this->enrollmentsByMonth($year)),
+            'userGrowth' => Cache::remember("report:users:{$year}", $ttl, fn () => $this->userGrowthByMonth($year)),
+            'topCourses' => Cache::remember("report:top_courses:{$year}", $ttl, fn () => $this->topCoursesByRevenue()),
+            'summary' => Cache::remember("report:summary:{$year}", $ttl, fn () => $this->summary($year)),
         ]);
     }
 
@@ -35,7 +39,11 @@ class ReportController extends Controller
      */
     public function export(Request $request): StreamedResponse
     {
-        $year = (int) $request->get('year', now()->year);
+        $validated = $request->validate([
+            'year' => ['nullable', 'integer', 'between:2020,'.now()->year],
+        ]);
+
+        $year = (int) ($validated['year'] ?? now()->year);
 
         $orders = Order::with(['user', 'orderable'])
             ->whereYear('created_at', $year)
@@ -55,11 +63,11 @@ class ReportController extends Controller
 
             foreach ($orders as $order) {
                 fputcsv($handle, [
-                    $order->invoice_number,
-                    $order->user?->first_name.' '.$order->user?->last_name,
-                    $order->user?->email,
-                    $order->item_name,
-                    number_format($order->final_amount, 0, ',', '.'),
+                    $this->csvSafe($order->invoice_number),
+                    $this->csvSafe($order->user?->first_name.' '.$order->user?->last_name),
+                    $this->csvSafe($order->user?->email),
+                    $this->csvSafe($order->item_name),
+                    number_format((float) $order->final_amount, 0, ',', '.'),
                     $order->status->value ?? $order->status,
                     $order->created_at->format('d/m/Y H:i'),
                 ]);
@@ -69,6 +77,23 @@ class ReportController extends Controller
         }, $filename, [
             'Content-Type' => 'text/csv',
         ]);
+    }
+
+    /**
+     * Cegah CSV Formula Injection (=, +, -, @, tab, carriage return
+     * sebagai karakter pertama bisa dieksekusi Excel sebagai formula).
+     */
+    private function csvSafe(?string $value): string
+    {
+        if ($value === null) {
+            return '';
+        }
+
+        if (in_array($value[0] ?? '', ['=', '+', '-', '@', "\t", "\r"], true)) {
+            return "'".$value;
+        }
+
+        return $value;
     }
 
     // ── Private helpers ────────────────────────────────────────
