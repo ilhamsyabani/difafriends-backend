@@ -100,55 +100,55 @@ class ReportController extends Controller
 
     private function revenueByMonth(int $year): array
     {
-        $rows = Order::query()
-            ->select(
-                DB::raw('CAST(strftime(\'%m\', created_at) AS INTEGER) as month'),
-                DB::raw('SUM(final_amount) as total')
-            )
+        // Tarik data mentah
+        $orders = Order::select('created_at', 'final_amount')
             ->whereYear('created_at', $year)
             ->where('status', 'paid')
-            ->groupBy('month')
-            ->orderBy('month')
-            ->pluck('total', 'month')
-            ->toArray();
+            ->get();
 
-        return $this->fillMonths($rows);
+        // Kelompokkan dan jumlahkan via PHP Collection (Aman di semua Database)
+        $grouped = $orders->groupBy(function($order) {
+            return \Carbon\Carbon::parse($order->created_at)->format('n');
+        })->map(function($group) {
+            return $group->sum('final_amount');
+        })->toArray();
+
+        return $this->fillMonths($grouped);
     }
 
     private function enrollmentsByMonth(int $year): array
     {
-        $rows = Enrollment::query()
-            ->select(
-                DB::raw('CAST(strftime(\'%m\', created_at) AS INTEGER) as month'),
-                DB::raw('COUNT(*) as total')
-            )
+        $enrollments = Enrollment::select('created_at')
             ->whereYear('created_at', $year)
-            ->groupBy('month')
-            ->orderBy('month')
-            ->pluck('total', 'month')
-            ->toArray();
+            ->get();
 
-        return $this->fillMonths($rows, 0);
+        $grouped = $enrollments->groupBy(function($enrollment) {
+            return \Carbon\Carbon::parse($enrollment->created_at)->format('n');
+        })->map(function($group) {
+            return $group->count();
+        })->toArray();
+
+        return $this->fillMonths($grouped, 0);
     }
 
     private function userGrowthByMonth(int $year): array
     {
-        $rows = User::query()
-            ->select(
-                DB::raw('CAST(strftime(\'%m\', created_at) AS INTEGER) as month'),
-                DB::raw('COUNT(*) as total')
-            )
+        $users = User::select('created_at')
             ->whereYear('created_at', $year)
-            ->groupBy('month')
-            ->orderBy('month')
-            ->pluck('total', 'month')
-            ->toArray();
+            ->get();
 
-        return $this->fillMonths($rows, 0);
+        $grouped = $users->groupBy(function($user) {
+            return \Carbon\Carbon::parse($user->created_at)->format('n');
+        })->map(function($group) {
+            return $group->count();
+        })->toArray();
+
+        return $this->fillMonths($grouped, 0);
     }
 
     private function topCoursesByRevenue(): array
     {
+        // Query ini aman di semua DB karena hanya menggunakan standar COUNT, SUM, GROUP BY, dan ORDER BY
         return Order::query()
             ->select(
                 'item_name',
@@ -197,7 +197,6 @@ class ReportController extends Controller
 
     private function availableYears(): array
     {
-        // $earliest = Order::min(DB::raw('strftime(\'%Y\', created_at)')) ?? now()->year;
         $oldestOrderDate = Order::whereNull('deleted_at')->min('created_at');
         $earliest = $oldestOrderDate ? \Carbon\Carbon::parse($oldestOrderDate)->format('Y') : now()->year;
 
