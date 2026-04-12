@@ -27,19 +27,19 @@ class CourseFactory extends Factory
 
         return [
             'category_id' => Category::whereNotNull('parent_id')
-                          ->inRandomOrder()
-                          ->value('id'),
+                ->inRandomOrder()
+                ->value('id'),
             'instructor_id' => User::where('role', Roles::Instructor->value)
-                        ->inRandomOrder()
-                        ->value('id'),
+                ->inRandomOrder()
+                ->value('id'),
 
             'title' => $title,
-            'slug' => Str::slug($title). '-'. fake()->unique()->numberBetween(100,900),
+            'slug' => Str::slug($title).'-'.fake()->unique()->numberBetween(100, 900),
             'description' => fake()->paragraph(3, true),
-            'thumbnail' => 'courses/thumnails/' . fake()->uuid(). '.jpg',
+            'thumbnail' => 'https://picsum.photos/seed/course-'.fake()->unique()->numberBetween(1, 500).'/800/450',
             'preview_video' => fake()->url,
             'price' => $price,
-            'discount_price' => fake()->boolean(40) ? $price - fake()->numberBetween(10000, 50000): null,
+            'discount_price' => fake()->boolean(40) ? $price - fake()->numberBetween(10000, 50000) : null,
             'duration_minutes' => fake()->numberBetween(60, 600),
             'has_certificate' => fake()->boolean(70),
             'prerequisites' => fake()->sentence(),
@@ -66,14 +66,14 @@ class CourseFactory extends Factory
     {
         return $this->state([
             'is_featured' => true,
-            'status'      => CourseStatus::Published->value,
+            'status' => CourseStatus::Published->value,
         ]);
     }
 
     public function free(): static
     {
         return $this->state([
-            'price'          => 0,
+            'price' => 0,
             'discount_price' => null,
         ]);
     }

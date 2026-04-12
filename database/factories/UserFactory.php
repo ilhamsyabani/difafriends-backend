@@ -60,23 +60,27 @@ class UserFactory extends Factory
     // }
     public function definition(): array
     {
+        $seed = fake()->numberBetween(1, 1000);
+
         return [
-            'first_name'        => fake()->firstName(),
-            'last_name'         => fake()->lastName(),
-            'email'             => fake()->unique()->safeEmail(),
+            'first_name' => fake()->firstName(),
+            'last_name' => fake()->lastName(),
+            'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password'          => Hash::make('password'),
-            'phone'             => fake()->numerify('08##########'),
-            'birth_date'        => fake()->dateTimeBetween('-50 years', '-20 years'),
-            'gender'            => fake()->randomElement(['male', 'female']),
-            'city'              => fake()->randomElement([
-                                    'Jakarta', 'Bandung', 'Surabaya',
-                                    'Yogyakarta', 'Medan', 'Makassar'
-                                   ]),
-            'country'           => 'Indonesia',
-            'role'              => Roles::User->value,
-            'is_active'         => true,
-            'remember_token'    => Str::random(10),
+            'password' => Hash::make('password'),
+            'phone' => fake()->numerify('08##########'),
+            'birth_date' => fake()->dateTimeBetween('-50 years', '-20 years'),
+            'gender' => fake()->randomElement(['male', 'female']),
+            'city' => fake()->randomElement([
+                'Jakarta', 'Bandung', 'Surabaya',
+                'Yogyakarta', 'Medan', 'Makassar',
+                'Semarang', 'Palembang', 'Depok', 'Tangerang',
+            ]),
+            'country' => 'Indonesia',
+            'role' => Roles::User->value,
+            'is_active' => true,
+            'photo' => "https://picsum.photos/seed/{$seed}/200/200",
+            'remember_token' => Str::random(10),
         ];
     }
 
