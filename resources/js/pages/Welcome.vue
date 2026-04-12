@@ -3,6 +3,9 @@ import { Head, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import GuestLayout from '@/layouts/GuestLayout.vue';
 import { register } from '@/routes';
+import { useFormatters } from '@/composables/useFormatters';
+
+const { assetUrl } = useFormatters();
 
 defineProps<{
     canRegister: boolean;
@@ -372,7 +375,7 @@ function stripHtml(html: string) {
                             >
                                 <img
                                     v-if="course.thumbnail"
-                                    :src="`/storage/${course.thumbnail}`"
+                                    :src="assetUrl(course.thumbnail)"
                                     :alt="course.title"
                                     class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                 />
@@ -632,7 +635,7 @@ function stripHtml(html: string) {
                             >
                                 <img
                                     v-if="article.thumbnail"
-                                    :src="`/storage/${article.thumbnail}`"
+                                    :src="assetUrl(article.thumbnail)"
                                     :alt="article.title"
                                     class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                 />

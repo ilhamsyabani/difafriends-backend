@@ -55,5 +55,23 @@ watch(
 
         <!-- Dialog konfirmasi global — dipakai lewat useConfirm() -->
         <ConfirmDialog />
+
+        <!--
+            Region tersembunyi untuk screen reader — mengumumkan flash message
+            saat terjadi navigasi Inertia (polite = tidak memotong pembacaan).
+        -->
+        <div
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            class="sr-only"
+        >
+            <span v-if="(page.props.flash as any)?.success">
+                {{ (page.props.flash as any).success }}
+            </span>
+            <span v-if="(page.props.flash as any)?.error">
+                Terjadi kesalahan: {{ (page.props.flash as any).error }}
+            </span>
+        </div>
     </AppLayout>
 </template>

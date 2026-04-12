@@ -10,6 +10,9 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import GuestLayout from '@/layouts/GuestLayout.vue';
+import { useFormatters } from '@/composables/useFormatters';
+
+const { assetUrl } = useFormatters();
 
 const props = defineProps<{
     courses: {
@@ -269,7 +272,7 @@ function formatDuration(minutes: number): string {
                             >
                                 <img
                                     v-if="course.thumbnail"
-                                    :src="`/storage/${course.thumbnail}`"
+                                    :src="assetUrl(course.thumbnail)"
                                     :alt="course.title"
                                     class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                 />

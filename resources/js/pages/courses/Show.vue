@@ -4,6 +4,9 @@ import { ref } from 'vue';
 import GuestLayout from '@/layouts/GuestLayout.vue';
 import axios from 'axios';
 import { usePage } from '@inertiajs/vue3';
+import { useFormatters } from '@/composables/useFormatters';
+
+const { assetUrl } = useFormatters();
 
 const props = defineProps<{
     course: {
@@ -537,7 +540,7 @@ async function handleBuy() {
                         >
                             <img
                                 v-if="course.thumbnail"
-                                :src="`/storage/${course.thumbnail}`"
+                                :src="assetUrl(course.thumbnail)"
                                 :alt="course.title"
                                 class="h-full w-full object-cover"
                             />

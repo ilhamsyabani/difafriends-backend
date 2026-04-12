@@ -33,7 +33,7 @@ async function fetchNotifications() {
     }
 }
 
-async function markAsRead(id: string, url: string) {
+async function markAsRead(id: string, url: string | null) {
     await axios.post(`/notifications/${id}/read`);
     const notif = notifications.value.find((n) => n.id === id);
     if (notif) notif.read_at = new Date().toISOString();
@@ -51,6 +51,14 @@ async function markAllRead() {
 function handleClickOutside(e: MouseEvent) {
     if (bellContainer.value && !bellContainer.value.contains(e.target as Node)) {
         isOpen.value = false;
+    }
+}
+
+function handleKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape' && isOpen.value) {
+        isOpen.value = false;
+        // Kembalikan fokus ke tombol bel
+        bellContainer.value?.querySelector<HTMLButtonElement>('button')?.focus();
     }
 }
 
@@ -78,11 +86,13 @@ import { onMounted } from 'vue';
 onMounted(() => {
     startPolling();
     document.addEventListener('click', handleClickOutside);
+    document.addEventListener('keydown', handleKeydown);
 });
 
 onUnmounted(() => {
     clearInterval(interval);
     document.removeEventListener('click', handleClickOutside);
+    document.removeEventListener('keydown', handleKeydown);
 });
 
 function iconPath(icon: string): string {
@@ -100,11 +110,24 @@ function iconPath(icon: string): string {
 </script>
 
 <template>
+    <!-- Region aria-live: mengumumkan perubahan notifikasi ke screen reader -->
+    <div
+        aria-live="polite"
+        aria-atomic="true"
+        class="sr-only"
+    >
+        <span v-if="unreadCount > 0">
+            {{ unreadCount }} notifikasi belum dibaca
+        </span>
+    </div>
+
     <div ref="bellContainer" class="relative">
         <button
             @click="toggleOpen"
-            class="relative rounded-lg p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
-            aria-label="Notifikasi"
+            class="relative rounded-lg p-2 transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 dark:hover:bg-gray-800"
+            :aria-label="`Notifikasi${unreadCount > 0 ? `, ${unreadCount} belum dibaca` : ''}`"
+            :aria-expanded="isOpen"
+            aria-haspopup="menu"
         >
             <svg
                 class="h-5 w-5 text-gray-600 dark:text-gray-400"
@@ -130,6 +153,8 @@ function iconPath(icon: string): string {
 
         <div
             v-if="isOpen"
+            role="menu"
+            aria-label="Daftar notifikasi"
             class="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800"
         >
             <div
@@ -176,7 +201,7 @@ function iconPath(icon: string): string {
                 <button
                     v-for="notif in notifications"
                     :key="notif.id"
-                    @click="markAsRead(notif.id, notif.data.url)"
+                    @click="markAsRead(notif.id, notif.url)"
                     :class="[
                         'flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50',
                         !notif.read_at ? 'bg-purple-50/50 dark:bg-purple-900/10' : '',
@@ -200,7 +225,7 @@ function iconPath(icon: string): string {
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="2"
-                                :d="iconPath(notif.data.icon)"
+                                :d="iconPath(notif.icon)"
                             />
                         </svg>
                     </div>
@@ -214,10 +239,10 @@ function iconPath(icon: string): string {
                                     : 'text-gray-600 dark:text-gray-400',
                             ]"
                         >
-                            {{ notif.data.title }}
+                            {{ notif.title }}
                         </p>
                         <p class="mt-0.5 line-clamp-2 text-xs text-gray-500 dark:text-gray-400">
-                            {{ notif.data.message }}
+                            {{ notif.message }}
                         </p>
                         <p class="mt-1 text-xs text-gray-400">{{ notif.created_at }}</p>
                     </div>

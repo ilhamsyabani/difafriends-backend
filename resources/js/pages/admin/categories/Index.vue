@@ -91,7 +91,7 @@ function destroy(id: number) {
     <AppLayout>
         <Head title="Kelola Kategori" />
 
-        <div class="max-w-6xl p-6 sm:p-10">
+        <div class="max-w-7xl p-6 sm:p-10">
             <!-- Header & Action -->
             <div
                 class="mb-8 flex flex-col gap-6 md:flex-row md:items-center md:justify-between"

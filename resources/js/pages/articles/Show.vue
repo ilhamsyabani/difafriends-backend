@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import GuestLayout from '@/layouts/GuestLayout.vue';
+import { useFormatters } from '@/composables/useFormatters';
+
+const { assetUrl } = useFormatters();
 
 defineProps<{
     article: {
@@ -78,7 +81,7 @@ function getInitials(first: string, last: string) {
                             >
                                 <img
                                     v-if="article.author.photo"
-                                    :src="`/storage/${article.author.photo}`"
+                                    :src="assetUrl(article.author.photo)"
                                     class="h-12 w-12 rounded-full object-cover"
                                 />
                                 <div
@@ -115,7 +118,7 @@ function getInitials(first: string, last: string) {
                         >
                             <img
                                 v-if="article.thumbnail"
-                                :src="`/storage/${article.thumbnail}`"
+                                :src="assetUrl(article.thumbnail)"
                                 :alt="article.title"
                                 class="aspect-video w-full object-cover"
                             />
@@ -193,7 +196,7 @@ function getInitials(first: string, last: string) {
                                 >
                                     <img
                                         v-if="recent.thumbnail"
-                                        :src="`/storage/${recent.thumbnail}`"
+                                        :src="assetUrl(recent.thumbnail)"
                                         class="h-20 w-24 shrink-0 rounded-xl bg-gray-200 object-cover"
                                     />
                                     <div

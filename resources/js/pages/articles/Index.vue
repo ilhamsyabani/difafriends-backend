@@ -3,6 +3,9 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import { Search } from 'lucide-vue-next';
 import GuestLayout from '@/layouts/GuestLayout.vue';
+import { useFormatters } from '@/composables/useFormatters';
+
+const { assetUrl } = useFormatters();
 
 const props = defineProps<{
     articles: {
@@ -169,7 +172,7 @@ function stripHtml(html: string) {
                         >
                             <img
                                 v-if="article.thumbnail"
-                                :src="`/storage/${article.thumbnail}`"
+                                :src="assetUrl(article.thumbnail)"
                                 :alt="article.title"
                                 class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                             />
@@ -210,7 +213,7 @@ function stripHtml(html: string) {
                                 <div class="flex items-center gap-3">
                                     <img
                                         v-if="article.author.photo"
-                                        :src="`/storage/${article.author.photo}`"
+                                        :src="assetUrl(article.author.photo)"
                                         class="h-8 w-8 rounded-full object-cover"
                                     />
                                     <div
