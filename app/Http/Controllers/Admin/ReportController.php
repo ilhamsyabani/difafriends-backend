@@ -199,7 +199,7 @@ class ReportController extends Controller
     {
         // $earliest = Order::min(DB::raw('strftime(\'%Y\', created_at)')) ?? now()->year;
         $oldestOrderDate = Order::whereNull('deleted_at')->min('created_at');
-        $earliest = $oldestOrderDate ? (int) $oldestOrderDate->format('Y') : now()->year;
+        $earliest = $oldestOrderDate ? \Carbon\Carbon::parse($oldestOrderDate)->format('Y') : now()->year;
 
         return range((int) $earliest, now()->year);
     }
