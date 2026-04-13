@@ -20,8 +20,8 @@ class QuizAttempt extends Model
     protected function casts(): array
     {
         return [
-            'score'        => 'integer',
-            'started_at'   => 'datetime',
+            'score' => 'integer',
+            'started_at' => 'datetime',
             'submitted_at' => 'datetime',
         ];
     }
@@ -55,7 +55,10 @@ class QuizAttempt extends Model
 
     public function isPassed(): bool
     {
-        if (!$this->isGraded() || $this->score === null) return false;
+        if (! $this->isGraded() || $this->score === null) {
+            return false;
+        }
+
         return $this->score >= $this->quiz->passing_score;
     }
 }

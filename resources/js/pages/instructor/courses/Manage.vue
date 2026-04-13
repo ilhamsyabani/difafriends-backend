@@ -117,6 +117,7 @@ function openLectureForm(sectionId: number, lecture: any = null) {
 
 function submitLecture() {
     const base = `/instructor/courses/${props.course.id}/sections/${activeSectionId.value}/lectures`;
+
     if (editingLecture.value) {
         lectureForm.put(`${base}/${editingLecture.value.id}`, {
             onSuccess: () => {
@@ -144,6 +145,7 @@ function deleteLecture(sectionId: number, lectureId: number) {
 function formatDuration(seconds: number): string {
     const m = Math.floor(seconds / 60);
     const h = Math.floor(m / 60);
+
     return h > 0 ? `${h}j ${m % 60}m` : `${m}m`;
 }
 </script>

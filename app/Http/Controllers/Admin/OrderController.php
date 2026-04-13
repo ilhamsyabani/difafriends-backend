@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\OrdersExport;
 use App\Http\Controllers\Controller;
-use App\Models\Order;
-use App\Models\Course;
 use App\Models\Booking;
+use App\Models\Course;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-use App\Exports\OrdersExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends Controller
@@ -21,10 +20,10 @@ class OrderController extends Controller
         // 1. Pencarian (berdasarkan Invoice atau Nama User)
         $query->when($request->search, function ($q, $search) {
             $q->where('invoice_number', 'like', "%{$search}%")
-              ->orWhereHas('user', function ($q) use ($search) {
-                  $q->where('first_name', 'like', "%{$search}%")
-                    ->orWhere('last_name', 'like', "%{$search}%");
-              });
+                ->orWhereHas('user', function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%");
+                });
         });
 
         // 2. Filter Status (paid, pending, dll)
@@ -63,7 +62,8 @@ class OrderController extends Controller
 
     public function export(Request $request)
     {
-        $fileName = 'Laporan_Transaksi_Difariends_' . date('Y-m-d') . '.xlsx';
+        $fileName = 'Laporan_Transaksi_Difariends_'.date('Y-m-d').'.xlsx';
+
         return Excel::download(new OrdersExport($request->all()), $fileName);
     }
 }

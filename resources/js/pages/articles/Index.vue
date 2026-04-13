@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Head, Link, router } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
 import { Search } from 'lucide-vue-next';
-import GuestLayout from '@/layouts/GuestLayout.vue';
+import { ref, watch } from 'vue';
 import { useFormatters } from '@/composables/useFormatters';
+import GuestLayout from '@/layouts/GuestLayout.vue';
 
 const { assetUrl } = useFormatters();
 
@@ -56,8 +56,9 @@ function formatDate(dateString: string) {
 
 // Menghapus tag HTML dari konten Quill untuk dijadikan cuplikan (Excerpt)
 function stripHtml(html: string) {
-    let tmp = document.createElement('DIV');
+    const tmp = document.createElement('DIV');
     tmp.innerHTML = html;
+
     return tmp.textContent || tmp.innerText || '';
 }
 </script>
@@ -118,9 +119,7 @@ function stripHtml(html: string) {
                     <p
                         class="text-sm font-medium text-gray-500 dark:text-gray-400"
                     >
-                        {{
-                            articles.meta?.total ?? articles.data.length
-                        }}
+                        {{ articles.meta?.total ?? articles.data.length }}
                         Artikel
                     </p>
                 </div>

@@ -15,13 +15,13 @@ class LectureController extends Controller
         abort_if($course->instructor_id !== $request->user()->id, 403);
 
         $validated = $request->validate([
-            'title'           => 'required|string|max:255',
-            'type'            => 'required|in:video,text,quiz',
-            'url'             => 'nullable|url',
-            'content'         => 'nullable|string',
-            'video_duration'  => 'integer|min:0',
+            'title' => 'required|string|max:255',
+            'type' => 'required|in:video,text,quiz',
+            'url' => 'nullable|url',
+            'content' => 'nullable|string',
+            'video_duration' => 'integer|min:0',
             'is_free_preview' => 'boolean',
-            'sort_order'      => 'integer|min:0',
+            'sort_order' => 'integer|min:0',
         ]);
 
         $validated['course_id'] = $course->id;
@@ -35,13 +35,13 @@ class LectureController extends Controller
         abort_if($course->instructor_id !== $request->user()->id, 403);
 
         $validated = $request->validate([
-            'title'           => 'required|string|max:255',
-            'type'            => 'required|in:video,text,quiz',
-            'url'             => 'nullable|url',
-            'content'         => 'nullable|string',
-            'video_duration'  => 'integer|min:0',
+            'title' => 'required|string|max:255',
+            'type' => 'required|in:video,text,quiz',
+            'url' => 'nullable|url',
+            'content' => 'nullable|string',
+            'video_duration' => 'integer|min:0',
             'is_free_preview' => 'boolean',
-            'sort_order'      => 'integer|min:0',
+            'sort_order' => 'integer|min:0',
         ]);
 
         $lecture->update($validated);

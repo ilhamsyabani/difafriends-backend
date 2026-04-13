@@ -21,14 +21,14 @@ class QuizGradeController extends Controller
         $attempts = QuizAttempt::where('quiz_id', $quiz->id)
             ->with([
                 'user',
-                'answers' => fn($q) => $q->with(['question', 'selectedOption']),
+                'answers' => fn ($q) => $q->with(['question', 'selectedOption']),
             ])
             ->latest()
             ->paginate(10);
 
         return Inertia::render('instructor/quiz/Grade', [
-            'course'   => $course,
-            'quiz'     => $quiz->load('questions'),
+            'course' => $course,
+            'quiz' => $quiz->load('questions'),
             'attempts' => $attempts,
         ]);
     }
@@ -43,32 +43,32 @@ class QuizGradeController extends Controller
         abort_if($answer->question->isMultipleChoice(), 422);
 
         $validated = $request->validate([
-            'points_earned'   => 'required|integer|min:0|max:' . $answer->question->points,
+            'points_earned' => 'required|integer|min:0|max:'.$answer->question->points,
             'instructor_note' => 'nullable|string|max:500',
         ]);
 
         $answer->update($validated);
 
         // Cek apakah semua esai di attempt ini sudah dinilai
-        $attempt  = $answer->attempt;
+        $attempt = $answer->attempt;
         $essayAnswers = $attempt->answers()
-            ->whereHas('question', fn($q) => $q->where('type', 'essay'))
+            ->whereHas('question', fn ($q) => $q->where('type', 'essay'))
             ->get();
 
         $allGraded = $essayAnswers->every(
-            fn($a) => $a->points_earned !== null
+            fn ($a) => $a->points_earned !== null
         );
 
         if ($allGraded) {
             // Hitung total score
-            $totalScore   = $attempt->answers()->sum('points_earned');
-            $totalPoints  = $attempt->quiz->totalPoints();
+            $totalScore = $attempt->answers()->sum('points_earned');
+            $totalPoints = $attempt->quiz->totalPoints();
             $scorePercent = $totalPoints > 0
                 ? round(($totalScore / $totalPoints) * 100)
                 : 0;
 
             $attempt->update([
-                'score'  => $scorePercent,
+                'score' => $scorePercent,
                 'status' => 'graded',
             ]);
         }

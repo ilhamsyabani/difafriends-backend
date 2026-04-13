@@ -9,8 +9,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import GuestLayout from '@/layouts/GuestLayout.vue';
 import { useFormatters } from '@/composables/useFormatters';
+import GuestLayout from '@/layouts/GuestLayout.vue';
 
 const { assetUrl } = useFormatters();
 
@@ -70,7 +70,10 @@ function applyFilters() {
 }
 
 function formatPrice(p: number): string {
-    if (p === 0) return 'Gratis';
+    if (p === 0) {
+return 'Gratis';
+}
+
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
@@ -81,6 +84,7 @@ function formatPrice(p: number): string {
 function formatDuration(minutes: number): string {
     const h = Math.floor(minutes / 60);
     const m = minutes % 60;
+
     return h > 0 ? `${h}j ${m}m` : `${m}m`;
 }
 </script>

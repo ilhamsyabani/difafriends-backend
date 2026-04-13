@@ -2,17 +2,17 @@
 
 namespace App\Enums;
 
-enum EnrollmentStatus:string
+enum EnrollmentStatus: string
 {
-    case Active    = 'active';
-    case Expired   = 'expired';
+    case Active = 'active';
+    case Expired = 'expired';
     case Completed = 'completed';
 
     public function label(): string
     {
-        return match($this) {
-            EnrollmentStatus::Active    => 'Aktif',
-            EnrollmentStatus::Expired   => 'Kedaluwarsa',
+        return match ($this) {
+            EnrollmentStatus::Active => 'Aktif',
+            EnrollmentStatus::Expired => 'Kedaluwarsa',
             EnrollmentStatus::Completed => 'Selesai',
         };
     }

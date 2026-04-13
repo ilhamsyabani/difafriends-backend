@@ -2,17 +2,17 @@
 
 namespace App\Enums;
 
-enum ResourceType:string
+enum ResourceType: string
 {
-    case File  = 'file';
-    case Link  = 'link';
+    case File = 'file';
+    case Link = 'link';
     case Video = 'video';
 
     public function label(): string
     {
-        return match($this) {
-            ResourceType::File  => 'File Download',
-            ResourceType::Link  => 'Link Eksternal',
+        return match ($this) {
+            ResourceType::File => 'File Download',
+            ResourceType::Link => 'Link Eksternal',
             ResourceType::Video => 'Video',
         };
     }

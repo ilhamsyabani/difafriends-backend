@@ -39,6 +39,7 @@ const quizForm = useForm({
 
 function submitQuiz() {
     const base = `/instructor/courses/${props.course.id}/sections/${props.section.id}/quiz`;
+
     if (isEdit) {
         quizForm.put(`${base}/${props.quiz!.id}`);
     } else {
@@ -84,7 +85,10 @@ function addOption() {
 }
 
 function removeOption(idx: number) {
-    if (questionForm.options.length <= 2) return;
+    if (questionForm.options.length <= 2) {
+return;
+}
+
     questionForm.options.splice(idx, 1);
 }
 
@@ -97,6 +101,7 @@ function setCorrect(idx: number) {
 
 function submitQuestion() {
     const base = `/instructor/courses/${props.course.id}/sections/${props.section.id}/quiz/${props.quiz!.id}/questions`;
+
     if (editingQuestion.value) {
         questionForm.put(`${base}/${editingQuestion.value.id}`, {
             onSuccess: () => {
@@ -114,7 +119,10 @@ function submitQuestion() {
 }
 
 function deleteQuestion(qId: number) {
-    if (!confirm('Hapus soal ini?')) return;
+    if (!confirm('Hapus soal ini?')) {
+return;
+}
+
     const base = `/instructor/courses/${props.course.id}/sections/${props.section.id}/quiz/${props.quiz!.id}/questions`;
     router.delete(`${base}/${qId}`);
 }

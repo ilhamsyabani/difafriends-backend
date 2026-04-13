@@ -38,6 +38,7 @@ function statusLabel(status: string): string {
         completed: 'Selesai',
         expired: 'Kedaluwarsa',
     };
+
     return map[status] ?? status;
 }
 
@@ -48,6 +49,7 @@ function statusColor(status: string): string {
             'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
         expired: 'bg-gray-100 text-gray-500',
     };
+
     return map[status] ?? 'bg-gray-100 text-gray-500';
 }
 </script>

@@ -79,10 +79,11 @@ const ratingErrorId = `review-rating-error-${props.targetId}`;
         </h3>
 
         <form @submit.prevent="submitReview" class="mt-4" novalidate>
-
             <!-- Rating — ARIA radiogroup untuk screen reader & navigasi keyboard -->
             <fieldset class="mb-4">
-                <legend class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                <legend
+                    class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                     Rating <span aria-hidden="true">*</span>
                     <span class="sr-only">(wajib diisi)</span>
                 </legend>
@@ -91,7 +92,9 @@ const ratingErrorId = `review-rating-error-${props.targetId}`;
                     ref="ratingGroupRef"
                     role="radiogroup"
                     :aria-label="`Rating: ${form.rating ? ratingLabels[form.rating] : 'Belum dipilih'}`"
-                    :aria-describedby="form.errors.rating ? ratingErrorId : undefined"
+                    :aria-describedby="
+                        form.errors.rating ? ratingErrorId : undefined
+                    "
                     :aria-required="true"
                     class="flex items-center gap-1"
                 >
@@ -103,7 +106,15 @@ const ratingErrorId = `review-rating-error-${props.targetId}`;
                         role="radio"
                         :aria-checked="form.rating === i"
                         :aria-label="ratingLabels[i]"
-                        :tabindex="form.rating === 0 ? (i === 1 ? 0 : -1) : (form.rating === i ? 0 : -1)"
+                        :tabindex="
+                            form.rating === 0
+                                ? i === 1
+                                    ? 0
+                                    : -1
+                                : form.rating === i
+                                  ? 0
+                                  : -1
+                        "
                         @click="setRating(i)"
                         @keydown="onRatingKeydown($event, i)"
                         @mouseenter="hoverRating = i"
@@ -148,7 +159,9 @@ const ratingErrorId = `review-rating-error-${props.targetId}`;
                     class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
                     Komentar
-                    <span class="text-xs font-normal text-gray-400">(opsional)</span>
+                    <span class="text-xs font-normal text-gray-400"
+                        >(opsional)</span
+                    >
                 </label>
                 <textarea
                     :id="commentId"
@@ -156,8 +169,10 @@ const ratingErrorId = `review-rating-error-${props.targetId}`;
                     rows="3"
                     maxlength="1000"
                     placeholder="Ceritakan pengalaman Anda di sini..."
-                    :aria-describedby="form.errors.comment ? `${commentId}-error` : undefined"
-                    class="block w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                    :aria-describedby="
+                        form.errors.comment ? `${commentId}-error` : undefined
+                    "
+                    class="block w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-white"
                 />
                 <div class="mt-1 flex items-center justify-between">
                     <p
@@ -179,13 +194,18 @@ const ratingErrorId = `review-rating-error-${props.targetId}`;
                 :disabled="form.processing || form.rating === 0"
                 :aria-busy="form.processing"
                 :aria-disabled="form.rating === 0"
-                class="inline-flex w-full items-center justify-center rounded-xl bg-purple-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-purple-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                class="inline-flex w-full items-center justify-center rounded-xl bg-purple-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-purple-700 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
             >
-                <span v-if="form.processing" aria-hidden="true" class="mr-2">⏳</span>
+                <span v-if="form.processing" aria-hidden="true" class="mr-2"
+                    >⏳</span
+                >
                 {{ form.processing ? 'Mengirim...' : 'Kirim Ulasan' }}
             </button>
 
-            <p v-if="form.rating === 0" class="mt-2 text-center text-xs text-gray-400">
+            <p
+                v-if="form.rating === 0"
+                class="mt-2 text-center text-xs text-gray-400"
+            >
                 Pilih rating bintang terlebih dahulu
             </p>
         </form>

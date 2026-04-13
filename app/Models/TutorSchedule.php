@@ -26,11 +26,11 @@ class TutorSchedule extends Model
     ];
 
     protected $casts = [
-        'day_of_week'      => DayOfWeek::class,
-        'price'            => 'decimal:2',
-        'is_active'        => 'boolean',
+        'day_of_week' => DayOfWeek::class,
+        'price' => 'decimal:2',
+        'is_active' => 'boolean',
         'session_duration' => 'integer',
-        'break_time'       => 'integer',
+        'break_time' => 'integer',
         'max_participants' => 'integer',
     ];
 

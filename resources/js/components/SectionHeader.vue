@@ -12,7 +12,9 @@ defineProps<{
 </script>
 
 <template>
-    <div class="flex items-center justify-between border-b border-border px-5 py-4">
+    <div
+        class="flex items-center justify-between border-b border-border px-5 py-4"
+    >
         <h2 class="font-semibold text-foreground">{{ title }}</h2>
         <Link
             v-if="href"

@@ -29,9 +29,13 @@ export function useFormatters() {
     }
 
     function formatDuration(minutes: number): string {
-        if (minutes < 60) return `${minutes} menit`;
+        if (minutes < 60) {
+return `${minutes} menit`;
+}
+
         const h = Math.floor(minutes / 60);
         const m = minutes % 60;
+
         return m ? `${h} jam ${m} menit` : `${h} jam`;
     }
 
@@ -42,12 +46,26 @@ export function useFormatters() {
      * - null / undefined              → null
      */
     function assetUrl(path: string | null | undefined): string | null {
-        if (!path) return null;
-        if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('/')) {
+        if (!path) {
+return null;
+}
+
+        if (
+            path.startsWith('http://') ||
+            path.startsWith('https://') ||
+            path.startsWith('/')
+        ) {
             return path;
         }
+
         return `/storage/${path}`;
     }
 
-    return { formatPrice, formatDate, formatDateTime, formatDuration, assetUrl };
+    return {
+        formatPrice,
+        formatDate,
+        formatDateTime,
+        formatDuration,
+        assetUrl,
+    };
 }

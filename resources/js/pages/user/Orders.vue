@@ -46,6 +46,7 @@ function statusColor(status: string): string {
         cancelled:
             'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400',
     };
+
     return map[status] ?? 'bg-gray-100 text-gray-500';
 }
 
@@ -57,6 +58,7 @@ function statusLabel(status: string): string {
         cancelled: 'Dibatalkan',
         refunded: 'Dikembalikan',
     };
+
     return map[status] ?? status;
 }
 </script>

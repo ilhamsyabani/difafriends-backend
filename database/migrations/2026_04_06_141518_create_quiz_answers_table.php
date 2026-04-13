@@ -16,9 +16,9 @@ return new class extends Migration
             $table->foreignId('attempt_id')->constrained('quiz_attempts')->cascadeOnDelete();
             $table->foreignId('question_id')->constrained('quiz_questions')->cascadeOnDelete();
             $table->foreignId('selected_option_id')
-                  ->nullable()
-                  ->constrained('quiz_options')
-                  ->nullOnDelete();
+                ->nullable()
+                ->constrained('quiz_options')
+                ->nullOnDelete();
             $table->text('essay_answer')->nullable();
             $table->unsignedInteger('points_earned')->nullable();
             $table->text('instructor_note')->nullable();

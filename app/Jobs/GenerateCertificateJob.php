@@ -16,7 +16,7 @@ class GenerateCertificateJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public function __construct(
-        public User   $user,
+        public User $user,
         public Course $course,
     ) {}
 
@@ -27,13 +27,15 @@ class GenerateCertificateJob implements ShouldQueue
             ->where('course_id', $this->course->id)
             ->exists();
 
-        if ($exists) return;
+        if ($exists) {
+            return;
+        }
 
         Certificate::create([
-            'user_id'            => $this->user->id,
-            'course_id'          => $this->course->id,
+            'user_id' => $this->user->id,
+            'course_id' => $this->course->id,
             'certificate_number' => Certificate::generateNumber(),
-            'issued_at'          => now(),
+            'issued_at' => now(),
         ]);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Quiz;
@@ -35,11 +34,11 @@ class QuizController extends Controller
             ->first();
 
         return Inertia::render('user/Quiz', [
-            'course'         => $course,
-            'quiz'           => $quiz,
+            'course' => $course,
+            'quiz' => $quiz,
             'pendingAttempt' => $pendingAttempt,
-            'lastAttempt'    => $lastAttempt?->load('answers.question'),
-            'canRetake'      => $lastAttempt?->isGraded() ?? false,
+            'lastAttempt' => $lastAttempt?->load('answers.question'),
+            'canRetake' => $lastAttempt?->isGraded() ?? false,
         ]);
     }
 
@@ -55,9 +54,9 @@ class QuizController extends Controller
             ->delete();
 
         $attempt = QuizAttempt::create([
-            'user_id'    => $request->user()->id,
-            'quiz_id'    => $quiz->id,
-            'status'     => 'pending',
+            'user_id' => $request->user()->id,
+            'quiz_id' => $quiz->id,
+            'status' => 'pending',
             'started_at' => now(),
         ]);
 
@@ -73,10 +72,10 @@ class QuizController extends Controller
 
         $request->validate([
             'attempt_id' => 'required|exists:quiz_attempts,id',
-            'answers'    => 'required|array',
-            'answers.*.question_id'        => 'required|exists:quiz_questions,id',
+            'answers' => 'required|array',
+            'answers.*.question_id' => 'required|exists:quiz_questions,id',
             'answers.*.selected_option_id' => 'nullable|exists:quiz_options,id',
-            'answers.*.essay_answer'       => 'nullable|string',
+            'answers.*.essay_answer' => 'nullable|string',
         ]);
 
         $attempt = QuizAttempt::where('id', $request->attempt_id)
@@ -88,18 +87,20 @@ class QuizController extends Controller
         $quiz->load('questions.options');
 
         $totalPointsEarned = 0;
-        $hasEssay          = false;
+        $hasEssay = false;
 
         foreach ($request->answers as $ans) {
             $question = $quiz->questions->find($ans['question_id']);
-            if (!$question) continue;
+            if (! $question) {
+                continue;
+            }
 
             $pointsEarned = null;
 
             if ($question->isMultipleChoice()) {
                 // Auto-score PG
-                $correct      = $question->correctOption();
-                $isCorrect    = $correct && $correct->id == $ans['selected_option_id'];
+                $correct = $question->correctOption();
+                $isCorrect = $correct && $correct->id == $ans['selected_option_id'];
                 $pointsEarned = $isCorrect ? $question->points : 0;
                 $totalPointsEarned += $pointsEarned;
             } else {
@@ -108,26 +109,26 @@ class QuizController extends Controller
             }
 
             QuizAnswer::create([
-                'attempt_id'         => $attempt->id,
-                'question_id'        => $question->id,
+                'attempt_id' => $attempt->id,
+                'question_id' => $question->id,
                 'selected_option_id' => $ans['selected_option_id'] ?? null,
-                'essay_answer'       => $ans['essay_answer'] ?? null,
-                'points_earned'      => $pointsEarned,
-                'instructor_note'    => null,
+                'essay_answer' => $ans['essay_answer'] ?? null,
+                'points_earned' => $pointsEarned,
+                'instructor_note' => null,
             ]);
         }
 
         // Hitung score
-        if (!$hasEssay) {
+        if (! $hasEssay) {
             // Semua PG — langsung graded
-            $totalPoints  = $quiz->totalPoints();
+            $totalPoints = $quiz->totalPoints();
             $scorePercent = $totalPoints > 0
                 ? round(($totalPointsEarned / $totalPoints) * 100)
                 : 0;
 
             $attempt->update([
-                'score'        => $scorePercent,
-                'status'       => 'graded',
+                'score' => $scorePercent,
+                'status' => 'graded',
                 'submitted_at' => now(),
             ]);
         } else {
@@ -135,15 +136,15 @@ class QuizController extends Controller
             // Hitung dulu score dari PG saja
             $attempt->update([
                 'submitted_at' => now(),
-                'status'       => 'pending',
+                'status' => 'pending',
             ]);
         }
 
         return response()->json([
-            'success'   => true,
+            'success' => true,
             'has_essay' => $hasEssay,
-            'status'    => $attempt->fresh()->status,
-            'score'     => $attempt->fresh()->score,
+            'status' => $attempt->fresh()->status,
+            'score' => $attempt->fresh()->score,
         ]);
     }
 
@@ -156,7 +157,7 @@ class QuizController extends Controller
             ->where('quiz_id', $quiz->id)
             ->whereNotNull('submitted_at')
             ->with([
-                'answers' => fn($q) => $q->with([
+                'answers' => fn ($q) => $q->with([
                     'question.options',
                     'selectedOption',
                 ]),
@@ -165,10 +166,10 @@ class QuizController extends Controller
             ->firstOrFail();
 
         return Inertia::render('user/QuizResult', [
-            'course'  => $course,
-            'quiz'    => $quiz->load('questions'),
+            'course' => $course,
+            'quiz' => $quiz->load('questions'),
             'attempt' => $attempt,
-            'passed'  => $attempt->isPassed(),
+            'passed' => $attempt->isPassed(),
         ]);
     }
 
@@ -179,6 +180,6 @@ class QuizController extends Controller
             ->where('status', 'active')
             ->exists();
 
-        abort_if(!$enrolled, 403, 'Kamu belum terdaftar di kelas ini.');
+        abort_if(! $enrolled, 403, 'Kamu belum terdaftar di kelas ini.');
     }
 }

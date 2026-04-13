@@ -72,23 +72,33 @@ const previewUrl = ref<string | null>(
 function onDrop(e: DragEvent) {
     isDragging.value = false;
     const file = e.dataTransfer?.files[0];
-    if (file) handleFile(file);
+
+    if (file) {
+handleFile(file);
+}
 }
 
 function onFileInput(e: Event) {
     const file = (e.target as HTMLInputElement).files?.[0];
-    if (file) handleFile(file);
+
+    if (file) {
+handleFile(file);
+}
 }
 
 function handleFile(file: File) {
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
         alert('Format file harus JPG, PNG, atau WebP.');
+
         return;
     }
+
     if (file.size > 2 * 1024 * 1024) {
         alert('Ukuran file maksimal 2MB.');
+
         return;
     }
+
     form.thumbnail = file;
     previewUrl.value = URL.createObjectURL(file);
 }

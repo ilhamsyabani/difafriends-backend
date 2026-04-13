@@ -26,15 +26,15 @@ class OrderService
         $finalAmount = $course->discount_price ?? $course->price;
 
         $order = Order::create([
-            'user_id'        => $user->id,
+            'user_id' => $user->id,
             'orderable_type' => Course::class,
-            'orderable_id'   => $course->id,
-            'item_name'      => $course->title,
+            'orderable_id' => $course->id,
+            'item_name' => $course->title,
             'original_price' => $course->price,
-            'discount_amount'=> $course->price - $finalAmount,
-            'final_amount'   => $finalAmount,
-            'status'         => OrderStatus::Pending,
-            'expired_at'     => now()->addHour(),
+            'discount_amount' => $course->price - $finalAmount,
+            'final_amount' => $finalAmount,
+            'status' => OrderStatus::Pending,
+            'expired_at' => now()->addHour(),
             'invoice_number' => $this->generateInvoiceNumber(),
         ]);
 
@@ -43,6 +43,6 @@ class OrderService
 
     private function generateInvoiceNumber(): string
     {
-        return 'INV-' . date('Ymd') . '-' . strtoupper(Str::random(6));
+        return 'INV-'.date('Ymd').'-'.strtoupper(Str::random(6));
     }
 }

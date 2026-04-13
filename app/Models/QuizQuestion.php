@@ -19,7 +19,7 @@ class QuizQuestion extends Model
     protected function casts(): array
     {
         return [
-            'points'     => 'integer',
+            'points' => 'integer',
             'sort_order' => 'integer',
         ];
     }

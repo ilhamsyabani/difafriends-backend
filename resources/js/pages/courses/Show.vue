@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { Head, Link, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
-import GuestLayout from '@/layouts/GuestLayout.vue';
 import axios from 'axios';
-import { usePage } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import { useFormatters } from '@/composables/useFormatters';
+import GuestLayout from '@/layouts/GuestLayout.vue';
 
 const { assetUrl } = useFormatters();
 
@@ -59,8 +58,6 @@ const props = defineProps<{
 const activeTab = ref<'description' | 'curriculum' | 'reviews'>('description');
 const expandedSections = ref<number[]>([props.course.sections[0]?.id]);
 const isLoading = ref(false);
-const snapToken = ref<string | null>(null);
-const page = usePage();
 
 function toggleSection(id: number) {
     if (expandedSections.value.includes(id)) {
@@ -71,7 +68,10 @@ function toggleSection(id: number) {
 }
 
 function formatPrice(p: number): string {
-    if (p === 0) return 'Gratis';
+    if (p === 0) {
+return 'Gratis';
+}
+
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
@@ -83,6 +83,7 @@ function formatDuration(seconds: number): string {
     const m = Math.floor(seconds / 60);
     const h = Math.floor(m / 60);
     const rem = m % 60;
+
     return h > 0 ? `${h}j ${rem}m` : `${m}m`;
 }
 
@@ -98,17 +99,24 @@ function totalDuration(): number {
 }
 
 function averageRating(): number {
-    if (!props.course.reviews.length) return 0;
+    if (!props.course.reviews.length) {
+return 0;
+}
+
     const sum = props.course.reviews.reduce((acc, r) => acc + r.rating, 0);
+
     return Math.round((sum / props.course.reviews.length) * 10) / 10;
 }
 
 async function handleBuy() {
-    if (props.isEnrolled) return;
+    if (props.isEnrolled) {
+return;
+}
 
     // Cek sudah login
     if (!(usePage().props.auth as any).user) {
         router.visit('/login');
+
         return;
     }
 
@@ -122,6 +130,7 @@ async function handleBuy() {
         // Kalau gratis
         if (res.data.free) {
             router.visit(res.data.redirect);
+
             return;
         }
 
@@ -136,13 +145,13 @@ async function handleBuy() {
 
         script.onload = () => {
             (window as any).snap.pay(snap_token, {
-                onSuccess: (result: any) => {
+                onSuccess: (_result: any) => {
                     router.visit('/orders');
                 },
-                onPending: (result: any) => {
+                onPending: (_result: any) => {
                     router.visit('/orders');
                 },
-                onError: (result: any) => {
+                onError: (_result: any) => {
                     alert('Pembayaran gagal. Silakan coba lagi.');
                 },
                 onClose: () => {

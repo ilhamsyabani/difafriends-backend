@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\User;
-use App\Models\Course;
-use App\Models\Category;
-use App\Enums\Roles;
 use App\Enums\CourseStatus;
+use App\Enums\Roles;
+use App\Models\Category;
+use App\Models\Course;
+use App\Models\User;
 
 // 1. ARRANGE GLOBAL: Fungsi ini berjalan SEBELUM setiap test dimulai
 beforeEach(function () {
@@ -17,13 +17,12 @@ beforeEach(function () {
     ]);
 });
 
-
 // TEST 1: Memastikan halaman index bisa dibuka oleh admin
 test('admin dapat melihat halaman daftar kelas', function () {
     // ARRANGE: Buat 5 data kelas dummy
     Course::factory(5)->create([
         'instructor_id' => $this->instructor->id,
-        'category_id' => $this->category->id
+        'category_id' => $this->category->id,
     ]);
 
     // ACT: Simulasi login sebagai admin, lalu buka halaman index courses
@@ -40,19 +39,18 @@ test('admin dapat melihat halaman daftar kelas', function () {
     );
 });
 
-
 // TEST 2: Memastikan fitur tombol "Approve" berjalan
 test('admin dapat melakukan approval pada kelas draft', function () {
     // ARRANGE: Buat 1 kursus dengan status masih 'draft'
     $course = Course::factory()->create([
         'instructor_id' => $this->instructor->id,
         'category_id' => $this->category->id,
-        'status' => CourseStatus::Draft->value
+        'status' => CourseStatus::Draft->value,
     ]);
 
     // ACT: Simulasi login admin, dan lakukan POST ke route approve
     $response = $this->actingAs($this->admin)
-            ->patch(route('admin.courses.approve', $course->id));
+        ->patch(route('admin.courses.approve', $course->id));
 
     // ASSERT: Pastikan tidak ada error dan kembali dengan redirect
     $response->assertRedirect();
@@ -70,7 +68,7 @@ test('instruktur tidak dapat melakukan approval kelas', function () {
     $course = Course::factory()->create([
         'instructor_id' => $this->instructor->id,
         'category_id' => $this->category->id,
-        'status' => CourseStatus::Draft->value
+        'status' => CourseStatus::Draft->value,
     ]);
 
     // Lakukan aksi sebagai INSTRUKTUR, bukan admin

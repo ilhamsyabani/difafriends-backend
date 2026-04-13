@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { nextTick, watch } from 'vue';
-import { useConfirm } from '@/composables/useConfirm';
+import { nextTick, ref, watch } from 'vue';
+import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogContent,
@@ -9,7 +9,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { useConfirm } from '@/composables/useConfirm';
 
 const { isOpen, options, handleConfirm, handleCancel } = useConfirm();
 
@@ -23,7 +23,6 @@ watch(isOpen, async (val) => {
     }
 });
 
-import { ref } from 'vue';
 </script>
 
 <template>
@@ -35,7 +34,9 @@ import { ref } from 'vue';
             :aria-describedby="'confirm-desc'"
         >
             <DialogHeader>
-                <DialogTitle id="confirm-title">{{ options.title }}</DialogTitle>
+                <DialogTitle id="confirm-title">{{
+                    options.title
+                }}</DialogTitle>
                 <DialogDescription id="confirm-desc">
                     {{ options.description }}
                 </DialogDescription>
@@ -50,7 +51,11 @@ import { ref } from 'vue';
                     {{ options.cancelLabel }}
                 </Button>
                 <Button
-                    :variant="options.variant === 'destructive' ? 'destructive' : 'default'"
+                    :variant="
+                        options.variant === 'destructive'
+                            ? 'destructive'
+                            : 'default'
+                    "
                     @click="handleConfirm"
                 >
                     {{ options.confirmLabel }}

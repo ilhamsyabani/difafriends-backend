@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class Certificate extends Model
 {
@@ -48,26 +49,26 @@ class Certificate extends Model
     public function getFileUrlAttribute(): ?string
     {
         return $this->file_path
-            ? asset('storage/' . $this->file_path)
+            ? asset('storage/'.$this->file_path)
             : null;
     }
 
     // URL halaman verifikasi publik
     public function getVerifyUrlAttribute(): string
     {
-        return url('/verify/' . $this->certificate_number);
+        return url('/verify/'.$this->certificate_number);
     }
 
     // ── Helpers ────────────────────────────────────────────
 
     public function hasFile(): bool
     {
-        return !is_null($this->file_path);
+        return ! is_null($this->file_path);
     }
 
     // Generate format nomor sertifikat yang konsisten
     public static function generateNumber(): string
     {
-        return 'CERT-' . date('Y') . '-' . strtoupper(\Illuminate\Support\Str::random(6));
+        return 'CERT-'.date('Y').'-'.strtoupper(Str::random(6));
     }
 }

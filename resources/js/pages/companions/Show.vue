@@ -26,7 +26,7 @@ import {
 
 import GuestLayout from '@/layouts/GuestLayout.vue';
 
-const props = defineProps<{
+defineProps<{
     companion: {
         id: number;
         first_name: string;
@@ -74,7 +74,10 @@ function formatTime(time: string): string {
 }
 
 function formatPrice(price: number): string {
-    if (price === 0) return 'Gratis';
+    if (price === 0) {
+return 'Gratis';
+}
+
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
@@ -89,6 +92,7 @@ function formatDateLocal(dateString: string): string {
         month: 'long',
         year: 'numeric',
     };
+
     return new Date(dateString).toLocaleDateString('id-ID', options);
 }
 
@@ -99,8 +103,10 @@ function getInitials(first: string, last: string): string {
 function openBooking(schedule: any) {
     if (!(page.props.auth as any).user) {
         router.visit('/login');
+
         return;
     }
+
     selectedSchedule.value = schedule;
     bookingDate.value = '';
     bookingNotes.value = '';
@@ -114,20 +120,24 @@ function getAvailableDates(
 ): Array<{ raw: string; label: string }> {
     const dates: Array<{ raw: string; label: string }> = [];
     const today = new Date();
+
     for (let i = 1; i <= 30; i++) {
         const d = new Date(today);
         d.setDate(today.getDate() + i);
+
         if (d.getDay() === dayOfWeek) {
             const raw = d.toISOString().split('T')[0];
             dates.push({ raw, label: formatDateLocal(raw) });
         }
     }
+
     return dates;
 }
 
 async function submitBooking() {
     if (!selectedSchedule.value || !bookingDate.value) {
         bookingError.value = 'Silakan pilih tanggal booking terlebih dahulu.';
+
         return;
     }
 
@@ -147,6 +157,7 @@ async function submitBooking() {
 
         if (res.data.free) {
             router.visit(res.data.redirect);
+
             return;
         }
 

@@ -292,6 +292,7 @@ function destroy(id: number) {
                 v-if="articles.links?.length > 3"
                 class="mt-8 flex justify-end gap-1.5"
             >
+                <!-- eslint-disable-next-line vue/no-v-text-v-html-on-component -->
                 <Link
                     v-for="link in articles.links"
                     :key="link.label"

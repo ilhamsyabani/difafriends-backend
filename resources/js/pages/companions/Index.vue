@@ -41,9 +41,16 @@ watch(search, (val) => {
 });
 
 function minPrice(schedules: Array<{ price: number }>): string {
-    if (!schedules.length) return 'Hubungi untuk harga';
+    if (!schedules.length) {
+return 'Hubungi untuk harga';
+}
+
     const min = Math.min(...schedules.map((s) => s.price));
-    if (min === 0) return 'Gratis';
+
+    if (min === 0) {
+return 'Gratis';
+}
+
     return (
         'Mulai ' +
         new Intl.NumberFormat('id-ID', {
@@ -58,6 +65,7 @@ function minPrice(schedules: Array<{ price: number }>): string {
 function getInitials(firstName: string, lastName: string): string {
     const f = firstName ? firstName.charAt(0) : '';
     const l = lastName ? lastName.charAt(0) : '';
+
     return (f + l).toUpperCase();
 }
 </script>

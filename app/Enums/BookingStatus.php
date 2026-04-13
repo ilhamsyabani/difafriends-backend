@@ -2,24 +2,24 @@
 
 namespace App\Enums;
 
-enum BookingStatus:string
+enum BookingStatus: string
 {
-    case Pending   = 'pending';
+    case Pending = 'pending';
     case Confirmed = 'confirmed';
-    case Ongoing   = 'ongoing';
+    case Ongoing = 'ongoing';
     case Completed = 'completed';
     case Cancelled = 'cancelled';
-    case NoShow    = 'no_show';
+    case NoShow = 'no_show';
 
     public function label(): string
     {
-        return match($this) {
-            BookingStatus::Pending   => 'Menunggu Pembayaran',
+        return match ($this) {
+            BookingStatus::Pending => 'Menunggu Pembayaran',
             BookingStatus::Confirmed => 'Terkonfirmasi',
-            BookingStatus::Ongoing   => 'Sedang Berlangsung',
+            BookingStatus::Ongoing => 'Sedang Berlangsung',
             BookingStatus::Completed => 'Selesai',
             BookingStatus::Cancelled => 'Dibatalkan',
-            BookingStatus::NoShow    => 'Tidak Hadir',
+            BookingStatus::NoShow => 'Tidak Hadir',
         };
     }
 

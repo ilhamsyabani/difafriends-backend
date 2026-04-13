@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\Companion;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Schedule;
 use App\Models\TutorSchedule;
-use Inertia\Response;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
-
 
 class ScheduleController extends Controller
 {
@@ -38,14 +35,14 @@ class ScheduleController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'day_of_week'      => 'required|integer|between:0,6',
-            'start_time'       => 'required|date_format:H:i',
-            'end_time'         => 'required|date_format:H:i|after:start_time',
+            'day_of_week' => 'required|integer|between:0,6',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
             'session_duration' => 'required|integer|min:15',
-            'break_time'       => 'required|integer|min:0',
-            'price'            => 'required|numeric|min:0',
+            'break_time' => 'required|integer|min:0',
+            'price' => 'required|numeric|min:0',
             'max_participants' => 'required|integer|min:1|max:10',
-            'is_active'        => 'boolean',
+            'is_active' => 'boolean',
         ]);
 
         $validated['tutor_id'] = $request->user()->id;
@@ -69,21 +66,21 @@ class ScheduleController extends Controller
         abort_if($schedule->tutor_id !== $request->user()->id, 403);
 
         $validated = $request->validate([
-            'day_of_week'      => 'required|integer|between:0,6',
-            'start_time'       => 'required|date_format:H:i',
-            'end_time'         => 'required|date_format:H:i|after:start_time',
+            'day_of_week' => 'required|integer|between:0,6',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
             'session_duration' => 'required|integer|min:15',
-            'break_time'       => 'required|integer|min:0',
-            'price'            => 'required|numeric|min:0',
+            'break_time' => 'required|integer|min:0',
+            'price' => 'required|numeric|min:0',
             'max_participants' => 'required|integer|min:1|max:10',
-            'is_active'        => 'boolean',
+            'is_active' => 'boolean',
         ]);
 
         $schedule->update($validated);
 
         return redirect()->route('companion.schedules.index')
             ->with('success', 'Jadwal berhasil diupdate.');
-         }
+    }
 
     public function destroy(Request $request, TutorSchedule $schedule)
     {
@@ -100,7 +97,7 @@ class ScheduleController extends Controller
         abort_if($schedule->tutor_id !== $request->user()->id, 403);
 
         $schedule->update([
-            'is_active' => !$schedule->is_active,
+            'is_active' => ! $schedule->is_active,
         ]);
 
         return redirect()->route('companion.schedules.index')

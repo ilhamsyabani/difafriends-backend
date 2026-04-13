@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\EnrollmentStatus;
+use App\Jobs\GenerateCertificateJob;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,9 +24,9 @@ class CourseProgress extends Model
     ];
 
     protected $casts = [
-        'is_completed'  => 'boolean',
+        'is_completed' => 'boolean',
         'watch_seconds' => 'integer',
-        'completed_at'  => 'datetime',
+        'completed_at' => 'datetime',
     ];
 
     // ── Auto trigger setelah save ──────────────────────────
@@ -77,30 +79,32 @@ class CourseProgress extends Model
     private function checkCourseCompletion(): void
     {
         $totalLectures = CourseLecture::where('course_id', $this->course_id)
-                                      ->count();
+            ->count();
 
-        if ($totalLectures === 0) return;
+        if ($totalLectures === 0) {
+            return;
+        }
 
         $completedLectures = CourseProgress::where('user_id', $this->user_id)
-                                           ->where('course_id', $this->course_id)
-                                           ->where('is_completed', true)
-                                           ->count();
+            ->where('course_id', $this->course_id)
+            ->where('is_completed', true)
+            ->count();
 
         // Semua lecture sudah selesai!
         if ($completedLectures >= $totalLectures) {
             // Update enrollment jadi completed
             Enrollment::where('user_id', $this->user_id)
-                      ->where('course_id', $this->course_id)
-                      ->update([
-                          'status'       => \App\Enums\EnrollmentStatus::Completed,
-                          'completed_at' => now(),
-                      ]);
+                ->where('course_id', $this->course_id)
+                ->update([
+                    'status' => EnrollmentStatus::Completed,
+                    'completed_at' => now(),
+                ]);
 
             // Terbitkan sertifikat kalau course menyediakan
             $course = Course::find($this->course_id);
             if ($course?->has_certificate) {
                 // Dispatch job — tidak blocking
-                \App\Jobs\GenerateCertificateJob::dispatch(
+                GenerateCertificateJob::dispatch(
                     $this->user_id,
                     $this->course_id
                 );

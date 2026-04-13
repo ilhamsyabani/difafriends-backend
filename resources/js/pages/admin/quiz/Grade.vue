@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { Head, Link, useForm, router } from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { grade as gradeAnswer } from '@/actions/App/Http/Controllers/Admin/QuizGradeController';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { index as gradeIndex, grade as gradeAnswer } from '@/actions/App/Http/Controllers/Admin/QuizGradeController';
 
 const props = defineProps<{
     course: { id: number; title: string; slug: string };
@@ -44,18 +44,24 @@ const props = defineProps<{
 const activeAttemptId = ref<number | null>(null);
 
 // gradeForm: keyed by answerId
-const gradeForm = ref<Record<number, { points_earned: number; instructor_note: string }>>({});
+const gradeForm = ref<
+    Record<number, { points_earned: number; instructor_note: string }>
+>({});
 
 function toggleAttempt(attemptId: number) {
     if (activeAttemptId.value === attemptId) {
         activeAttemptId.value = null;
+
         return;
     }
 
     activeAttemptId.value = attemptId;
 
     const attempt = props.attempts.data.find((a) => a.id === attemptId);
-    if (!attempt) return;
+
+    if (!attempt) {
+return;
+}
 
     attempt.answers
         .filter((a) => a.question.type === 'essay')
@@ -90,7 +96,10 @@ function statusBadge(status: string): string {
 }
 
 function formatDate(dt: string | null): string {
-    if (!dt) return '—';
+    if (!dt) {
+return '—';
+}
+
     return new Date(dt).toLocaleString('id-ID', {
         day: 'numeric',
         month: 'short',
@@ -116,14 +125,26 @@ function initials(first: string, last: string): string {
                     href="/admin/courses"
                     class="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800"
                 >
-                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    <svg
+                        class="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 19l-7-7 7-7"
+                        />
                     </svg>
                 </Link>
                 <div>
                     <div class="flex items-center gap-2">
                         <h1 class="text-xl font-bold">Penilaian Kuis</h1>
-                        <span class="rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+                        <span
+                            class="rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
+                        >
                             Admin
                         </span>
                     </div>
@@ -135,20 +156,46 @@ function initials(first: string, last: string): string {
 
             <!-- Summary bar -->
             <div class="mb-6 grid grid-cols-3 gap-4">
-                <div class="rounded-2xl border border-gray-100 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
-                    <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Total Pengerjaan</p>
-                    <p class="mt-1 text-2xl font-bold">{{ attempts.meta.total }}</p>
-                </div>
-                <div class="rounded-2xl border border-gray-100 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
-                    <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Sudah Dinilai</p>
-                    <p class="mt-1 text-2xl font-bold text-green-600">
-                        {{ attempts.data.filter((a) => a.status === 'graded').length }}
+                <div
+                    class="rounded-2xl border border-gray-100 bg-white p-4 dark:border-gray-700 dark:bg-gray-800"
+                >
+                    <p
+                        class="text-xs font-medium text-gray-500 dark:text-gray-400"
+                    >
+                        Total Pengerjaan
+                    </p>
+                    <p class="mt-1 text-2xl font-bold">
+                        {{ attempts.meta.total }}
                     </p>
                 </div>
-                <div class="rounded-2xl border border-gray-100 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
-                    <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Perlu Dinilai</p>
+                <div
+                    class="rounded-2xl border border-gray-100 bg-white p-4 dark:border-gray-700 dark:bg-gray-800"
+                >
+                    <p
+                        class="text-xs font-medium text-gray-500 dark:text-gray-400"
+                    >
+                        Sudah Dinilai
+                    </p>
+                    <p class="mt-1 text-2xl font-bold text-green-600">
+                        {{
+                            attempts.data.filter((a) => a.status === 'graded')
+                                .length
+                        }}
+                    </p>
+                </div>
+                <div
+                    class="rounded-2xl border border-gray-100 bg-white p-4 dark:border-gray-700 dark:bg-gray-800"
+                >
+                    <p
+                        class="text-xs font-medium text-gray-500 dark:text-gray-400"
+                    >
+                        Perlu Dinilai
+                    </p>
                     <p class="mt-1 text-2xl font-bold text-amber-600">
-                        {{ attempts.data.filter((a) => a.status !== 'graded').length }}
+                        {{
+                            attempts.data.filter((a) => a.status !== 'graded')
+                                .length
+                        }}
                     </p>
                 </div>
             </div>
@@ -158,10 +205,22 @@ function initials(first: string, last: string): string {
                 v-if="attempts.data.length === 0"
                 class="rounded-2xl border border-dashed border-gray-200 py-20 text-center dark:border-gray-700"
             >
-                <svg class="mx-auto mb-3 h-10 w-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                <svg
+                    class="mx-auto mb-3 h-10 w-10 text-gray-300"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.5"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                    />
                 </svg>
-                <p class="font-medium text-gray-400">Belum ada siswa yang mengerjakan kuis ini.</p>
+                <p class="font-medium text-gray-400">
+                    Belum ada siswa yang mengerjakan kuis ini.
+                </p>
             </div>
 
             <!-- Attempt list -->
@@ -178,15 +237,24 @@ function initials(first: string, last: string): string {
                     >
                         <div class="flex items-center gap-3">
                             <!-- Avatar inisial -->
-                            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-purple-100 text-sm font-bold text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
-                                {{ initials(attempt.user.first_name, attempt.user.last_name) }}
+                            <div
+                                class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-purple-100 text-sm font-bold text-purple-600 dark:bg-purple-900/30 dark:text-purple-400"
+                            >
+                                {{
+                                    initials(
+                                        attempt.user.first_name,
+                                        attempt.user.last_name,
+                                    )
+                                }}
                             </div>
                             <div class="text-left">
                                 <p class="text-sm font-semibold">
-                                    {{ attempt.user.first_name }} {{ attempt.user.last_name }}
+                                    {{ attempt.user.first_name }}
+                                    {{ attempt.user.last_name }}
                                 </p>
                                 <p class="text-xs text-gray-400">
-                                    {{ attempt.user.email }} &bull; Submit: {{ formatDate(attempt.submitted_at) }}
+                                    {{ attempt.user.email }} &bull; Submit:
+                                    {{ formatDate(attempt.submitted_at) }}
                                 </p>
                             </div>
                         </div>
@@ -204,26 +272,47 @@ function initials(first: string, last: string): string {
                             <span
                                 v-if="attempt.score !== null"
                                 class="text-lg font-bold"
-                                :class="attempt.score >= quiz.passing_score ? 'text-green-600' : 'text-red-500'"
+                                :class="
+                                    attempt.score >= quiz.passing_score
+                                        ? 'text-green-600'
+                                        : 'text-red-500'
+                                "
                             >
                                 {{ attempt.score }}%
                             </span>
 
                             <!-- Status badge -->
                             <span
-                                :class="['rounded-full px-2.5 py-1 text-xs font-medium', statusBadge(attempt.status)]"
+                                :class="[
+                                    'rounded-full px-2.5 py-1 text-xs font-medium',
+                                    statusBadge(attempt.status),
+                                ]"
                             >
-                                {{ attempt.status === 'graded' ? 'Sudah Dinilai' : 'Perlu Dinilai' }}
+                                {{
+                                    attempt.status === 'graded'
+                                        ? 'Sudah Dinilai'
+                                        : 'Perlu Dinilai'
+                                }}
                             </span>
 
                             <!-- Chevron -->
                             <svg
-                                :class="['h-4 w-4 text-gray-400 transition-transform', activeAttemptId === attempt.id ? 'rotate-180' : '']"
+                                :class="[
+                                    'h-4 w-4 text-gray-400 transition-transform',
+                                    activeAttemptId === attempt.id
+                                        ? 'rotate-180'
+                                        : '',
+                                ]"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
                             >
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M19 9l-7 7-7-7"
+                                />
                             </svg>
                         </div>
                     </button>
@@ -240,7 +329,9 @@ function initials(first: string, last: string): string {
                         >
                             <!-- Nomor & soal -->
                             <div class="mb-3 flex items-start gap-2">
-                                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-100 text-xs font-bold text-gray-600 dark:bg-gray-700 dark:text-gray-400">
+                                <span
+                                    class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-100 text-xs font-bold text-gray-600 dark:bg-gray-700 dark:text-gray-400"
+                                >
                                     {{ idx + 1 }}
                                 </span>
                                 <div class="flex-1">
@@ -248,22 +339,42 @@ function initials(first: string, last: string): string {
                                         <span
                                             :class="[
                                                 'rounded-full px-2 py-0.5 text-xs font-medium',
-                                                answer.question.type === 'multiple_choice'
+                                                answer.question.type ===
+                                                'multiple_choice'
                                                     ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
                                                     : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
                                             ]"
                                         >
-                                            {{ answer.question.type === 'multiple_choice' ? 'Pilihan Ganda' : 'Esai' }}
+                                            {{
+                                                answer.question.type ===
+                                                'multiple_choice'
+                                                    ? 'Pilihan Ganda'
+                                                    : 'Esai'
+                                            }}
                                         </span>
-                                        <span class="text-xs text-gray-400">{{ answer.question.points }} poin</span>
+                                        <span class="text-xs text-gray-400"
+                                            >{{
+                                                answer.question.points
+                                            }}
+                                            poin</span
+                                        >
                                     </div>
-                                    <p class="text-sm font-medium">{{ answer.question.question }}</p>
+                                    <p class="text-sm font-medium">
+                                        {{ answer.question.question }}
+                                    </p>
                                 </div>
                             </div>
 
                             <!-- Pilihan Ganda — auto-graded -->
-                            <div v-if="answer.question.type === 'multiple_choice'" class="ml-8">
-                                <p class="mb-1 text-xs text-gray-500">Jawaban siswa:</p>
+                            <div
+                                v-if="
+                                    answer.question.type === 'multiple_choice'
+                                "
+                                class="ml-8"
+                            >
+                                <p class="mb-1 text-xs text-gray-500">
+                                    Jawaban siswa:
+                                </p>
                                 <div
                                     :class="[
                                         'flex items-center gap-2 rounded-lg px-3 py-2 text-sm',
@@ -272,21 +383,37 @@ function initials(first: string, last: string): string {
                                             : 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400',
                                     ]"
                                 >
-                                    <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg
+                                        class="h-4 w-4 shrink-0"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
                                         <path
-                                            v-if="answer.selected_option?.is_correct"
-                                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            v-if="
+                                                answer.selected_option
+                                                    ?.is_correct
+                                            "
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
                                             d="M5 13l4 4L19 7"
                                         />
                                         <path
                                             v-else
-                                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
                                             d="M6 18L18 6M6 6l12 12"
                                         />
                                     </svg>
-                                    {{ answer.selected_option?.option_text ?? 'Tidak dijawab' }}
+                                    {{
+                                        answer.selected_option?.option_text ??
+                                        'Tidak dijawab'
+                                    }}
                                     <span class="ml-auto font-semibold">
-                                        {{ answer.points_earned ?? 0 }} / {{ answer.question.points }} poin
+                                        {{ answer.points_earned ?? 0 }} /
+                                        {{ answer.question.points }} poin
                                     </span>
                                 </div>
                             </div>
@@ -295,9 +422,16 @@ function initials(first: string, last: string): string {
                             <div v-else class="ml-8 space-y-3">
                                 <!-- Jawaban siswa -->
                                 <div>
-                                    <p class="mb-1 text-xs text-gray-500">Jawaban siswa:</p>
-                                    <div class="rounded-xl bg-gray-50 p-3 text-sm leading-relaxed text-gray-700 dark:bg-gray-700/50 dark:text-gray-300">
-                                        {{ answer.essay_answer || '(Tidak dijawab)' }}
+                                    <p class="mb-1 text-xs text-gray-500">
+                                        Jawaban siswa:
+                                    </p>
+                                    <div
+                                        class="rounded-xl bg-gray-50 p-3 text-sm leading-relaxed text-gray-700 dark:bg-gray-700/50 dark:text-gray-300"
+                                    >
+                                        {{
+                                            answer.essay_answer ||
+                                            '(Tidak dijawab)'
+                                        }}
                                     </div>
                                 </div>
 
@@ -306,17 +440,26 @@ function initials(first: string, last: string): string {
                                     v-if="gradeForm[answer.id]"
                                     class="space-y-3 rounded-xl bg-purple-50 p-4 dark:bg-purple-900/10"
                                 >
-                                    <p class="text-xs font-medium text-purple-700 dark:text-purple-400">
+                                    <p
+                                        class="text-xs font-medium text-purple-700 dark:text-purple-400"
+                                    >
                                         Penilaian Admin
                                     </p>
 
                                     <div class="grid grid-cols-2 gap-3">
                                         <div>
-                                            <label class="mb-1 block text-xs font-medium">
-                                                Nilai (0–{{ answer.question.points }})
+                                            <label
+                                                class="mb-1 block text-xs font-medium"
+                                            >
+                                                Nilai (0–{{
+                                                    answer.question.points
+                                                }})
                                             </label>
                                             <input
-                                                v-model.number="gradeForm[answer.id].points_earned"
+                                                v-model.number="
+                                                    gradeForm[answer.id]
+                                                        .points_earned
+                                                "
                                                 type="number"
                                                 :min="0"
                                                 :max="answer.question.points"
@@ -334,12 +477,20 @@ function initials(first: string, last: string): string {
                                     </div>
 
                                     <div>
-                                        <label class="mb-1 block text-xs font-medium">
+                                        <label
+                                            class="mb-1 block text-xs font-medium"
+                                        >
                                             Catatan / Feedback
-                                            <span class="font-normal text-gray-400">(opsional)</span>
+                                            <span
+                                                class="font-normal text-gray-400"
+                                                >(opsional)</span
+                                            >
                                         </label>
                                         <textarea
-                                            v-model="gradeForm[answer.id].instructor_note"
+                                            v-model="
+                                                gradeForm[answer.id]
+                                                    .instructor_note
+                                            "
                                             rows="2"
                                             placeholder="Berikan feedback untuk jawaban ini..."
                                             class="w-full resize-none rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900"
@@ -351,10 +502,22 @@ function initials(first: string, last: string): string {
                                         v-if="answer.points_earned !== null"
                                         class="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400"
                                     >
-                                        <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        <svg
+                                            class="h-4 w-4 shrink-0"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M5 13l4 4L19 7"
+                                            />
                                         </svg>
-                                        Sudah dinilai: {{ answer.points_earned }} / {{ answer.question.points }} poin
+                                        Sudah dinilai:
+                                        {{ answer.points_earned }} /
+                                        {{ answer.question.points }} poin
                                     </div>
                                 </div>
                             </div>
@@ -364,7 +527,10 @@ function initials(first: string, last: string): string {
             </div>
 
             <!-- Pagination -->
-            <div v-if="attempts.meta.last_page > 1" class="mt-6 flex justify-center gap-2">
+            <div
+                v-if="attempts.meta.last_page > 1"
+                class="mt-6 flex justify-center gap-2"
+            >
                 <template v-for="link in attempts.links" :key="link.label">
                     <Link
                         v-if="link.url"

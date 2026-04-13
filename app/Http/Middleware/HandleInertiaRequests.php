@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -37,7 +39,12 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            'name' => config('app.name'),
+            'name' => SiteSetting::get('app_name', config('app.name')),
+            'appLogo' => once(function () {
+                $path = SiteSetting::get('app_logo');
+
+                return $path ? Storage::disk('public')->url($path) : null;
+            }),
             'auth' => [
                 'user' => $request->user(),
             ],

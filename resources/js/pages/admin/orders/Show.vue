@@ -5,7 +5,7 @@ import { Smartphone } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
 
-const props = defineProps<{
+defineProps<{
     order: {
         id: number;
         invoice_number: string;
@@ -46,6 +46,7 @@ const statusColor = (status: string) => {
         refunded:
             'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
     };
+
     return (
         colors[status] ||
         'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'

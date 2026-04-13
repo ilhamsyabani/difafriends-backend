@@ -3,10 +3,8 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use App\Models\Order;
 
 class OrderPaidNotification extends Notification
 {
@@ -48,11 +46,11 @@ class OrderPaidNotification extends Notification
     public function toDatabase(object $notifiable): array
     {
         return [
-            'type'    => 'order_paid',
-            'title'   => 'Pembayaran Berhasil!',
+            'type' => 'order_paid',
+            'title' => 'Pembayaran Berhasil!',
             'message' => "Kelas \"{$this->order->item_name}\" berhasil dibeli.",
-            'url'     => '/user/orders',
-            'icon'    => 'check-circle',
+            'url' => '/user/orders',
+            'icon' => 'check-circle',
         ];
     }
 

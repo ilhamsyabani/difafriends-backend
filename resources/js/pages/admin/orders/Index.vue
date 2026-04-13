@@ -61,9 +61,18 @@ watch([search, status, type], ([newSearch, newStatus, newType]) => {
 // Bikin URL Export dinamis
 const exportUrl = computed(() => {
     const params = new URLSearchParams();
-    if (search.value) params.append('search', search.value);
-    if (status.value) params.append('status', status.value);
-    if (type.value) params.append('type', type.value);
+
+    if (search.value) {
+params.append('search', search.value);
+}
+
+    if (status.value) {
+params.append('status', status.value);
+}
+
+    if (type.value) {
+params.append('type', type.value);
+}
 
     return `/admin/orders/export?${params.toString()}`;
 });
@@ -88,6 +97,7 @@ const statusColor = (val: string) => {
         refunded:
             'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
     };
+
     return (
         colors[val] ||
         'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'

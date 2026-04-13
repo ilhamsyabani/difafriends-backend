@@ -20,14 +20,14 @@ class QuizQuestionController extends Controller
         abort_if($course->instructor_id !== $request->user()->id, 403);
 
         $validated = $request->validate([
-            'type'       => 'required|in:multiple_choice,essay',
-            'question'   => 'required|string',
-            'points'     => 'required|integer|min:1|max:100',
+            'type' => 'required|in:multiple_choice,essay',
+            'question' => 'required|string',
+            'points' => 'required|integer|min:1|max:100',
             'sort_order' => 'integer|min:0',
             // Untuk PG: options wajib ada minimal 2 + 1 yang benar
-            'options'               => 'required_if:type,multiple_choice|array|min:2',
+            'options' => 'required_if:type,multiple_choice|array|min:2',
             'options.*.option_text' => 'required|string|max:255',
-            'options.*.is_correct'  => 'required|boolean',
+            'options.*.is_correct' => 'required|boolean',
         ]);
 
         // Validasi: PG harus punya tepat 1 jawaban benar
@@ -43,9 +43,9 @@ class QuizQuestionController extends Controller
         }
 
         $question = $quiz->questions()->create([
-            'type'       => $validated['type'],
-            'question'   => $validated['question'],
-            'points'     => $validated['points'],
+            'type' => $validated['type'],
+            'question' => $validated['question'],
+            'points' => $validated['points'],
             'sort_order' => $validated['sort_order'] ?? $quiz->questions()->count(),
         ]);
 
@@ -54,7 +54,7 @@ class QuizQuestionController extends Controller
             foreach ($validated['options'] as $opt) {
                 $question->options()->create([
                     'option_text' => $opt['option_text'],
-                    'is_correct'  => $opt['is_correct'],
+                    'is_correct' => $opt['is_correct'],
                 ]);
             }
         }
@@ -72,17 +72,17 @@ class QuizQuestionController extends Controller
         abort_if($course->instructor_id !== $request->user()->id, 403);
 
         $validated = $request->validate([
-            'question'              => 'required|string',
-            'points'                => 'required|integer|min:1|max:100',
-            'sort_order'            => 'integer|min:0',
-            'options'               => 'required_if:type,multiple_choice|array|min:2',
+            'question' => 'required|string',
+            'points' => 'required|integer|min:1|max:100',
+            'sort_order' => 'integer|min:0',
+            'options' => 'required_if:type,multiple_choice|array|min:2',
             'options.*.option_text' => 'required|string|max:255',
-            'options.*.is_correct'  => 'required|boolean',
+            'options.*.is_correct' => 'required|boolean',
         ]);
 
         $question->update([
-            'question'   => $validated['question'],
-            'points'     => $validated['points'],
+            'question' => $validated['question'],
+            'points' => $validated['points'],
             'sort_order' => $validated['sort_order'] ?? $question->sort_order,
         ]);
 
@@ -92,7 +92,7 @@ class QuizQuestionController extends Controller
             foreach ($validated['options'] as $opt) {
                 $question->options()->create([
                     'option_text' => $opt['option_text'],
-                    'is_correct'  => $opt['is_correct'],
+                    'is_correct' => $opt['is_correct'],
                 ]);
             }
         }

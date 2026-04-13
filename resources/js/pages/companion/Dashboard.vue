@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
-import AppLayout from '@/layouts/AppLayout.vue';
+import EmptyState from '@/components/EmptyState.vue';
+import SectionHeader from '@/components/SectionHeader.vue';
 import StatsCard from '@/components/StatsCard.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
-import SectionHeader from '@/components/SectionHeader.vue';
-import EmptyState from '@/components/EmptyState.vue';
 import { useFormatters } from '@/composables/useFormatters';
+import AppLayout from '@/layouts/AppLayout.vue';
 
 defineProps<{
     stats: {
@@ -32,21 +32,43 @@ const { formatPrice, formatDateTime } = useFormatters();
         <div class="max-w-7xl space-y-6 p-6">
             <div>
                 <h1 class="text-2xl font-bold">Dashboard Guru Pendamping</h1>
-                <p class="mt-1 text-sm text-muted-foreground">Pantau jadwal dan booking kamu</p>
+                <p class="mt-1 text-sm text-muted-foreground">
+                    Pantau jadwal dan booking kamu
+                </p>
             </div>
 
             <!-- Stats -->
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <StatsCard label="Total Booking" :value="stats.totalBookings" color="brand" />
-                <StatsCard label="Akan Datang" :value="stats.upcomingBookings" color="blue" />
-                <StatsCard label="Total Pendapatan" :value="formatPrice(stats.totalRevenue)" color="green" />
+                <StatsCard
+                    label="Total Booking"
+                    :value="stats.totalBookings"
+                    color="brand"
+                />
+                <StatsCard
+                    label="Akan Datang"
+                    :value="stats.upcomingBookings"
+                    color="blue"
+                />
+                <StatsCard
+                    label="Total Pendapatan"
+                    :value="formatPrice(stats.totalRevenue)"
+                    color="green"
+                />
             </div>
 
             <!-- Upcoming Bookings -->
-            <div class="overflow-hidden rounded-2xl border border-border bg-card">
-                <SectionHeader title="Booking Terbaru" href="/companion/bookings" />
+            <div
+                class="overflow-hidden rounded-2xl border border-border bg-card"
+            >
+                <SectionHeader
+                    title="Booking Terbaru"
+                    href="/companion/bookings"
+                />
 
-                <EmptyState v-if="stats.recentBookings.length === 0" message="Belum ada booking masuk." />
+                <EmptyState
+                    v-if="stats.recentBookings.length === 0"
+                    message="Belum ada booking masuk."
+                />
 
                 <div v-else>
                     <div
@@ -56,7 +78,8 @@ const { formatPrice, formatDateTime } = useFormatters();
                     >
                         <div>
                             <p class="font-medium">
-                                {{ booking.student.first_name }} {{ booking.student.last_name }}
+                                {{ booking.student.first_name }}
+                                {{ booking.student.last_name }}
                             </p>
                             <p class="mt-0.5 text-sm text-muted-foreground">
                                 {{ formatDateTime(booking.start_at) }}

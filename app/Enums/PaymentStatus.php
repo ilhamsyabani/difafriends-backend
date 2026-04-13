@@ -4,22 +4,22 @@ namespace App\Enums;
 
 enum PaymentStatus: string
 {
-    case Pending    = 'pending';
+    case Pending = 'pending';
     case Settlement = 'settlement';
-    case Expired    = 'expired';
-    case Cancel     = 'cancel';
-    case Fraud      = 'fraud';
-    case Deny       = 'deny';
+    case Expired = 'expired';
+    case Cancel = 'cancel';
+    case Fraud = 'fraud';
+    case Deny = 'deny';
 
     public function label(): string
     {
-        return match($this) {
-            PaymentStatus::Pending    => 'Menunggu',
+        return match ($this) {
+            PaymentStatus::Pending => 'Menunggu',
             PaymentStatus::Settlement => 'Berhasil',
-            PaymentStatus::Expired    => 'Kedaluwarsa',
-            PaymentStatus::Cancel     => 'Dibatalkan',
-            PaymentStatus::Fraud      => 'Terindikasi Fraud',
-            PaymentStatus::Deny       => 'Ditolak',
+            PaymentStatus::Expired => 'Kedaluwarsa',
+            PaymentStatus::Cancel => 'Dibatalkan',
+            PaymentStatus::Fraud => 'Terindikasi Fraud',
+            PaymentStatus::Deny => 'Ditolak',
         };
     }
 

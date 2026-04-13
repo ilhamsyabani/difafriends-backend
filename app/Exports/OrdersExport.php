@@ -2,11 +2,11 @@
 
 namespace App\Exports;
 
-use App\Models\Order;
-use App\Models\Course;
 use App\Models\Booking;
-use Maatwebsite\Excel\Concerns\FromQuery;
+use App\Models\Course;
+use App\Models\Order;
 use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
@@ -29,10 +29,10 @@ class OrdersExport implements FromQuery, WithHeadings, WithMapping
 
         $query->when($this->filters['search'] ?? null, function ($q, $search) {
             $q->where('invoice_number', 'like', "%{$search}%")
-              ->orWhereHas('user', function ($q) use ($search) {
-                  $q->where('first_name', 'like', "%{$search}%")
-                    ->orWhere('last_name', 'like', "%{$search}%");
-              });
+                ->orWhereHas('user', function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%");
+                });
         });
 
         $query->when($this->filters['status'] ?? null, function ($q, $status) {
@@ -60,7 +60,7 @@ class OrdersExport implements FromQuery, WithHeadings, WithMapping
         return [
             $order->invoice_number ?? '-',
             $order->created_at ? $order->created_at->format('Y-m-d H:i:s') : '-',
-            trim(($order->user?->first_name ?? '') . ' ' . ($order->user?->last_name ?? '')) ?: 'User Terhapus',
+            trim(($order->user?->first_name ?? '').' '.($order->user?->last_name ?? '')) ?: 'User Terhapus',
             $order->user?->email ?? '-',
             $order->item_name ?? '-',
             $tipe,

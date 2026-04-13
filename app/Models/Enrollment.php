@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use App\Enums\EnrollmentStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Builder;
 
 class Enrollment extends Model
 {
@@ -24,9 +24,9 @@ class Enrollment extends Model
     ];
 
     protected $casts = [
-        'status'       => EnrollmentStatus::class,
-        'enrolled_at'  => 'datetime',
-        'expired_at'   => 'datetime',
+        'status' => EnrollmentStatus::class,
+        'enrolled_at' => 'datetime',
+        'expired_at' => 'datetime',
         'completed_at' => 'datetime',
     ];
 
@@ -87,18 +87,28 @@ class Enrollment extends Model
             || ($this->expired_at && now()->greaterThan($this->expired_at));
     }
 
-    // Hitung persentase progress (0-100)
+    //Scope untuk hitungan  progeres
+    public function scopeWithProgress(Builder $query):Builder {
+        return $query->with(['course' => function ($query) {
+            $query->withCount('lectures');
+        }])
+        ->whithCount([
+            'courseProgresses as completed_lectures' => function ($query) {
+                $query->where('is_completed', true);
+            },
+        ]);
+    }
+
+    // Hitung persentase progress (0-100
     public function getProgressPercentageAttribute(): int
     {
-        $totalLectures = $this->course->lectures()->count();
+        $total = $this->course ? $this->course->lectures_count : 0;
+        $completed = $this->completed_lectures;
 
-        if ($totalLectures === 0) return 0;
+        if ($total === 0) {
+            return 0;
+        }
 
-        $completedLectures = CourseProgress::where('user_id', $this->user_id)
-            ->where('course_id', $this->course_id)
-            ->where('is_completed', true)
-            ->count();
-
-        return (int) round(($completedLectures / $totalLectures) * 100);
+        return (int) round(($completed / $total) * 100);
     }
 }

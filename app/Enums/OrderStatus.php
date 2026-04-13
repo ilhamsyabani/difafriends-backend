@@ -2,22 +2,22 @@
 
 namespace App\Enums;
 
-enum OrderStatus :string
+enum OrderStatus: string
 {
-    case Pending   = 'pending';
-    case Paid      = 'paid';
-    case Expired   = 'expired';
+    case Pending = 'pending';
+    case Paid = 'paid';
+    case Expired = 'expired';
     case Cancelled = 'cancelled';
-    case Refunded  = 'refunded';
+    case Refunded = 'refunded';
 
     public function label(): string
     {
-        return match($this) {
-            OrderStatus::Pending   => 'Menunggu Pembayaran',
-            OrderStatus::Paid      => 'Lunas',
-            OrderStatus::Expired   => 'Kedaluwarsa',
+        return match ($this) {
+            OrderStatus::Pending => 'Menunggu Pembayaran',
+            OrderStatus::Paid => 'Lunas',
+            OrderStatus::Expired => 'Kedaluwarsa',
             OrderStatus::Cancelled => 'Dibatalkan',
-            OrderStatus::Refunded  => 'Dikembalikan',
+            OrderStatus::Refunded => 'Dikembalikan',
         };
     }
 

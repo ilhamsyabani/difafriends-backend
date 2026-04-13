@@ -5,9 +5,12 @@ import { computed } from 'vue';
  * StatusBadge — badge status yang konsisten di seluruh app.
  * Warna dikontrol oleh CSS status tokens di app.css.
  */
-const props = withDefaults(defineProps<{
-    status: string;
-}>(), {});
+const props = withDefaults(
+    defineProps<{
+        status: string;
+    }>(),
+    {},
+);
 
 const labelMap: Record<string, string> = {
     paid: 'Lunas',
@@ -48,6 +51,7 @@ const colorClass = computed(() => {
         info: 'bg-status-info-bg text-status-info',
         neutral: 'bg-status-neutral-bg text-status-neutral',
     };
+
     return map[key];
 });
 
@@ -55,7 +59,12 @@ const label = computed(() => labelMap[props.status] ?? props.status);
 </script>
 
 <template>
-    <span :class="['inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium', colorClass]">
+    <span
+        :class="[
+            'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
+            colorClass,
+        ]"
+    >
         {{ label }}
     </span>
 </template>

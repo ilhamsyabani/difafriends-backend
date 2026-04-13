@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { useFormatters } from '@/composables/useFormatters';
 import GuestLayout from '@/layouts/GuestLayout.vue';
 import { register } from '@/routes';
-import { useFormatters } from '@/composables/useFormatters';
 
 const { assetUrl } = useFormatters();
 
@@ -43,7 +43,6 @@ defineProps<{
     }>;
 }>();
 
-const isMobileMenuOpen = ref(false);
 const activeServiceTab = ref(0);
 
 function formatPrice(price: number): string {
@@ -57,6 +56,7 @@ function formatPrice(price: number): string {
 function formatDuration(minutes: number): string {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
+
     return hours > 0 ? `${hours}j ${mins}m` : `${mins}m`;
 }
 
@@ -64,13 +64,18 @@ function formatDuration(minutes: number): string {
 function getInitials(firstName: string, lastName: string): string {
     const f = firstName ? firstName.charAt(0) : '';
     const l = lastName ? lastName.charAt(0) : '';
+
     return (f + l).toUpperCase();
 }
 
 function stripHtml(html: string) {
-    if (!html) return '';
-    let tmp = document.createElement('DIV');
+    if (!html) {
+return '';
+}
+
+    const tmp = document.createElement('DIV');
     tmp.innerHTML = html;
+
     return tmp.textContent || tmp.innerText || '';
 }
 </script>

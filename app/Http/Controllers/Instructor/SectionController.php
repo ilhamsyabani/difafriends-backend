@@ -14,7 +14,7 @@ class SectionController extends Controller
         abort_if($course->instructor_id !== $request->user()->id, 403);
 
         $validated = $request->validate([
-            'title'      => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'sort_order' => 'integer|min:0',
         ]);
 
@@ -28,7 +28,7 @@ class SectionController extends Controller
         abort_if($course->instructor_id !== $request->user()->id, 403);
 
         $validated = $request->validate([
-            'title'      => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'sort_order' => 'integer|min:0',
         ]);
 

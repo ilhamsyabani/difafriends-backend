@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { Head, Link, router } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
 import axios from 'axios';
-import GuestLayout from '@/layouts/GuestLayout.vue';
+import { ref, computed } from 'vue';
 
 const props = defineProps<{
     course: { id: number; title: string; slug: string };
@@ -78,6 +77,7 @@ const progressPercent = computed(() =>
 // Mulai kuis
 async function startQuiz() {
     isLoading.value = true;
+
     try {
         const res = await axios.post(
             `/learn/${props.course.slug}/quiz/${props.quiz.id}/start`,
@@ -85,7 +85,7 @@ async function startQuiz() {
         attemptId.value = res.data.attempt_id;
         isStarted.value = true;
         initAnswers();
-    } catch (e) {
+    } catch (_e) {
         alert('Gagal memulai kuis. Coba lagi.');
     } finally {
         isLoading.value = false;
@@ -98,10 +98,12 @@ async function submitQuiz() {
         !confirm(
             'Yakin ingin submit kuis? Jawaban tidak bisa diubah setelah submit.',
         )
-    )
-        return;
+    ) {
+return;
+}
 
     isLoading.value = true;
+
     try {
         const res = await axios.post(
             `/learn/${props.course.slug}/quiz/${props.quiz.id}/submit`,
@@ -120,7 +122,7 @@ async function submitQuiz() {
                 `/learn/${props.course.slug}/quiz/${props.quiz.id}/result`,
             );
         }
-    } catch (e) {
+    } catch (_e) {
         alert('Gagal submit kuis. Coba lagi.');
     } finally {
         isLoading.value = false;
@@ -135,7 +137,11 @@ function goToQuestion(idx: number) {
 
 function isAnswered(questionId: number): boolean {
     const a = answers.value[questionId];
-    if (!a) return false;
+
+    if (!a) {
+return false;
+}
+
     return a.selected_option_id !== null || a.essay_answer.trim() !== '';
 }
 </script>

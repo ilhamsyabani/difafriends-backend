@@ -52,7 +52,10 @@ const gradeForm = useForm<
 
 function initGradeForm(attemptId: number) {
     const attempt = props.attempts.data.find((a) => a.id === attemptId);
-    if (!attempt) return;
+
+    if (!attempt) {
+return;
+}
 
     attempt.answers
         .filter((a) => a.question.type === 'essay')

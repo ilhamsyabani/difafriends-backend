@@ -27,9 +27,9 @@ class QuizController extends Controller
         }
 
         return Inertia::render('instructor/quiz/Form', [
-            'course'  => $course,
+            'course' => $course,
             'section' => $section,
-            'quiz'    => null,
+            'quiz' => null,
         ]);
     }
 
@@ -38,15 +38,15 @@ class QuizController extends Controller
         abort_if($course->instructor_id !== $request->user()->id, 403);
 
         $validated = $request->validate([
-            'title'         => 'required|string|max:255',
-            'description'   => 'nullable|string',
-            'is_required'   => 'boolean',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'is_required' => 'boolean',
             'passing_score' => 'required|integer|min:0|max:100',
         ]);
 
         $quiz = Quiz::create([
             ...$validated,
-            'course_id'  => $course->id,
+            'course_id' => $course->id,
             'section_id' => $section->id,
         ]);
 
@@ -63,9 +63,9 @@ class QuizController extends Controller
         $quiz->load(['questions.options']);
 
         return Inertia::render('instructor/quiz/Form', [
-            'course'  => $course,
+            'course' => $course,
             'section' => $section,
-            'quiz'    => $quiz,
+            'quiz' => $quiz,
         ]);
     }
 
@@ -74,9 +74,9 @@ class QuizController extends Controller
         abort_if($course->instructor_id !== $request->user()->id, 403);
 
         $validated = $request->validate([
-            'title'         => 'required|string|max:255',
-            'description'   => 'nullable|string',
-            'is_required'   => 'boolean',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'is_required' => 'boolean',
             'passing_score' => 'required|integer|min:0|max:100',
         ]);
 

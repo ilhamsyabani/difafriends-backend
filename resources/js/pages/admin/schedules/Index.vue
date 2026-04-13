@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { Head, Link, router } from '@inertiajs/vue3';
-import { ref, watch, computed } from 'vue';
-import { Plus, Edit2, Trash2, Search, Filter } from 'lucide-vue-next';
-import { Input } from '@/components/ui/input';
-import AppLayout from '@/layouts/AppLayout.vue';
 import { usePage } from '@inertiajs/vue3';
+import { Plus, Edit2, Trash2 } from 'lucide-vue-next';
+import { computed } from 'vue';
+import AppLayout from '@/layouts/AppLayout.vue';
 
-const props = defineProps<{
+defineProps<{
     schedules: {
         data: Array<{
             id: number;

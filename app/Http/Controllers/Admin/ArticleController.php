@@ -5,31 +5,30 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
-use Intervention\Image\Encoders\WebpEncoder;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
-
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Encoders\WebpEncoder;
+use Intervention\Image\ImageManager;
 
 class ArticleController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-     public function index(Request $request)
-     {
+    public function index(Request $request)
+    {
         $query = Article::with('author')->latest();
 
         // 1. Filter Pencarian (Berdasarkan Judul atau Nama Penulis)
         $query->when($request->search, function ($q, $search) {
             $q->where('title', 'like', "%{$search}%")
-              ->orWhereHas('author', function ($q) use ($search) {
-                  $q->where('first_name', 'like', "%{$search}%")
-                    ->orWhere('last_name', 'like', "%{$search}%");
-              });
+                ->orWhereHas('author', function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%");
+                });
         });
 
         // 2. Filter Status (Draft / Published)
@@ -68,14 +67,14 @@ class ArticleController extends Controller
             'thumbnail' => 'nullable|image|max:2048',
         ]);
 
-        $validated['slug'] = Str::slug($validated['title']) . '-' . uniqid();
+        $validated['slug'] = Str::slug($validated['title']).'-'.uniqid();
         $validated['author_id'] = auth()->id();
 
         if ($request->hasFile('thumbnail')) {
             // Mulai Proses Optimasi dengan Intervention
             $imageFile = $request->file('thumbnail');
-            $filename = uniqid('article_') . '.webp';
-            $path = 'articles/' . $filename;
+            $filename = uniqid('article_').'.webp';
+            $path = 'articles/'.$filename;
 
             // Inisiasi manager
             $manager = ImageManager::usingDriver(Driver::class);
@@ -104,7 +103,7 @@ class ArticleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Article $article):Response
+    public function edit(Article $article): Response
     {
         return Inertia::render('admin/articles/Form', [
             'article' => $article,
@@ -131,8 +130,8 @@ class ArticleController extends Controller
 
             // Mulai Proses Optimasi dengan Intervention
             $imageFile = $request->file('thumbnail');
-            $filename = uniqid('article_') . '.webp'; // Paksa format jadi webp
-            $path = 'articles/' . $filename;
+            $filename = uniqid('article_').'.webp'; // Paksa format jadi webp
+            $path = 'articles/'.$filename;
 
             // Inisiasi manager
             $manager = ImageManager::usingDriver(Driver::class);

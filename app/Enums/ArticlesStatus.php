@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum ArticlesStatus :string
+enum ArticlesStatus: string
 {
     case Draft = 'draft';
     case Review = 'review';

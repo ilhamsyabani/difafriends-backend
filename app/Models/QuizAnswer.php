@@ -42,8 +42,13 @@ class QuizAnswer extends Model
 
     public function isCorrect(): bool
     {
-        if (!$this->question->isMultipleChoice()) return false;
-        if (!$this->selected_option_id) return false;
+        if (! $this->question->isMultipleChoice()) {
+            return false;
+        }
+        if (! $this->selected_option_id) {
+            return false;
+        }
+
         return $this->selectedOption?->is_correct ?? false;
     }
 }

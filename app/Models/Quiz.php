@@ -23,7 +23,7 @@ class Quiz extends Model
     protected function casts(): array
     {
         return [
-            'is_required'   => 'boolean',
+            'is_required' => 'boolean',
             'passing_score' => 'integer',
         ];
     }

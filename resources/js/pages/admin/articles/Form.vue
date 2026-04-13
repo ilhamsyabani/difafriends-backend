@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { ArrowLeft, Save, Loader2, ImageIcon } from 'lucide-vue-next';
+import { QuillEditor } from '@vueup/vue-quill';
+import { ArrowLeft, Save, Loader2 } from 'lucide-vue-next';
 import {
     Select,
     SelectContent,
@@ -12,7 +13,6 @@ import {
 import AppLayout from '@/layouts/AppLayout.vue';
 
 // Import Quill Editor
-import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 const props = defineProps<{
@@ -37,6 +37,7 @@ const form = useForm({
 
 function handleFileChange(e: Event) {
     const target = e.target as HTMLInputElement;
+
     if (target.files && target.files.length > 0) {
         form.thumbnail = target.files[0];
     }

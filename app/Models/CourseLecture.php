@@ -25,10 +25,10 @@ class CourseLecture extends Model
     ];
 
     protected $casts = [
-        'type'            => LectureType::class,
-        'video_duration'  => 'integer',
+        'type' => LectureType::class,
+        'video_duration' => 'integer',
         'is_free_preview' => 'boolean',
-        'sort_order'      => 'integer',
+        'sort_order' => 'integer',
     ];
 
     public function course(): BelongsTo
@@ -44,7 +44,7 @@ class CourseLecture extends Model
     public function resources(): HasMany
     {
         return $this->hasMany(CourseResource::class, 'lecture_id')
-                    ->orderBy('sort_order');
+            ->orderBy('sort_order');
     }
 
     public function scopeOrdered($query)
@@ -55,9 +55,9 @@ class CourseLecture extends Model
     public function getFormattedDurationAttribute(): string
     {
         $seconds = $this->video_duration;
-        $hours   = intdiv($seconds, 3600);
+        $hours = intdiv($seconds, 3600);
         $minutes = intdiv($seconds % 3600, 60);
-        $secs    = $seconds % 60;
+        $secs = $seconds % 60;
 
         return $hours > 0 ? sprintf('%d:%02d:%02d', $hours, $minutes, $secs) : sprintf('%d:%02d', $minutes, $secs);
     }

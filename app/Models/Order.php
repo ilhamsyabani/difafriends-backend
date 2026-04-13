@@ -31,11 +31,11 @@ class Order extends Model
     ];
 
     protected $casts = [
-        'original_price'       => 'decimal:2',
-        'discount_amount'      => 'decimal:2',
-        'final_amount'         => 'decimal:2',
-        'status'               => OrderStatus::class,
-        'expired_at'           => 'datetime',
+        'original_price' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'final_amount' => 'decimal:2',
+        'status' => OrderStatus::class,
+        'expired_at' => 'datetime',
         'invoice_generated_at' => 'datetime',
     ];
 
@@ -88,6 +88,6 @@ class Order extends Model
 
     public function hasInvoice(): bool
     {
-        return !is_null($this->invoice_path);
+        return ! is_null($this->invoice_path);
     }
 }

@@ -8,7 +8,6 @@ import {
     CalendarClock,
     Edit2,
     Trash2,
-    Coffee,
 } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
@@ -54,7 +53,10 @@ function getDayName(val: string | number): string {
 
 // Memformat waktu dari "08:00:00" menjadi "08:00"
 function formatTime(timeStr: string): string {
-    if (!timeStr) return '';
+    if (!timeStr) {
+return '';
+}
+
     return timeStr.substring(0, 5);
 }
 
@@ -63,9 +65,11 @@ const groupedSchedules = computed(() => {
 
     props.schedules.forEach((schedule) => {
         const day = String(schedule.day_of_week);
+
         if (!groups[day]) {
             groups[day] = [];
         }
+
         groups[day].push(schedule);
     });
 

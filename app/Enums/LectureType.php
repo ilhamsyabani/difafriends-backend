@@ -2,19 +2,19 @@
 
 namespace App\Enums;
 
-enum LectureType:string
+enum LectureType: string
 {
-    case Video    = 'video';
-    case Text     = 'text';
-    case Quiz     = 'quiz';
+    case Video = 'video';
+    case Text = 'text';
+    case Quiz = 'quiz';
     case Document = 'document'; // PDF embed
 
     public function label(): string
     {
-        return match($this) {
-            LectureType::Video    => 'Video',
-            LectureType::Text     => 'Artikel / Teks',
-            LectureType::Quiz     => 'Kuis',
+        return match ($this) {
+            LectureType::Video => 'Video',
+            LectureType::Text => 'Artikel / Teks',
+            LectureType::Quiz => 'Kuis',
             LectureType::Document => 'Dokumen PDF',
         };
     }

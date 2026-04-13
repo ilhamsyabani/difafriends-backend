@@ -36,10 +36,17 @@ async function fetchNotifications() {
 async function markAsRead(id: string, url: string | null) {
     await axios.post(`/notifications/${id}/read`);
     const notif = notifications.value.find((n) => n.id === id);
-    if (notif) notif.read_at = new Date().toISOString();
+
+    if (notif) {
+notif.read_at = new Date().toISOString();
+}
+
     unreadCount.value = Math.max(0, unreadCount.value - 1);
     isOpen.value = false;
-    if (url) router.visit(url);
+
+    if (url) {
+router.visit(url);
+}
 }
 
 async function markAllRead() {
@@ -49,7 +56,10 @@ async function markAllRead() {
 }
 
 function handleClickOutside(e: MouseEvent) {
-    if (bellContainer.value && !bellContainer.value.contains(e.target as Node)) {
+    if (
+        bellContainer.value &&
+        !bellContainer.value.contains(e.target as Node)
+    ) {
         isOpen.value = false;
     }
 }
@@ -58,7 +68,9 @@ function handleKeydown(e: KeyboardEvent) {
     if (e.key === 'Escape' && isOpen.value) {
         isOpen.value = false;
         // Kembalikan fokus ke tombol bel
-        bellContainer.value?.querySelector<HTMLButtonElement>('button')?.focus();
+        bellContainer.value
+            ?.querySelector<HTMLButtonElement>('button')
+            ?.focus();
     }
 }
 
@@ -76,6 +88,7 @@ function startPolling() {
 
 function toggleOpen() {
     isOpen.value = !isOpen.value;
+
     if (isOpen.value && notifications.value.length === 0) {
         fetchNotifications();
     }
@@ -105,17 +118,14 @@ function iconPath(icon: string): string {
         default:
             'M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9',
     };
+
     return icons[icon] ?? icons['default'];
 }
 </script>
 
 <template>
     <!-- Region aria-live: mengumumkan perubahan notifikasi ke screen reader -->
-    <div
-        aria-live="polite"
-        aria-atomic="true"
-        class="sr-only"
-    >
+    <div aria-live="polite" aria-atomic="true" class="sr-only">
         <span v-if="unreadCount > 0">
             {{ unreadCount }} notifikasi belum dibaca
         </span>
@@ -124,7 +134,7 @@ function iconPath(icon: string): string {
     <div ref="bellContainer" class="relative">
         <button
             @click="toggleOpen"
-            class="relative rounded-lg p-2 transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 dark:hover:bg-gray-800"
+            class="relative rounded-lg p-2 transition-colors hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:outline-none dark:hover:bg-gray-800"
             :aria-label="`Notifikasi${unreadCount > 0 ? `, ${unreadCount} belum dibaca` : ''}`"
             :aria-expanded="isOpen"
             aria-haspopup="menu"
@@ -145,7 +155,7 @@ function iconPath(icon: string): string {
 
             <span
                 v-if="unreadCount > 0"
-                class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white"
+                class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white"
             >
                 {{ unreadCount > 9 ? '9+' : unreadCount }}
             </span>
@@ -155,7 +165,7 @@ function iconPath(icon: string): string {
             v-if="isOpen"
             role="menu"
             aria-label="Daftar notifikasi"
-            class="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800"
+            class="absolute top-full right-0 z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800"
         >
             <div
                 class="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-gray-700"
@@ -204,7 +214,9 @@ function iconPath(icon: string): string {
                     @click="markAsRead(notif.id, notif.url)"
                     :class="[
                         'flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50',
-                        !notif.read_at ? 'bg-purple-50/50 dark:bg-purple-900/10' : '',
+                        !notif.read_at
+                            ? 'bg-purple-50/50 dark:bg-purple-900/10'
+                            : '',
                     ]"
                 >
                     <div
@@ -216,7 +228,12 @@ function iconPath(icon: string): string {
                         ]"
                     >
                         <svg
-                            :class="['h-4 w-4', !notif.read_at ? 'text-purple-600' : 'text-gray-400']"
+                            :class="[
+                                'h-4 w-4',
+                                !notif.read_at
+                                    ? 'text-purple-600'
+                                    : 'text-gray-400',
+                            ]"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -241,10 +258,14 @@ function iconPath(icon: string): string {
                         >
                             {{ notif.title }}
                         </p>
-                        <p class="mt-0.5 line-clamp-2 text-xs text-gray-500 dark:text-gray-400">
+                        <p
+                            class="mt-0.5 line-clamp-2 text-xs text-gray-500 dark:text-gray-400"
+                        >
                             {{ notif.message }}
                         </p>
-                        <p class="mt-1 text-xs text-gray-400">{{ notif.created_at }}</p>
+                        <p class="mt-1 text-xs text-gray-400">
+                            {{ notif.created_at }}
+                        </p>
                     </div>
 
                     <div

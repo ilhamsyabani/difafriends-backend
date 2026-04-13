@@ -22,7 +22,7 @@ class CourseResource extends Model
     ];
 
     protected $casts = [
-        'type'       => ResourceType::class,
+        'type' => ResourceType::class,
         'sort_order' => 'integer',
     ];
 
@@ -43,8 +43,8 @@ class CourseResource extends Model
 
     public function getAccessUrlAttribute(): string
     {
-        return match($this->type) {
-            ResourceType::File  => asset('storage/' . $this->value),
+        return match ($this->type) {
+            ResourceType::File => asset('storage/'.$this->value),
             ResourceType::Link,
             ResourceType::Video => $this->value,
         };

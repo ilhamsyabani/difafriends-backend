@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import GuestLayout from '@/layouts/GuestLayout.vue';
 import { useFormatters } from '@/composables/useFormatters';
+import GuestLayout from '@/layouts/GuestLayout.vue';
 
 const { assetUrl } = useFormatters();
 

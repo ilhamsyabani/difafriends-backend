@@ -41,12 +41,12 @@ class CompanionController extends Controller
     public function updateSchedule(Request $request, TutorSchedule $schedule)
     {
         $validated = $request->validate([
-            'day_of_week'      => 'required|integer|between:0,6',
-            'start_time'       => 'required|date_format:H:i',
-            'end_time'         => 'required|date_format:H:i|after:start_time',
+            'day_of_week' => 'required|integer|between:0,6',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
             'session_duration' => 'required|integer|min:15',
-            'price'            => 'required|numeric|min:0',
-            'is_active'        => 'boolean',
+            'price' => 'required|numeric|min:0',
+            'is_active' => 'boolean',
         ]);
 
         $schedule->update($validated);

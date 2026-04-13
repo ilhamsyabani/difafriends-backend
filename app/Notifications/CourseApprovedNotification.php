@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -42,11 +41,11 @@ class CourseApprovedNotification extends Notification
     public function toDatabase(object $notifiable): array
     {
         return [
-            'type'    => 'course_approved',
-            'title'   => 'Kelas Disetujui!',
+            'type' => 'course_approved',
+            'title' => 'Kelas Disetujui!',
             'message' => "Kelas \"{$this->course->title}\" sudah dipublikasikan.",
-            'url'     => "/courses/{$this->course->slug}",
-            'icon'    => 'book-open',
+            'url' => "/courses/{$this->course->slug}",
+            'icon' => 'book-open',
         ];
     }
 

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->boolean('is_required')->default(false);
             $table->unsignedInteger('passing_score')->default(0)
-                  ->comment('Nilai minimum lulus 0-100');
+                ->comment('Nilai minimum lulus 0-100');
             $table->timestamps();
         });
     }

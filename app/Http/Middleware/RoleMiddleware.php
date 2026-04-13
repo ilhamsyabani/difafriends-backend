@@ -16,13 +16,13 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, string ...$roles): mixed
     {
-        if (!$request->user()) {
+        if (! $request->user()) {
             return redirect()->route('login');
         }
 
-        $allowedRoles = array_map(fn($r) => Roles::from($r), $roles);
+        $allowedRoles = array_map(fn ($r) => Roles::from($r), $roles);
 
-        if (!in_array($request->user()->role, $allowedRoles)) {
+        if (! in_array($request->user()->role, $allowedRoles)) {
             abort(403, 'Unauthorized.');
         }
 

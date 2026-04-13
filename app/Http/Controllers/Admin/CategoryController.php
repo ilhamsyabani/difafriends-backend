@@ -3,17 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Category;
-use Inertia\Response;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): \Inertia\Response
+    public function index(Request $request): Response
     {
         $categories = Category::with('parent')
             ->withCount('courses')
@@ -38,7 +38,7 @@ class CategoryController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): \Inertia\Response
+    public function create(): Response
     {
         $parents = Category::where('parent_id', null)
             ->orderBy('name')
@@ -61,7 +61,7 @@ class CategoryController extends Controller
             'sort_order' => 'nullable|integer',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']). '-' . Str::random(4);
+        $validated['slug'] = Str::slug($validated['name']).'-'.Str::random(4);
 
         Category::create($validated);
 
@@ -88,7 +88,7 @@ class CategoryController extends Controller
             ->get(['id', 'name']);
 
         return Inertia::render('admin/categories/Form', [
-            'parents'  => $parents,
+            'parents' => $parents,
             'category' => $category,
         ]);
     }
@@ -117,7 +117,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        if($category->courses()->count() > 0){
+        if ($category->courses()->count() > 0) {
             return back()->with('error', 'Cannot delete category with associated courses.');
         }
 

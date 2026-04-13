@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -43,11 +42,11 @@ class BookingConfirmedNotification extends Notification
     public function toDatabase(object $notifiable): array
     {
         return [
-            'type'    => 'booking_confirmed',
-            'title'   => 'Booking Terkonfirmasi!',
+            'type' => 'booking_confirmed',
+            'title' => 'Booking Terkonfirmasi!',
             'message' => "Sesi dengan {$this->booking->tutor->full_name} pada {$this->booking->start_at->format('d M Y H:i')} sudah dikonfirmasi.",
-            'url'     => "/bookings/{$this->booking->id}",
-            'icon'    => 'calendar',
+            'url' => "/bookings/{$this->booking->id}",
+            'icon' => 'calendar',
         ];
     }
 

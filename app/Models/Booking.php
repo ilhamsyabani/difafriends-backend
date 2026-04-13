@@ -34,13 +34,13 @@ class Booking extends Model
     ];
 
     protected $casts = [
-        'start_at'     => 'datetime',
-        'end_at'       => 'datetime',
+        'start_at' => 'datetime',
+        'end_at' => 'datetime',
         'confirmed_at' => 'datetime',
         'completed_at' => 'datetime',
         'cancelled_at' => 'datetime',
-        'status'       => BookingStatus::class,
-        'type'         => SessionType::class,
+        'status' => BookingStatus::class,
+        'type' => SessionType::class,
     ];
 
     // ── Relationships ──────────────────────────────────────
@@ -76,10 +76,10 @@ class Booking extends Model
     public function activeOrder(): MorphOne
     {
         return $this->morphOne(Order::class, 'orderable')
-                    ->whereIn('status', [
-                        OrderStatus::Pending->value,
-                        OrderStatus::Paid->value,
-                    ]);
+            ->whereIn('status', [
+                OrderStatus::Pending->value,
+                OrderStatus::Paid->value,
+            ]);
     }
 
     // ── Scopes ─────────────────────────────────────────────
@@ -87,7 +87,7 @@ class Booking extends Model
     public function scopeUpcoming($query)
     {
         return $query->where('start_at', '>', now())
-                     ->where('status', BookingStatus::Confirmed);
+            ->where('status', BookingStatus::Confirmed);
     }
 
     public function scopeToday($query)

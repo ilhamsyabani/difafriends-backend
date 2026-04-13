@@ -28,7 +28,7 @@ class ScheduleController extends Controller
     public function create(): Response
     {
         return Inertia::render('admin/schedules/Form', [
-            'schedule'   => null,
+            'schedule' => null,
             'companions' => $this->getCompanions(),
         ]);
     }
@@ -36,15 +36,15 @@ class ScheduleController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'tutor_id'         => 'required|exists:users,id',
-            'day_of_week'      => 'required|integer|between:0,6',
-            'start_time'       => 'required|date_format:H:i',
-            'end_time'         => 'required|date_format:H:i|after:start_time',
+            'tutor_id' => 'required|exists:users,id',
+            'day_of_week' => 'required|integer|between:0,6',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
             'session_duration' => 'required|integer|min:15',
-            'break_time'       => 'required|integer|min:0',
-            'price'            => 'required|numeric|min:0',
+            'break_time' => 'required|integer|min:0',
+            'price' => 'required|numeric|min:0',
             'max_participants' => 'required|integer|min:1|max:10',
-            'is_active'        => 'boolean',
+            'is_active' => 'boolean',
         ]);
 
         TutorSchedule::create($validated);
@@ -56,7 +56,7 @@ class ScheduleController extends Controller
     public function edit(TutorSchedule $schedule): Response
     {
         return Inertia::render('admin/schedules/Form', [
-            'schedule'   => $schedule->load('tutor'),
+            'schedule' => $schedule->load('tutor'),
             'companions' => $this->getCompanions(),
         ]);
     }
@@ -64,15 +64,15 @@ class ScheduleController extends Controller
     public function update(Request $request, TutorSchedule $schedule)
     {
         $validated = $request->validate([
-            'tutor_id'         => 'required|exists:users,id',
-            'day_of_week'      => 'required|integer|between:0,6',
-            'start_time'       => 'required|date_format:H:i',
-            'end_time'         => 'required|date_format:H:i|after:start_time',
+            'tutor_id' => 'required|exists:users,id',
+            'day_of_week' => 'required|integer|between:0,6',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
             'session_duration' => 'required|integer|min:15',
-            'break_time'       => 'required|integer|min:0',
-            'price'            => 'required|numeric|min:0',
+            'break_time' => 'required|integer|min:0',
+            'price' => 'required|numeric|min:0',
             'max_participants' => 'required|integer|min:1|max:10',
-            'is_active'        => 'boolean',
+            'is_active' => 'boolean',
         ]);
 
         $schedule->update($validated);

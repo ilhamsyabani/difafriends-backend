@@ -2,86 +2,85 @@
 
 namespace App\Http\Controllers\Instructor;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Course;
-use App\Models\Category;
-use Inertia\Response;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\Storage;
 use App\Enums\CourseStatus;
+use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Course;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-
+use Inertia\Inertia;
+use Inertia\Response;
 
 class CourseController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-     public function index(Request $request): Response
-     {
-         $query = Course::query()
-             ->select('id', 'title', 'slug', 'thumbnail', 'price', 'discount_price', 'status', 'is_featured', 'category_id', 'instructor_id')
-             ->where('instructor_id', auth()->id())
-             ->with([
-                 'category:id,name',
-                 'instructor:id,first_name,last_name,photo'
-             ])
-             ->withCount(['enrollments', 'lectures'])
-             ->withAvg('reviews', 'rating')
-             ->when($request->category_id, function ($q, $categoryId) {
-                 $q->where('category_id', $categoryId);
-             })
-             ->when($request->status, function ($q, $status) {
-                 $q->where('status', $status);
-             })
-             ->when($request->rating, function ($q, $rating) {
-                 $q->where(function ($subquery) {
-                     $subquery->selectRaw('avg(rating)')
-                              ->from('reviews')
-                              ->whereColumn('reviewable_id', 'courses.id')
-                              ->where('reviewable_type', Course::class)
-                              // Tambahkan baris di bawah INI JIKA model Review memakai SoftDeletes
-                              ->whereNull('deleted_at');
-                 }, '>=', $rating);
-             });
+    public function index(Request $request): Response
+    {
+        $query = Course::query()
+            ->select('id', 'title', 'slug', 'thumbnail', 'price', 'discount_price', 'status', 'is_featured', 'category_id', 'instructor_id')
+            ->where('instructor_id', auth()->id())
+            ->with([
+                'category:id,name',
+                'instructor:id,first_name,last_name,photo',
+            ])
+            ->withCount(['enrollments', 'lectures'])
+            ->withAvg('reviews', 'rating')
+            ->when($request->category_id, function ($q, $categoryId) {
+                $q->where('category_id', $categoryId);
+            })
+            ->when($request->status, function ($q, $status) {
+                $q->where('status', $status);
+            })
+            ->when($request->rating, function ($q, $rating) {
+                $q->where(function ($subquery) {
+                    $subquery->selectRaw('avg(rating)')
+                        ->from('reviews')
+                        ->whereColumn('reviewable_id', 'courses.id')
+                        ->where('reviewable_type', Course::class)
+                             // Tambahkan baris di bawah INI JIKA model Review memakai SoftDeletes
+                        ->whereNull('deleted_at');
+                }, '>=', $rating);
+            });
 
-         // Search by judul
-         if ($request->filled('search')) {
-             $query->where('title', 'like', '%' . $request->search . '%');
-         }
+        // Search by judul
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%'.$request->search.'%');
+        }
 
-         // Filter by harga
-         if ($request->filled('price')) {
-             match($request->price) {
-                 'free'    => $query->where('price', 0),
-                 'paid'    => $query->where('price', '>', 0),
-                 default   => null,
-             };
-         }
+        // Filter by harga
+        if ($request->filled('price')) {
+            match ($request->price) {
+                'free' => $query->where('price', 0),
+                'paid' => $query->where('price', '>', 0),
+                default => null,
+            };
+        }
 
-         // Sort
-         match($request->get('sort', 'latest')) {
-             'popular'    => $query->orderByDesc('enrollments_count'),
-             'price_low'  => $query->orderBy('price'),
-             'price_high' => $query->orderByDesc('price'),
-             default      => $query->latest(),
-         };
+        // Sort
+        match ($request->get('sort', 'latest')) {
+            'popular' => $query->orderByDesc('enrollments_count'),
+            'price_low' => $query->orderBy('price'),
+            'price_high' => $query->orderByDesc('price'),
+            default => $query->latest(),
+        };
 
-         $courses = $query->paginate(12)->withQueryString();
+        $courses = $query->paginate(12)->withQueryString();
 
-         $categories = Category::whereNull('parent_id')
-             ->where('is_active', true)
-             ->with('children')
-             ->orderBy('sort_order')
-             ->get();
+        $categories = Category::whereNull('parent_id')
+            ->where('is_active', true)
+            ->with('children')
+            ->orderBy('sort_order')
+            ->get();
 
-         return Inertia::render('instructor/courses/Index', [
-             'courses'    => $courses,
-             'categories' => $categories,
-             'filters'    => $request->only(['search', 'category_id', 'status', 'rating', 'price', 'sort']),
-         ]);
-     }
+        return Inertia::render('instructor/courses/Index', [
+            'courses' => $courses,
+            'categories' => $categories,
+            'filters' => $request->only(['search', 'category_id', 'status', 'rating', 'price', 'sort']),
+        ]);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -89,7 +88,7 @@ class CourseController extends Controller
     public function create()
     {
         return Inertia::render('instructor/courses/Form', [
-            'course'     => null,
+            'course' => null,
             'categories' => Category::with('parent')
                 ->whereNotNull('parent_id')
                 ->orderBy('name')
@@ -103,15 +102,15 @@ class CourseController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title'            => 'required|string|max:255',
-            'category_id'      => 'required|exists:categories,id',
-            'description'      => 'required|string',
-            'price'            => 'required|numeric|min:0',
-            'discount_price'   => 'nullable|numeric|min:0',
+            'title' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'discount_price' => 'nullable|numeric|min:0',
             'duration_minutes' => 'required|integer|min:1',
-            'has_certificate'  => 'boolean',
-            'prerequisites'    => 'nullable|string',
-            'thumbnail'        => 'nullable|image|mimes:jpeg,png,webp|max:2048',
+            'has_certificate' => 'boolean',
+            'prerequisites' => 'nullable|string',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,webp|max:2048',
         ]);
 
         // Handle upload thumbnail
@@ -121,8 +120,8 @@ class CourseController extends Controller
         }
 
         $validated['instructor_id'] = $request->user()->id;
-        $validated['status']        = CourseStatus::Draft->value;
-        $validated['slug']          = Str::slug($validated['title']) . '-' . Str::random(5);
+        $validated['status'] = CourseStatus::Draft->value;
+        $validated['slug'] = Str::slug($validated['title']).'-'.Str::random(5);
 
         Course::create($validated);
 
@@ -146,7 +145,7 @@ class CourseController extends Controller
         abort_if($course->instructor_id !== auth()->user()->id, 403);
 
         return Inertia::render('instructor/courses/Form', [
-            'course'     => $course,
+            'course' => $course,
             'categories' => Category::with('parent')
                 ->whereNotNull('parent_id')
                 ->orderBy('name')
@@ -162,16 +161,16 @@ class CourseController extends Controller
         abort_if($course->instructor_id !== $request->user()->id, 403);
 
         $validated = $request->validate([
-            'title'            => 'required|string|max:255',
-            'category_id'      => 'required|exists:categories,id',
-            'description'      => 'required|string',
-            'price'            => 'required|numeric|min:0',
-            'discount_price'   => 'nullable|numeric|min:0',
+            'title' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'discount_price' => 'nullable|numeric|min:0',
             'duration_minutes' => 'required|integer|min:1',
-            'has_certificate'  => 'boolean',
-            'prerequisites'    => 'nullable|string',
-            'status'           => 'in:draft,review',
-            'thumbnail'        => 'nullable|image|mimes:jpeg,png,webp|max:2048', // ✅
+            'has_certificate' => 'boolean',
+            'prerequisites' => 'nullable|string',
+            'status' => 'in:draft,review',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,webp|max:2048', // ✅
         ]);
 
         // Handle upload thumbnail baru

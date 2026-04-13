@@ -25,11 +25,11 @@ class Payment extends Model
     ];
 
     protected $casts = [
-        'amount'             => 'decimal:2',
-        'status'             => PaymentStatus::class,
-        'midtrans_response'  => 'array',
-        'paid_at'            => 'datetime',
-        'expired_at'         => 'datetime',
+        'amount' => 'decimal:2',
+        'status' => PaymentStatus::class,
+        'midtrans_response' => 'array',
+        'paid_at' => 'datetime',
+        'expired_at' => 'datetime',
     ];
 
     // ── Relationships ──────────────────────────────────────
@@ -65,13 +65,13 @@ class Payment extends Model
     // Ambil detail metode pembayaran yang readable
     public function getPaymentMethodAttribute(): string
     {
-        return match($this->payment_type) {
-            'bank_transfer' => strtoupper($this->payment_bank ?? '') . ' Virtual Account',
-            'gopay'         => 'GoPay',
-            'shopeepay'     => 'ShopeePay',
-            'qris'          => 'QRIS',
-            'credit_card'   => 'Kartu Kredit',
-            default         => ucfirst($this->payment_type ?? 'Unknown'),
+        return match ($this->payment_type) {
+            'bank_transfer' => strtoupper($this->payment_bank ?? '').' Virtual Account',
+            'gopay' => 'GoPay',
+            'shopeepay' => 'ShopeePay',
+            'qris' => 'QRIS',
+            'credit_card' => 'Kartu Kredit',
+            default => ucfirst($this->payment_type ?? 'Unknown'),
         };
     }
 }

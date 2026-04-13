@@ -35,16 +35,31 @@ const photoInput = ref<HTMLInputElement | null>(null);
 
 function onPhotoChange(e: Event) {
     const file = (e.target as HTMLInputElement).files?.[0];
-    if (!file) return;
+
+    if (!file) {
+return;
+}
+
     const reader = new FileReader();
-    reader.onload = (ev) => { photoPreview.value = ev.target?.result as string; };
+    reader.onload = (ev) => {
+        photoPreview.value = ev.target?.result as string;
+    };
     reader.readAsDataURL(file);
 }
 
 const avatarUrl = computed(() => {
-    if (photoPreview.value) return photoPreview.value;
-    if (user.value?.photo) return `/storage/${user.value.photo}`;
-    const name = encodeURIComponent(`${user.value?.first_name ?? ''} ${user.value?.last_name ?? ''}`);
+    if (photoPreview.value) {
+return photoPreview.value;
+}
+
+    if (user.value?.photo) {
+return `/storage/${user.value.photo}`;
+}
+
+    const name = encodeURIComponent(
+        `${user.value?.first_name ?? ''} ${user.value?.last_name ?? ''}`,
+    );
+
     return `https://ui-avatars.com/api/?name=${name}&background=7B2D8B&color=fff&size=128`;
 });
 
@@ -69,7 +84,6 @@ const genderOptions = [
 
         <SettingsLayout>
             <div class="flex flex-col space-y-10">
-
                 <!-- ── Avatar Section ─────────────────────��──── -->
                 <div>
                     <Heading
@@ -88,7 +102,7 @@ const genderOptions = [
                             <button
                                 type="button"
                                 @click="photoInput?.click()"
-                                class="absolute -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-purple-600 text-white shadow-md transition hover:bg-purple-700"
+                                class="absolute -right-2 -bottom-2 flex h-8 w-8 items-center justify-center rounded-full bg-purple-600 text-white shadow-md transition hover:bg-purple-700"
                                 title="Ganti foto"
                             >
                                 <Camera class="h-4 w-4" />
@@ -96,7 +110,9 @@ const genderOptions = [
                         </div>
 
                         <div class="flex flex-col gap-1.5">
-                            <p class="font-semibold text-gray-900 dark:text-white">
+                            <p
+                                class="font-semibold text-gray-900 dark:text-white"
+                            >
                                 {{ user?.first_name }} {{ user?.last_name }}
                             </p>
                             <span
@@ -225,7 +241,7 @@ const genderOptions = [
                                     id="gender"
                                     name="gender"
                                     :value="user?.gender ?? ''"
-                                    class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                    class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
                                 >
                                     <option
                                         v-for="opt in genderOptions"
@@ -248,13 +264,21 @@ const genderOptions = [
                                 rows="4"
                                 :defaultValue="user?.bio ?? ''"
                                 placeholder="Ceritakan sedikit tentang Anda... (maks. 500 karakter)"
-                                class="flex w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                class="flex w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
                             />
                             <p class="text-xs text-muted-foreground">
-                                <span v-if="user?.role === 'companion' || user?.role === 'instructor'">
-                                    Bio Anda akan tampil di halaman profil publik.
+                                <span
+                                    v-if="
+                                        user?.role === 'companion' ||
+                                        user?.role === 'instructor'
+                                    "
+                                >
+                                    Bio Anda akan tampil di halaman profil
+                                    publik.
                                 </span>
-                                <span v-else>Deskripsi singkat tentang Anda.</span>
+                                <span v-else
+                                    >Deskripsi singkat tentang Anda.</span
+                                >
                             </p>
                             <InputError :message="errors.bio" />
                         </div>
@@ -264,28 +288,40 @@ const genderOptions = [
                             v-if="mustVerifyEmail && !user?.email_verified_at"
                             class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-900 dark:bg-yellow-900/20"
                         >
-                            <p class="text-sm text-yellow-800 dark:text-yellow-200">
+                            <p
+                                class="text-sm text-yellow-800 dark:text-yellow-200"
+                            >
                                 Email Anda belum diverifikasi.
                                 <Link
                                     :href="send()"
                                     as="button"
                                     class="font-semibold underline underline-offset-4 hover:text-yellow-700"
                                 >
-                                    Klik di sini untuk kirim ulang link verifikasi.
+                                    Klik di sini untuk kirim ulang link
+                                    verifikasi.
                                 </Link>
                             </p>
                             <div
                                 v-if="status === 'verification-link-sent'"
                                 class="mt-2 text-sm font-medium text-green-600"
                             >
-                                Link verifikasi baru telah dikirim ke email Anda.
+                                Link verifikasi baru telah dikirim ke email
+                                Anda.
                             </div>
                         </div>
 
                         <!-- Tombol Simpan -->
                         <div class="flex items-center gap-4 border-t pt-6">
-                            <Button type="submit" :disabled="processing" class="px-8">
-                                {{ processing ? 'Menyimpan...' : 'Simpan Perubahan' }}
+                            <Button
+                                type="submit"
+                                :disabled="processing"
+                                class="px-8"
+                            >
+                                {{
+                                    processing
+                                        ? 'Menyimpan...'
+                                        : 'Simpan Perubahan'
+                                }}
                             </Button>
 
                             <Transition
@@ -305,7 +341,9 @@ const genderOptions = [
                     </Form>
                 </div>
 
-                <div class="border-t border-neutral-200 dark:border-neutral-800" />
+                <div
+                    class="border-t border-neutral-200 dark:border-neutral-800"
+                />
 
                 <DeleteUser />
             </div>

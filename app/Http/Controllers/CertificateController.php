@@ -39,7 +39,7 @@ class CertificateController extends Controller
 
         return Inertia::render('certificates/Verify', [
             'certificate' => $certificate,
-            'valid'       => !!$certificate,
+            'valid' => (bool) $certificate,
         ]);
     }
 
