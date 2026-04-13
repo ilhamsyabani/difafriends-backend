@@ -12,6 +12,7 @@ import {
     Filter,
     CheckCircle,
     XCircle,
+    UserPlus,
 } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 import SortIcon from '@/components/SortIcon.vue';
@@ -547,6 +548,15 @@ function destroy(id: number) {
                                             <span class="sr-only">Reject</span>
                                             <XCircle class="h-4 w-4" />
                                         </button>
+
+                                        <Link
+                                            :href="`/admin/courses/${course.id}/enrollments`"
+                                            class="text-gray-400 transition-colors hover:text-purple-600 dark:hover:text-purple-400"
+                                            title="Kelola Peserta"
+                                        >
+                                            <span class="sr-only">Peserta</span>
+                                            <UserPlus class="h-4 w-4" />
+                                        </Link>
 
                                         <Link
                                             :href="`/admin/courses/${course.id}/edit`"

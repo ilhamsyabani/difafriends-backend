@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\CompanionController as AdminCompanionController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
+use App\Http\Controllers\Admin\CourseEnrollmentController as AdminCourseEnrollmentController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\QuizGradeController as AdminQuizGradeController;
 use App\Http\Controllers\Admin\ReportController;
@@ -207,6 +208,12 @@ Route::middleware(['auth', 'verified', 'role:admin'])
             [AdminCourseController::class, 'approve'])->name('courses.approve');
         Route::patch('/courses/{course}/reject',
             [AdminCourseController::class, 'reject'])->name('courses.reject');
+        Route::get('/courses/{course}/enrollments',
+            [AdminCourseEnrollmentController::class, 'index'])->name('courses.enrollments.index');
+        Route::post('/courses/{course}/enrollments',
+            [AdminCourseEnrollmentController::class, 'store'])->name('courses.enrollments.store');
+        Route::delete('/courses/{course}/enrollments/{enrollment}',
+            [AdminCourseEnrollmentController::class, 'destroy'])->name('courses.enrollments.destroy');
 
         // Schedules Admin
         Route::resource('schedules', AdminScheduleController::class)->except(['show']);
