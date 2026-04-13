@@ -95,7 +95,7 @@ const statusColor = (val: string) => {
         cancelled:
             'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
         refunded:
-            'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+            'bg-purple-100 text-primary-hover dark:bg-purple-900/30 dark:text-purple-400',
     };
 
     return (
@@ -131,7 +131,7 @@ const statusColor = (val: string) => {
                     <a
                         :href="exportUrl"
                         target="_blank"
-                        class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-purple-700 hover:shadow focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none dark:focus:ring-offset-gray-900"
+                        class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-purple-700 hover:shadow focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none dark:focus:ring-offset-gray-900"
                     >
                         <Download class="h-4 w-4" />
                         Export CSV
@@ -299,7 +299,7 @@ const statusColor = (val: string) => {
                                         />
                                         <div
                                             v-else
-                                            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-purple-100 text-xs font-bold text-purple-700 dark:bg-purple-900/50 dark:text-purple-400"
+                                            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-purple-100 text-xs font-bold text-primary-hover dark:bg-purple-900/50 dark:text-purple-400"
                                         >
                                             {{
                                                 (order.user.first_name?.[0] ||
@@ -369,7 +369,7 @@ const statusColor = (val: string) => {
                                     <div class="flex items-center justify-end">
                                         <Link
                                             :href="`/admin/orders/${order.id}`"
-                                            class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-purple-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-purple-400"
+                                            class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-primary dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-purple-400"
                                             title="Detail Transaksi"
                                         >
                                             <Eye class="h-3.5 w-3.5" />
@@ -404,7 +404,7 @@ const statusColor = (val: string) => {
                     :class="[
                         'rounded-xl px-3.5 py-2 text-sm font-medium transition-colors',
                         link.active
-                            ? 'bg-purple-600 text-white shadow-sm'
+                            ? 'bg-primary text-white shadow-sm'
                             : link.url
                               ? 'border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
                               : 'cursor-not-allowed border border-transparent text-gray-400 dark:text-gray-600',

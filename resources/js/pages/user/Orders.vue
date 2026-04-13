@@ -96,7 +96,7 @@ function statusLabel(status: string): string {
                 <p class="font-medium">Belum ada transaksi</p>
                 <Link
                     href="/courses"
-                    class="mt-2 inline-block text-sm text-purple-600 hover:underline"
+                    class="mt-2 inline-block text-sm text-primary hover:underline"
                 >
                     Mulai beli kelas →
                 </Link>
@@ -133,13 +133,13 @@ function statusLabel(status: string): string {
                         </div>
 
                         <div class="shrink-0 text-right">
-                            <p class="text-lg font-bold text-purple-600">
+                            <p class="text-lg font-bold text-primary">
                                 {{ formatPrice(order.final_amount) }}
                             </p>
                             <!-- Tombol bayar kalau masih pending -->
                             <button
                                 v-if="order.status === 'pending'"
-                                class="mt-2 rounded-lg bg-purple-600 px-3 py-1.5 text-xs text-white transition-colors hover:bg-purple-700"
+                                class="mt-2 rounded-lg bg-primary px-3 py-1.5 text-xs text-white transition-colors hover:bg-purple-700"
                             >
                                 Bayar Sekarang
                             </button>
@@ -174,7 +174,7 @@ function statusLabel(status: string): string {
                     :class="[
                         'rounded-lg px-3 py-2 text-sm transition-colors',
                         link.active
-                            ? 'bg-purple-600 text-white'
+                            ? 'bg-primary text-white'
                             : link.url
                               ? 'border border-gray-200 hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800'
                               : 'cursor-not-allowed text-gray-300 dark:text-gray-600',

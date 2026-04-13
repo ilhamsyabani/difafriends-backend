@@ -224,7 +224,7 @@ function totalPoints(): number {
                             v-model="quizForm.is_required"
                             type="checkbox"
                             id="is_required"
-                            class="h-4 w-4 rounded text-purple-600 focus:ring-purple-500"
+                            class="h-4 w-4 rounded text-primary focus:ring-purple-500"
                         />
                         <label for="is_required" class="cursor-pointer text-sm">
                             Kuis wajib dikerjakan
@@ -238,7 +238,7 @@ function totalPoints(): number {
                     <button
                         @click="submitQuiz"
                         :disabled="quizForm.processing"
-                        class="rounded-lg bg-purple-600 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700 disabled:opacity-60"
+                        class="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700 disabled:opacity-60"
                     >
                         {{
                             quizForm.processing
@@ -269,7 +269,7 @@ function totalPoints(): number {
                     </div>
                     <button
                         @click="openQuestionForm()"
-                        class="rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700"
+                        class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700"
                     >
                         + Tambah Soal
                     </button>
@@ -311,7 +311,7 @@ function totalPoints(): number {
                             <div class="flex min-w-0 flex-1 items-start gap-3">
                                 <!-- Nomor -->
                                 <span
-                                    class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-purple-100 text-xs font-bold text-purple-600 dark:bg-purple-900/30"
+                                    class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-purple-100 text-xs font-bold text-primary dark:bg-purple-900/30"
                                 >
                                     {{ idx + 1 }}
                                 </span>
@@ -384,7 +384,7 @@ function totalPoints(): number {
                             <div class="flex shrink-0 items-center gap-2">
                                 <button
                                     @click="openQuestionForm(q)"
-                                    class="text-xs font-medium text-purple-600 hover:text-purple-700"
+                                    class="text-xs font-medium text-primary hover:text-primary-hover"
                                 >
                                     Edit
                                 </button>
@@ -433,7 +433,7 @@ function totalPoints(): number {
                                 :class="[
                                     'flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 px-4 py-2.5 text-sm font-medium transition-colors',
                                     questionForm.type === opt.value
-                                        ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300'
+                                        ? 'border-purple-500 bg-purple-50 text-primary-hover dark:bg-purple-900/20 dark:text-purple-300'
                                         : 'border-gray-200 text-gray-500 dark:border-gray-700',
                                 ]"
                             >
@@ -490,7 +490,7 @@ function totalPoints(): number {
                             </label>
                             <button
                                 @click="addOption"
-                                class="text-xs font-medium text-purple-600 hover:text-purple-700"
+                                class="text-xs font-medium text-primary hover:text-primary-hover"
                             >
                                 + Tambah Pilihan
                             </button>
@@ -586,7 +586,7 @@ function totalPoints(): number {
                     <button
                         @click="submitQuestion"
                         :disabled="questionForm.processing"
-                        class="rounded-lg bg-purple-600 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700 disabled:opacity-60"
+                        class="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700 disabled:opacity-60"
                     >
                         {{
                             questionForm.processing

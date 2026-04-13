@@ -38,15 +38,15 @@ async function markAsRead(id: string, url: string | null) {
     const notif = notifications.value.find((n) => n.id === id);
 
     if (notif) {
-notif.read_at = new Date().toISOString();
-}
+        notif.read_at = new Date().toISOString();
+    }
 
     unreadCount.value = Math.max(0, unreadCount.value - 1);
     isOpen.value = false;
 
     if (url) {
-router.visit(url);
-}
+        router.visit(url);
+    }
 }
 
 async function markAllRead() {
@@ -134,7 +134,7 @@ function iconPath(icon: string): string {
     <div ref="bellContainer" class="relative">
         <button
             @click="toggleOpen"
-            class="relative rounded-lg p-2 transition-colors hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:outline-none dark:hover:bg-gray-800"
+            class="relative rounded-lg p-2 transition-colors hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:outline-none dark:hover:bg-gray-800"
             :aria-label="`Notifikasi${unreadCount > 0 ? `, ${unreadCount} belum dibaca` : ''}`"
             :aria-expanded="isOpen"
             aria-haspopup="menu"
@@ -174,7 +174,7 @@ function iconPath(icon: string): string {
                 <button
                     v-if="unreadCount > 0"
                     @click="markAllRead"
-                    class="text-xs font-medium text-purple-600 hover:text-purple-700"
+                    class="hover:text-primary-hover text-xs font-medium text-primary"
                 >
                     Tandai semua dibaca
                 </button>
@@ -231,7 +231,7 @@ function iconPath(icon: string): string {
                             :class="[
                                 'h-4 w-4',
                                 !notif.read_at
-                                    ? 'text-purple-600'
+                                    ? 'text-primary'
                                     : 'text-gray-400',
                             ]"
                             fill="none"
@@ -270,7 +270,7 @@ function iconPath(icon: string): string {
 
                     <div
                         v-if="!notif.read_at"
-                        class="mt-2 h-2 w-2 shrink-0 rounded-full bg-purple-600"
+                        class="mt-2 h-2 w-2 shrink-0 rounded-full bg-primary"
                     ></div>
                 </button>
             </div>

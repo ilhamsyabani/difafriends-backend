@@ -14,22 +14,22 @@ use App\Http\Controllers\Admin\ScheduleController as AdminScheduleController;
 // ── Controllers ──────────────────────────────────────
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\BookingController;          // ✅ tambah
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\Companion\BookingController as CompanionBookingController;
 use App\Http\Controllers\Companion\ScheduleController as CompanionScheduleController;
-use App\Http\Controllers\CompanionController;      // ✅ tambah
+use App\Http\Controllers\CompanionController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\Instructor\CourseController as InstructorCourseController;
 use App\Http\Controllers\Instructor\LectureController as InstructorLectureController;
 use App\Http\Controllers\Instructor\QuizGradeController;
 use App\Http\Controllers\Instructor\QuizQuestionController;
-use App\Http\Controllers\Instructor\SectionController as InstructorSectionController;  // ✅ tambah
-use App\Http\Controllers\LearnController; // ✅ tambah
-use App\Http\Controllers\OrderController;   // ✅ tambah
+use App\Http\Controllers\Instructor\SectionController as InstructorSectionController;
+use App\Http\Controllers\LearnController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\QuizController;
-use App\Http\Controllers\ReviewController;  // ✅ tambah
-use App\Http\Controllers\UserOrderController;  // ✅ tambah
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\UserOrderController;
 use App\Models\Article;
 use App\Models\Booking;
 use App\Models\Category;
@@ -304,7 +304,7 @@ Route::middleware(['auth', 'verified', 'role:instructor'])
         Route::post('quiz-answers/{answer}/grade',
             [QuizGradeController::class, 'grade']
         )->name('quiz.answer.grade');
-    });
+});
 
 // ── Companion Routes ──────────────────────────────────
 Route::middleware(['auth', 'verified', 'role:companion'])
@@ -338,6 +338,6 @@ Route::middleware(['auth', 'verified', 'role:companion'])
         )->name('schedules.toggle-status');
 
         Route::get('/bookings', [CompanionBookingController::class, 'index'])->name('bookings.index');
-    });
+});
 
 require __DIR__.'/settings.php';

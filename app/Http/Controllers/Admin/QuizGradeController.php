@@ -22,7 +22,7 @@ class QuizGradeController extends Controller
                 'answers' => fn ($q) => $q->with(['question', 'selectedOption']),
             ])
             ->latest()
-            ->paginate(10);
+            ->paginate(5);
 
         return Inertia::render('admin/quiz/Grade', [
             'course' => $course,

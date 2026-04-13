@@ -21,7 +21,7 @@ class CourseEnrollmentController extends Controller
         $enrollments = $course->enrollments()
             ->with('user:id,first_name,last_name,email,photo')
             ->latest('enrolled_at')
-            ->paginate(15)
+            ->paginate(5)
             ->withQueryString();
 
         $users = collect();

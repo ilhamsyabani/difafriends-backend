@@ -54,7 +54,7 @@ defineProps<{
                         :tabindex="1"
                         autocomplete="email"
                         placeholder="email@example.com"
-                        class="h-11 rounded-xl bg-gray-50 transition-colors focus-visible:ring-purple-500 dark:bg-gray-900"
+                        class="h-11 rounded-xl bg-gray-50 transition-colors focus-visible:ring-primary/50 dark:bg-gray-900"
                     />
                     <InputError :message="errors.email" />
                 </div>
@@ -69,7 +69,7 @@ defineProps<{
                         <TextLink
                             v-if="canResetPassword"
                             :href="request()"
-                            class="text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400"
+                            class="hover:text-primary-hover text-sm font-medium text-primary dark:text-primary/60"
                             :tabindex="5"
                         >
                             Lupa password?
@@ -82,7 +82,7 @@ defineProps<{
                         :tabindex="2"
                         autocomplete="current-password"
                         placeholder="••••••••"
-                        class="h-11 rounded-xl bg-gray-50 transition-colors focus-visible:ring-purple-500 dark:bg-gray-900"
+                        class="h-11 rounded-xl bg-gray-50 transition-colors focus-visible:ring-primary/50 dark:bg-gray-900"
                     />
                     <InputError :message="errors.password" />
                 </div>
@@ -96,7 +96,7 @@ defineProps<{
                             id="remember"
                             name="remember"
                             :tabindex="3"
-                            class="rounded border-gray-300 data-[state=checked]:border-purple-600 data-[state=checked]:bg-purple-600"
+                            class="rounded border-gray-300 data-[state=checked]:border-purple-600 data-[state=checked]:bg-primary"
                         />
                         <span class="text-sm text-gray-600 dark:text-gray-400"
                             >Ingat saya</span
@@ -106,7 +106,7 @@ defineProps<{
 
                 <Button
                     type="submit"
-                    class="mt-2 h-11 w-full rounded-xl bg-purple-600 text-white shadow-lg shadow-purple-600/20 transition-all hover:-translate-y-0.5 hover:bg-purple-700 hover:shadow-purple-600/30 focus-visible:ring-purple-500 disabled:opacity-70 disabled:hover:translate-y-0"
+                    class="mt-2 h-11 w-full rounded-xl bg-primary text-white shadow-lg shadow-purple-600/20 transition-all hover:-translate-y-0.5 hover:bg-orange-500 hover:shadow-primary/30 focus-visible:ring-primary/50 disabled:opacity-70 disabled:hover:translate-y-0"
                     :tabindex="4"
                     :disabled="processing"
                     data-test="login-button"
@@ -124,7 +124,7 @@ defineProps<{
                 <TextLink
                     :href="register()"
                     :tabindex="5"
-                    class="font-semibold text-purple-600 hover:text-purple-700 dark:text-purple-400"
+                    class="hover:text-primary-hover font-semibold text-primary dark:text-purple-400"
                 >
                     Daftar di sini
                 </TextLink>

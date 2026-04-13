@@ -252,7 +252,7 @@ function destroy(id: number) {
                     <!-- Tombol Kelas Baru -->
                     <Link
                         href="/admin/courses/create"
-                        class="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-purple-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:outline-none sm:w-auto dark:focus:ring-offset-gray-900"
+                        class="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-purple-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:outline-none sm:w-auto dark:focus:ring-offset-gray-900"
                     >
                         <Plus class="h-4 w-4" />
                         Kelas Baru
@@ -392,7 +392,7 @@ function destroy(id: number) {
                                                 class="mt-1 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400"
                                             >
                                                 <span
-                                                    class="rounded bg-purple-50 px-1.5 py-0.5 font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
+                                                    class="rounded bg-purple-50 px-1.5 py-0.5 font-medium text-primary-hover dark:bg-purple-900/30 dark:text-purple-400"
                                                 >
                                                     {{
                                                         course.category?.name ??
@@ -551,7 +551,7 @@ function destroy(id: number) {
 
                                         <Link
                                             :href="`/admin/courses/${course.id}/enrollments`"
-                                            class="text-gray-400 transition-colors hover:text-purple-600 dark:hover:text-purple-400"
+                                            class="text-gray-400 transition-colors hover:text-primary dark:hover:text-purple-400"
                                             title="Kelola Peserta"
                                         >
                                             <span class="sr-only">Peserta</span>
@@ -560,7 +560,7 @@ function destroy(id: number) {
 
                                         <Link
                                             :href="`/admin/courses/${course.id}/edit`"
-                                            class="text-gray-400 transition-colors hover:text-purple-600 dark:hover:text-purple-400"
+                                            class="text-gray-400 transition-colors hover:text-primary dark:hover:text-purple-400"
                                             title="Edit Kursus"
                                         >
                                             <span class="sr-only">Edit</span>
@@ -605,7 +605,7 @@ function destroy(id: number) {
                     :class="[
                         'rounded-xl px-3.5 py-2 text-sm font-medium transition-colors',
                         link.active
-                            ? 'bg-purple-600 text-white shadow-sm'
+                            ? 'bg-primary text-white shadow-sm'
                             : link.url
                               ? 'border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
                               : 'cursor-not-allowed border border-transparent text-gray-400 dark:text-gray-600',

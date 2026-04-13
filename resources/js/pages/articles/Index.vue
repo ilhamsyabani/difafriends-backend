@@ -77,7 +77,7 @@ function stripHtml(html: string) {
                         class="mb-6 text-4xl font-extrabold tracking-tight text-gray-900 md:text-5xl dark:text-white"
                     >
                         Jelajahi Wawasan Seputar <br />
-                        <span class="text-purple-600 dark:text-purple-400"
+                        <span class="text-primary dark:text-purple-400"
                             >Pendidikan Inklusif</span
                         >
                     </h1>
@@ -151,7 +151,7 @@ function stripHtml(html: string) {
                     <button
                         v-if="search"
                         @click="search = ''"
-                        class="mt-6 font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400"
+                        class="mt-6 font-medium text-primary hover:text-primary-hover dark:text-purple-400"
                     >
                         Reset Pencarian
                     </button>
@@ -186,7 +186,7 @@ function stripHtml(html: string) {
                             </div>
                             <!-- Badge Kategori (Bisa diganti dinamis nanti jika ada tabel relasi kategory artikel) -->
                             <span
-                                class="absolute top-4 left-4 rounded-full bg-white/90 px-3 py-1.5 text-xs font-bold text-purple-700 shadow-sm backdrop-blur dark:bg-gray-900/90 dark:text-purple-300"
+                                class="absolute top-4 left-4 rounded-full bg-white/90 px-3 py-1.5 text-xs font-bold text-primary-hover shadow-sm backdrop-blur dark:bg-gray-900/90 dark:text-purple-300"
                             >
                                 Pendidikan
                             </span>
@@ -195,7 +195,7 @@ function stripHtml(html: string) {
                         <!-- Konten -->
                         <div class="flex flex-1 flex-col p-6">
                             <h3
-                                class="mb-3 line-clamp-2 text-xl leading-snug font-bold text-gray-900 transition-colors group-hover:text-purple-600 dark:text-white dark:group-hover:text-purple-400"
+                                class="mb-3 line-clamp-2 text-xl leading-snug font-bold text-gray-900 transition-colors group-hover:text-primary dark:text-white dark:group-hover:text-purple-400"
                             >
                                 {{ article.title }}
                             </h3>
@@ -217,7 +217,7 @@ function stripHtml(html: string) {
                                     />
                                     <div
                                         v-else
-                                        class="flex h-8 w-8 items-center justify-center rounded-full bg-purple-100 text-xs font-bold text-purple-600 dark:bg-gray-800"
+                                        class="flex h-8 w-8 items-center justify-center rounded-full bg-purple-100 text-xs font-bold text-primary dark:bg-gray-800"
                                     >
                                         {{
                                             article.author.first_name.charAt(0)
@@ -251,7 +251,7 @@ function stripHtml(html: string) {
                         :class="[
                             'rounded-xl px-4 py-2.5 text-sm font-medium shadow-sm transition-all',
                             link.active
-                                ? 'bg-purple-600 text-white hover:bg-purple-700'
+                                ? 'bg-primary text-white hover:bg-purple-700'
                                 : link.url
                                   ? 'border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800'
                                   : 'cursor-not-allowed border border-gray-100 bg-gray-50 text-gray-400 shadow-none dark:border-gray-800 dark:bg-gray-800/50 dark:text-gray-600',

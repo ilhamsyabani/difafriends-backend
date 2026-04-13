@@ -128,7 +128,7 @@ function destroy(id: number) {
 
                     <Link
                         href="/admin/categories/create"
-                        class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-purple-700 hover:shadow focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:outline-none dark:focus:ring-offset-gray-900"
+                        class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-purple-700 hover:shadow focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:outline-none dark:focus:ring-offset-gray-900"
                     >
                         <Plus class="h-4 w-4" />
                         Kategori Baru
@@ -278,7 +278,7 @@ function destroy(id: number) {
                                     >
                                         <Link
                                             :href="`/admin/categories/${cat.id}/edit`"
-                                            class="text-gray-400 transition-colors hover:text-purple-600 dark:hover:text-purple-400"
+                                            class="text-gray-400 transition-colors hover:text-primary dark:hover:text-purple-400"
                                             title="Edit Kategori"
                                         >
                                             <span class="sr-only">Edit</span>
@@ -322,7 +322,7 @@ function destroy(id: number) {
                     :class="[
                         'rounded-xl px-3.5 py-2 text-sm font-medium transition-colors',
                         link.active
-                            ? 'bg-purple-600 text-white shadow-sm'
+                            ? 'bg-primary text-white shadow-sm'
                             : link.url
                               ? 'border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
                               : 'cursor-not-allowed border border-transparent text-gray-400 dark:text-gray-600',

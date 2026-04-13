@@ -15,41 +15,36 @@ import { login, register } from '@/routes';
                 <div class="flex h-16 items-center justify-between">
                     <!-- Logo -->
                     <Link href="/" class="flex items-center gap-2">
-                        <div
-                            class="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-600"
-                        >
-                            <span class="text-sm font-bold text-white">DF</span>
-                        </div>
-                        <span
-                            class="text-lg font-bold text-purple-700 dark:text-purple-400"
-                        >
-                            DifaFriends
-                        </span>
+                        <img
+                            src="/img/logo.png"
+                            alt="Logo"
+                            class="h-6 text-white"
+                        />
                     </Link>
 
                     <!-- Nav -->
                     <nav class="hidden items-center gap-6 text-sm md:flex">
                         <Link
                             href="/"
-                            class="text-gray-600 transition-colors hover:text-purple-600 dark:text-gray-400"
+                            class="text-gray-600 transition-colors hover:text-primary dark:text-gray-400"
                         >
                             Home
                         </Link>
                         <Link
                             href="/articles"
-                            class="text-gray-600 transition-colors hover:text-purple-600 dark:text-gray-400"
+                            class="text-gray-600 transition-colors hover:text-primary dark:text-gray-400"
                         >
                             Artikel
                         </Link>
                         <Link
                             href="/courses"
-                            class="text-gray-600 transition-colors hover:text-purple-600 dark:text-gray-400"
+                            class="text-gray-600 transition-colors hover:text-primary dark:text-gray-400"
                         >
                             Pelatihan
                         </Link>
                         <Link
                             href="/companions"
-                            class="text-gray-600 transition-colors hover:text-purple-600 dark:text-gray-400"
+                            class="text-gray-600 transition-colors hover:text-primary dark:text-gray-400"
                         >
                             Intervensi
                         </Link>
@@ -60,7 +55,7 @@ import { login, register } from '@/routes';
                         <template v-if="$page.props.auth.user">
                             <Link
                                 href="/dashboard"
-                                class="text-sm font-medium text-purple-600 hover:text-purple-700"
+                                class="text-sm font-medium text-primary hover:text-orange-500"
                             >
                                 Dashboard
                             </Link>
@@ -68,13 +63,13 @@ import { login, register } from '@/routes';
                         <template v-else>
                             <Link
                                 :href="login()"
-                                class="text-sm font-medium text-gray-600 transition-colors hover:text-purple-600 dark:text-gray-400"
+                                class="text-sm font-medium text-gray-600 transition-colors hover:text-primary dark:text-gray-400"
                             >
                                 Masuk
                             </Link>
                             <Link
                                 :href="register()"
-                                class="rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700"
+                                class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-orange-500"
                             >
                                 Daftar
                             </Link>
@@ -99,16 +94,11 @@ import { login, register } from '@/routes';
                 >
                     <div>
                         <div class="mb-6 flex items-center gap-2">
-                            <div
-                                class="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-600"
-                            >
-                                <span class="text-sm font-bold text-white"
-                                    >DF</span
-                                >
-                            </div>
-                            <span class="text-lg font-bold text-white"
-                                >DifaFriends</span
-                            >
+                            <img
+                                src="/img/logo.png"
+                                alt="DifaFriends"
+                                class="h-6"
+                            />
                         </div>
                         <p class="mb-6 text-sm leading-relaxed">
                             Platform pembelajaran inklusif yang dirancang untuk
@@ -154,7 +144,7 @@ import { login, register } from '@/routes';
                     <div>
                         <h6 class="mb-6 font-bold text-white">Kontak</h6>
                         <ul class="space-y-3 text-sm">
-                            <li>Surabaya, Indonesia</li>
+                            <li>Kelaten, Indonesia</li>
                             <li>difafriends@gmail.com</li>
                         </ul>
                     </div>
@@ -164,7 +154,7 @@ import { login, register } from '@/routes';
                         <div class="flex gap-4">
                             <a
                                 href="#"
-                                class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-800 transition-all hover:bg-purple-600 hover:text-white"
+                                class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-800 transition-all hover:bg-primary hover:text-white"
                             >
                                 <svg
                                     class="h-5 w-5 fill-current"
@@ -177,7 +167,7 @@ import { login, register } from '@/routes';
                             </a>
                             <a
                                 href="#"
-                                class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-800 transition-all hover:bg-purple-600 hover:text-white"
+                                class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-800 transition-all hover:bg-primary hover:text-white"
                             >
                                 <svg
                                     class="h-5 w-5 fill-current"

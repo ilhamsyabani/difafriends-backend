@@ -102,7 +102,7 @@ const genderOptions = [
                             <button
                                 type="button"
                                 @click="photoInput?.click()"
-                                class="absolute -right-2 -bottom-2 flex h-8 w-8 items-center justify-center rounded-full bg-purple-600 text-white shadow-md transition hover:bg-purple-700"
+                                class="absolute -right-2 -bottom-2 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white shadow-md transition hover:bg-purple-700"
                                 title="Ganti foto"
                             >
                                 <Camera class="h-4 w-4" />
@@ -116,7 +116,7 @@ const genderOptions = [
                                 {{ user?.first_name }} {{ user?.last_name }}
                             </p>
                             <span
-                                class="w-fit rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
+                                class="w-fit rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-primary-hover dark:bg-purple-900/30 dark:text-purple-400"
                             >
                                 {{ roleLabel[user?.role] ?? user?.role }}
                             </span>

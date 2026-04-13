@@ -151,7 +151,7 @@ function getInitials(firstName: string, lastName: string): string {
                             />
                             <span
                                 v-else
-                                class="text-2xl font-bold tracking-wider text-purple-600 dark:text-purple-400"
+                                class="text-2xl font-bold tracking-wider text-primary dark:text-purple-400"
                             >
                                 {{
                                     getInitials(
@@ -164,7 +164,7 @@ function getInitials(firstName: string, lastName: string): string {
 
                         <!-- Info -->
                         <h3
-                            class="text-center text-lg font-bold text-gray-900 transition-colors group-hover:text-purple-600 dark:text-white dark:group-hover:text-purple-400"
+                            class="text-center text-lg font-bold text-gray-900 transition-colors group-hover:text-primary dark:text-white dark:group-hover:text-purple-400"
                         >
                             {{ companion.first_name }} {{ companion.last_name }}
                         </h3>
@@ -197,7 +197,7 @@ function getInitials(firstName: string, lastName: string): string {
                                     <Wallet class="h-3.5 w-3.5" /> Tarif
                                 </span>
                                 <span
-                                    class="text-sm font-bold text-purple-600 dark:text-purple-400"
+                                    class="text-sm font-bold text-primary dark:text-purple-400"
                                 >
                                     {{ minPrice(companion.schedules) }}
                                 </span>
@@ -232,7 +232,7 @@ function getInitials(firstName: string, lastName: string): string {
                     :class="[
                         'rounded-xl px-3.5 py-2 text-sm font-medium transition-colors',
                         link.active
-                            ? 'bg-purple-600 text-white shadow-sm'
+                            ? 'bg-primary text-white shadow-sm'
                             : link.url
                               ? 'border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
                               : 'cursor-not-allowed border border-transparent text-gray-400 dark:text-gray-600',

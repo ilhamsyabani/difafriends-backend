@@ -46,7 +46,7 @@ function statusColor(status: string): string {
     const map: Record<string, string> = {
         active: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
         completed:
-            'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+            'bg-purple-100 text-primary-hover dark:bg-purple-900/30 dark:text-purple-400',
         expired: 'bg-gray-100 text-gray-500',
     };
 
@@ -87,7 +87,7 @@ function statusColor(status: string): string {
                 <p class="font-medium">Belum ada kelas yang diikuti</p>
                 <Link
                     href="/courses"
-                    class="mt-2 inline-block text-sm text-purple-600 hover:underline"
+                    class="mt-2 inline-block text-sm text-primary hover:underline"
                 >
                     Lihat katalog kelas →
                 </Link>
@@ -156,7 +156,7 @@ function statusColor(status: string): string {
 
                         <Link
                             :href="`/learn/${enrollment.course.slug}`"
-                            class="block w-full rounded-xl bg-purple-600 py-2 text-center text-sm font-medium text-white transition-colors hover:bg-purple-700"
+                            class="block w-full rounded-xl bg-primary py-2 text-center text-sm font-medium text-white transition-colors hover:bg-purple-700"
                         >
                             {{
                                 enrollment.status === 'completed'
@@ -172,7 +172,7 @@ function statusColor(status: string): string {
                             "
                             :href="`/certificates/${enrollment.id}/download`"
                             target="_blank"
-                            class="mt-2 block w-full rounded-xl border border-purple-200 py-2 text-center text-sm font-medium text-purple-600 transition-colors hover:bg-purple-50 dark:border-purple-800 dark:hover:bg-purple-900/20"
+                            class="mt-2 block w-full rounded-xl border border-purple-200 py-2 text-center text-sm font-medium text-primary transition-colors hover:bg-purple-50 dark:border-purple-800 dark:hover:bg-purple-900/20"
                         >
                             ⬇ Download Sertifikat
                         </a>
@@ -192,7 +192,7 @@ function statusColor(status: string): string {
                     :class="[
                         'rounded-lg px-3 py-2 text-sm transition-colors',
                         link.active
-                            ? 'bg-purple-600 text-white'
+                            ? 'bg-primary text-white'
                             : link.url
                               ? 'border border-gray-200 hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800'
                               : 'cursor-not-allowed text-gray-300 dark:text-gray-600',

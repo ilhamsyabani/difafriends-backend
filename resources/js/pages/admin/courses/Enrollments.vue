@@ -99,7 +99,7 @@ function statusLabel(status: string) {
             <div class="mb-8">
                 <Link
                     href="/admin/courses"
-                    class="mb-4 inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-purple-600 dark:text-gray-400 dark:hover:text-purple-400"
+                    class="mb-4 inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-purple-400"
                 >
                     <ArrowLeft class="h-4 w-4" />
                     Kembali ke Daftar Kelas
@@ -187,7 +187,7 @@ function statusLabel(status: string) {
                     <h2 class="text-base font-semibold text-gray-900 dark:text-white">
                         Peserta Terdaftar
                     </h2>
-                    <span class="rounded-full bg-purple-50 px-2.5 py-1 text-xs font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+                    <span class="rounded-full bg-purple-50 px-2.5 py-1 text-xs font-medium text-primary-hover dark:bg-purple-900/30 dark:text-purple-400">
                         {{ enrollments.meta?.total ?? enrollments.data.length }} peserta
                     </span>
                 </div>
@@ -199,7 +199,7 @@ function statusLabel(status: string) {
                         class="flex items-center justify-between px-6 py-4"
                     >
                         <div class="flex items-center gap-3">
-                            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-purple-100 text-sm font-semibold text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+                            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-purple-100 text-sm font-semibold text-primary-hover dark:bg-purple-900/30 dark:text-purple-400">
                                 {{ enrollment.user.first_name.charAt(0).toUpperCase() }}
                             </div>
                             <div>
@@ -261,7 +261,7 @@ function statusLabel(status: string) {
                         :class="[
                             'rounded-xl px-3.5 py-2 text-sm font-medium transition-colors',
                             link.active
-                                ? 'bg-purple-600 text-white shadow-sm'
+                                ? 'bg-primary text-white shadow-sm'
                                 : link.url
                                   ? 'border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
                                   : 'cursor-not-allowed border border-transparent text-gray-400 dark:text-gray-600',

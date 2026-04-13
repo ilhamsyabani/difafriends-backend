@@ -55,7 +55,7 @@ function getInitials(first: string, last: string) {
                         <!-- Header Artikel -->
                         <header class="mb-10">
                             <div
-                                class="mb-4 flex items-center gap-2 text-sm font-medium text-purple-600 dark:text-purple-400"
+                                class="mb-4 flex items-center gap-2 text-sm font-medium text-primary dark:text-purple-400"
                             >
                                 <span
                                     class="rounded-full bg-purple-100 px-3 py-1 dark:bg-purple-900/30"
@@ -86,7 +86,7 @@ function getInitials(first: string, last: string) {
                                 />
                                 <div
                                     v-else
-                                    class="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 text-lg font-bold text-purple-600 dark:bg-gray-800"
+                                    class="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 text-lg font-bold text-primary dark:bg-gray-800"
                                 >
                                     {{
                                         getInitials(
@@ -208,7 +208,7 @@ function getInitials(first: string, last: string) {
                                         class="flex flex-col justify-between py-1"
                                     >
                                         <h4
-                                            class="line-clamp-2 text-sm leading-tight font-bold text-gray-900 transition-colors group-hover:text-purple-600 dark:text-white dark:group-hover:text-purple-400"
+                                            class="line-clamp-2 text-sm leading-tight font-bold text-gray-900 transition-colors group-hover:text-primary dark:text-white dark:group-hover:text-purple-400"
                                         >
                                             {{ recent.title }}
                                         </h4>

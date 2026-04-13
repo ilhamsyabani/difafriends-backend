@@ -136,7 +136,7 @@ const statusColor = (status: string) => {
                                     >Total</span
                                 >
                                 <span
-                                    class="text-purple-600 dark:text-purple-400"
+                                    class="text-primary dark:text-purple-400"
                                 >
                                     {{ formatRupiah(order.final_amount) }}
                                 </span>

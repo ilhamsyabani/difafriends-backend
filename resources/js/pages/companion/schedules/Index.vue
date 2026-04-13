@@ -116,7 +116,7 @@ function destroy(id: number) {
             >
                 <div class="flex items-center gap-4">
                     <div
-                        class="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400"
+                        class="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 text-primary dark:bg-purple-900/50 dark:text-purple-400"
                     >
                         <CalendarClock class="h-6 w-6" />
                     </div>
@@ -137,7 +137,7 @@ function destroy(id: number) {
 
                 <Link
                     href="/companion/schedules/create"
-                    class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-purple-700 hover:shadow focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:outline-none dark:focus:ring-offset-gray-900"
+                    class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-purple-700 hover:shadow focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:outline-none dark:focus:ring-offset-gray-900"
                 >
                     <Plus class="h-4 w-4" />
                     Tambah Jadwal
@@ -275,7 +275,7 @@ function destroy(id: number) {
                                                 schedule.bookings_count >=
                                                 schedule.max_participants
                                                     ? 'text-red-500'
-                                                    : 'text-purple-600'
+                                                    : 'text-primary'
                                             "
                                         >
                                             {{ schedule.bookings_count }}

@@ -16,7 +16,7 @@ class CompanionController extends Controller
         $companions = User::where('role', Roles::Companion->value)
             ->withCount(['bookingsAsTutor', 'schedules'])
             ->with('schedules')
-            ->paginate(20);
+            ->paginate(5);
 
         return Inertia::render('admin/companions/Index', [
             'companions' => $companions,

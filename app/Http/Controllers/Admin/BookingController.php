@@ -14,7 +14,7 @@ class BookingController extends Controller
     {
         $bookings = Booking::with(['student', 'tutor', 'schedule'])
             ->latest()
-            ->paginate(20);
+            ->paginate(5);
 
         return Inertia::render('admin/bookings/Index', [
             'bookings' => $bookings,

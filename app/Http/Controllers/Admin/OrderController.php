@@ -38,7 +38,7 @@ class OrderController extends Controller
         });
 
         // Paginate 10 data per halaman dan bawa query string ke URL pagination
-        $orders = $query->paginate(10)->withQueryString();
+        $orders = $query->paginate(5)->withQueryString();
 
         return Inertia::render('admin/orders/Index', [
             'orders' => $orders,

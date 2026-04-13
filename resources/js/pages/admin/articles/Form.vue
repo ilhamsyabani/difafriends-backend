@@ -65,7 +65,7 @@ function submit() {
             <div class="mb-10 flex items-center gap-4">
                 <Link
                     href="/admin/articles"
-                    class="group flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:border-purple-200 hover:bg-purple-50 hover:text-purple-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-purple-400"
+                    class="group flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:border-purple-200 hover:bg-purple-50 hover:text-primary dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-purple-400"
                 >
                     <ArrowLeft
                         class="h-5 w-5 transition-transform group-hover:-translate-x-1"
@@ -162,7 +162,7 @@ function submit() {
                                     type="file"
                                     @change="handleFileChange"
                                     accept="image/*"
-                                    class="block w-full text-sm text-gray-500 file:mr-4 file:rounded-xl file:border-0 file:bg-purple-50 file:px-4 file:py-3 file:text-sm file:font-semibold file:text-purple-700 hover:file:bg-purple-100 dark:file:bg-purple-900/30 dark:file:text-purple-400"
+                                    class="file:text-primary-hover file:font-semiboldtext-primary-hover block w-full text-sm text-gray-500 file:mr-4 file:rounded-xl file:border-0 file:bg-purple-50 file:px-4 file:py-3 file:text-sm hover:file:bg-purple-100 dark:file:bg-purple-900/30 dark:file:text-purple-400"
                                 />
                                 <p
                                     v-if="form.errors.thumbnail"
@@ -293,7 +293,7 @@ function submit() {
                     <button
                         type="submit"
                         :disabled="form.processing"
-                        class="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-purple-700 hover:shadow focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-70 dark:focus:ring-offset-gray-900"
+                        class="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-purple-700 hover:shadow focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-70 dark:focus:ring-offset-gray-900"
                     >
                         <Loader2
                             v-if="form.processing"

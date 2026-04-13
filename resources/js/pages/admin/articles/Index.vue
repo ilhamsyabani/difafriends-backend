@@ -94,7 +94,7 @@ function destroy(id: number) {
                 <div class="flex items-center gap-3">
                     <Link
                         href="/admin/articles/create"
-                        class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-purple-700 hover:shadow focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                        class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-purple-700 hover:shadow focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
                     >
                         <Plus class="h-4 w-4" />
                         Tulis Artikel Baru
@@ -259,7 +259,7 @@ function destroy(id: number) {
                                         </a>
                                         <Link
                                             :href="`/admin/articles/${article.id}/edit`"
-                                            class="p-2 text-gray-400 hover:text-purple-600 dark:hover:text-purple-400"
+                                            class="p-2 text-gray-400 hover:text-primary dark:hover:text-purple-400"
                                             title="Edit Artikel"
                                         >
                                             <FilePenLine class="h-4 w-4" />
@@ -300,7 +300,7 @@ function destroy(id: number) {
                     :class="[
                         'rounded-xl px-3.5 py-2 text-sm font-medium transition-colors',
                         link.active
-                            ? 'bg-purple-600 text-white shadow-sm'
+                            ? 'bg-primary text-white shadow-sm'
                             : link.url
                               ? 'border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
                               : 'cursor-not-allowed border border-transparent text-gray-400 dark:text-gray-600',

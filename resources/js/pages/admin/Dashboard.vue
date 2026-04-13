@@ -6,6 +6,7 @@ import StatsCard from '@/components/StatsCard.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
 import { useFormatters } from '@/composables/useFormatters';
 import AppLayout from '@/layouts/AppLayout.vue';
+import type { BreadcrumbItem } from '@/types';
 
 defineProps<{
     stats: {
@@ -26,11 +27,18 @@ defineProps<{
     };
 }>();
 
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Admin Dashboard',
+        href: 'admin/dashboard',
+    },
+];
+
 const { formatPrice, formatDate } = useFormatters();
 </script>
 
 <template>
-    <AppLayout>
+    <AppLayout :breadcrumbs="breadcrumbs">
         <Head title="Dashboard Admin" />
 
         <div class="max-w-7xl space-y-6 p-6">

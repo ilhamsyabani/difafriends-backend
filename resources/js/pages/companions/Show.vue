@@ -220,7 +220,7 @@ async function submitBooking() {
                                     />
                                     <span
                                         v-else
-                                        class="text-3xl font-bold tracking-wider text-purple-600 dark:text-purple-400"
+                                        class="text-3xl font-bold tracking-wider text-primary dark:text-purple-400"
                                     >
                                         {{
                                             getInitials(
@@ -239,7 +239,7 @@ async function submitBooking() {
                                         {{ companion.last_name }}
                                     </h1>
                                     <p
-                                        class="mt-1 text-sm font-medium text-purple-600 dark:text-purple-400"
+                                        class="mt-1 text-sm font-medium text-primary dark:text-purple-400"
                                     >
                                         Guru Pendamping
                                     </p>
@@ -339,7 +339,7 @@ async function submitBooking() {
                                         class="mb-4 flex items-center justify-between"
                                     >
                                         <span
-                                            class="rounded-lg bg-purple-100 px-3 py-1 text-xs font-bold tracking-wider text-purple-700 uppercase dark:bg-purple-900/50 dark:text-purple-300"
+                                            class="rounded-lg bg-purple-100 px-3 py-1 text-xs font-bold tracking-wider text-primary-hover uppercase dark:bg-purple-900/50 dark:text-purple-300"
                                         >
                                             {{
                                                 getDayName(schedule.day_of_week)
@@ -385,7 +385,7 @@ async function submitBooking() {
                                 >
                                     <button
                                         @click="openBooking(schedule)"
-                                        class="w-full rounded-xl bg-gray-900 py-2.5 text-sm font-medium text-white transition-all hover:bg-purple-600 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:bg-white dark:text-gray-900 dark:hover:bg-purple-500 dark:hover:text-white"
+                                        class="w-full rounded-xl bg-gray-900 py-2.5 text-sm font-medium text-white transition-all hover:bg-primary focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:bg-white dark:text-gray-900 dark:hover:bg-purple-500 dark:hover:text-white"
                                     >
                                         Pesan Jadwal Ini
                                     </button>
@@ -521,7 +521,7 @@ async function submitBooking() {
                                     class="border-b border-dashed border-purple-200 p-4 dark:border-purple-800"
                                 >
                                     <p
-                                        class="text-xs font-bold tracking-wider text-purple-600 uppercase dark:text-purple-400"
+                                        class="text-xs font-bold tracking-wider text-primary uppercase dark:text-purple-400"
                                     >
                                         Tutor Pendamping
                                     </p>
@@ -588,7 +588,7 @@ async function submitBooking() {
                                             >Total Tagihan</span
                                         >
                                         <span
-                                            class="text-lg font-bold text-purple-700 dark:text-purple-400"
+                                            class="text-lg font-bold text-primary-hover dark:text-purple-400"
                                         >
                                             {{
                                                 formatPrice(
@@ -675,7 +675,7 @@ async function submitBooking() {
                             <button
                                 @click="submitBooking"
                                 :disabled="isLoading"
-                                class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-purple-600 py-3.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-purple-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-70 dark:focus:ring-offset-gray-900"
+                                class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-purple-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-70 dark:focus:ring-offset-gray-900"
                             >
                                 <Loader2
                                     v-if="isLoading"

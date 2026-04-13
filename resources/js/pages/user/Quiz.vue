@@ -99,8 +99,8 @@ async function submitQuiz() {
             'Yakin ingin submit kuis? Jawaban tidak bisa diubah setelah submit.',
         )
     ) {
-return;
-}
+        return;
+    }
 
     isLoading.value = true;
 
@@ -139,8 +139,8 @@ function isAnswered(questionId: number): boolean {
     const a = answers.value[questionId];
 
     if (!a) {
-return false;
-}
+        return false;
+    }
 
     return a.selected_option_id !== null || a.essay_answer.trim() !== '';
 }
@@ -213,7 +213,7 @@ return false;
                         class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30"
                     >
                         <svg
-                            class="h-8 w-8 text-purple-600"
+                            class="h-8 w-8 text-primary"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -239,19 +239,19 @@ return false;
                     <!-- Stats kuis -->
                     <div class="mx-auto mb-8 grid max-w-xs grid-cols-3 gap-4">
                         <div class="text-center">
-                            <p class="text-2xl font-bold text-purple-600">
+                            <p class="text-2xl font-bold text-primary">
                                 {{ quiz.questions.length }}
                             </p>
                             <p class="text-xs text-gray-400">Soal</p>
                         </div>
                         <div class="text-center">
-                            <p class="text-2xl font-bold text-purple-600">
+                            <p class="text-2xl font-bold text-primary">
                                 {{ totalPoints }}
                             </p>
                             <p class="text-xs text-gray-400">Total Poin</p>
                         </div>
                         <div class="text-center">
-                            <p class="text-2xl font-bold text-purple-600">
+                            <p class="text-2xl font-bold text-primary">
                                 {{
                                     quiz.passing_score > 0
                                         ? quiz.passing_score + '%'
@@ -270,7 +270,7 @@ return false;
                         <p class="mb-1 font-medium">Hasil sebelumnya:</p>
                         <p v-if="lastAttempt.status === 'graded'">
                             Nilai:
-                            <span class="font-bold text-purple-600"
+                            <span class="font-bold text-primary"
                                 >{{ lastAttempt.score }}%</span
                             >
                         </p>
@@ -282,7 +282,7 @@ return false;
                     <button
                         @click="startQuiz"
                         :disabled="isLoading"
-                        class="rounded-xl bg-purple-600 px-8 py-3 font-semibold text-white transition-colors hover:bg-purple-700 disabled:opacity-60"
+                        class="rounded-xl bg-primary px-8 py-3 font-semibold text-white transition-colors hover:bg-purple-700 disabled:opacity-60"
                     >
                         {{
                             isLoading
@@ -316,9 +316,9 @@ return false;
                                     :class="[
                                         'aspect-square w-full rounded-lg text-sm font-medium transition-colors',
                                         currentIdx === idx
-                                            ? 'bg-purple-600 text-white'
+                                            ? 'bg-primary text-white'
                                             : isAnswered(q.id)
-                                              ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300'
+                                              ? 'bg-purple-100 text-primary-hover dark:bg-purple-900/30 dark:text-purple-300'
                                               : 'bg-gray-100 text-gray-500 dark:bg-gray-700',
                                     ]"
                                 >
@@ -329,9 +329,7 @@ return false;
                                 class="mt-4 space-y-1 border-t border-gray-100 pt-4 text-xs dark:border-gray-700"
                             >
                                 <div class="flex items-center gap-2">
-                                    <div
-                                        class="h-3 w-3 rounded bg-purple-600"
-                                    />
+                                    <div class="h-3 w-3 rounded bg-primary" />
                                     <span class="text-gray-400"
                                         >Sedang dikerjakan</span
                                     >
@@ -389,7 +387,7 @@ return false;
                                     </span>
                                 </div>
                                 <span
-                                    class="text-sm font-semibold text-purple-600"
+                                    class="text-sm font-semibold text-primary"
                                 >
                                     {{ currentQuestion.points }} poin
                                 </span>
@@ -500,7 +498,7 @@ return false;
                                 v-if="currentIdx === quiz.questions.length - 1"
                                 @click="submitQuiz"
                                 :disabled="isLoading"
-                                class="rounded-xl bg-purple-600 px-6 py-2.5 font-semibold text-white transition-colors hover:bg-purple-700 disabled:opacity-60"
+                                class="rounded-xl bg-primary px-6 py-2.5 font-semibold text-white transition-colors hover:bg-purple-700 disabled:opacity-60"
                             >
                                 {{
                                     isLoading ? 'Submitting...' : 'Submit Kuis'
@@ -509,7 +507,7 @@ return false;
                             <button
                                 v-else
                                 @click="goToQuestion(currentIdx + 1)"
-                                class="flex items-center gap-2 text-sm font-medium text-purple-600 transition-colors hover:text-purple-700"
+                                class="flex items-center gap-2 text-sm font-medium text-primary transition-colors hover:text-primary-hover"
                             >
                                 Berikutnya
                                 <svg
@@ -563,7 +561,7 @@ return false;
                     </p>
                     <Link
                         :href="`/learn/${course.slug}`"
-                        class="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-6 py-2.5 font-medium text-white transition-colors hover:bg-purple-700"
+                        class="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-2.5 font-medium text-white transition-colors hover:bg-purple-700"
                     >
                         Kembali ke Kelas
                     </Link>

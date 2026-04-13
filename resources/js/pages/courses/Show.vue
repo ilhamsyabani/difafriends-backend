@@ -265,7 +265,7 @@ return;
                         <!-- Instruktur -->
                         <div class="flex items-center gap-3">
                             <div
-                                class="flex h-10 w-10 items-center justify-center rounded-full bg-purple-600 text-sm font-bold"
+                                class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-bold"
                             >
                                 {{ course.instructor.first_name.charAt(0) }}
                             </div>
@@ -309,7 +309,7 @@ return;
                                 :class="[
                                     'border-b-2 pb-3 text-sm font-medium transition-colors',
                                     activeTab === tab.key
-                                        ? 'border-purple-600 text-purple-600'
+                                        ? 'border-purple-600 text-primary'
                                         : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300',
                                 ]"
                             >
@@ -496,7 +496,7 @@ return;
                         >
                             <div class="flex items-start gap-3">
                                 <div
-                                    class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-purple-100 text-sm font-bold text-purple-600 dark:bg-purple-900/30"
+                                    class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-purple-100 text-sm font-bold text-primary dark:bg-purple-900/30"
                                 >
                                     {{ review.user.first_name.charAt(0) }}
                                 </div>
@@ -577,7 +577,7 @@ return;
                             <!-- Harga -->
                             <div class="flex items-baseline gap-3">
                                 <span
-                                    class="text-3xl font-bold text-purple-600"
+                                    class="text-3xl font-bold text-primary"
                                 >
                                     {{
                                         formatPrice(
@@ -621,7 +621,7 @@ return;
                                     </div>
                                     <Link
                                         :href="`/learn/${course.slug}`"
-                                        class="mt-2 block w-full rounded-xl bg-purple-600 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-purple-700"
+                                        class="mt-2 block w-full rounded-xl bg-primary py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-purple-700"
                                     >
                                         Lanjut Belajar →
                                     </Link>
@@ -631,7 +631,7 @@ return;
                                 <template v-else>
                                     <button
                                         @click="handleBuy"
-                                        class="w-full rounded-xl bg-purple-600 py-3 font-semibold text-white transition-colors hover:bg-purple-700"
+                                        class="w-full rounded-xl bg-primary py-3 font-semibold text-white transition-colors hover:bg-purple-700"
                                     >
                                         {{
                                             course.price === 0

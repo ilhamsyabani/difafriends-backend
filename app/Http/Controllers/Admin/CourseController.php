@@ -61,7 +61,7 @@ class CourseController extends Controller
         }
 
         // 6. Pagination & Append Query String
-        $courses = $query->paginate(15)->withQueryString();
+        $courses = $query->paginate(5)->withQueryString();
 
         return Inertia::render('admin/courses/Index', [
             'courses' => $courses,

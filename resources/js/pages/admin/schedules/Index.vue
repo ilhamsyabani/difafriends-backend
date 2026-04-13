@@ -77,7 +77,7 @@ function destroy(id: number) {
                 </div>
                 <Link
                     href="/admin/schedules/create"
-                    class="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-purple-700"
+                    class="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-purple-700"
                 >
                     <Plus class="h-4 w-4" />
                     Jadwal Baru
@@ -147,7 +147,7 @@ function destroy(id: number) {
                             <td class="px-5 py-4">
                                 <div class="flex items-center gap-3">
                                     <div
-                                        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-purple-100 text-sm font-bold text-purple-600 dark:bg-purple-900/30"
+                                        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-purple-100 text-sm font-bold text-primary dark:bg-purple-900/30"
                                     >
                                         {{
                                             schedule.tutor.first_name.charAt(0)
@@ -188,7 +188,7 @@ function destroy(id: number) {
                                     {{ schedule.session_duration }} menit/sesi
                                 </p>
                                 <p
-                                    class="text-sm font-semibold text-purple-600"
+                                    class="text-sm font-semibold text-primary"
                                 >
                                     {{ formatPrice(schedule.price) }}
                                 </p>
@@ -228,7 +228,7 @@ function destroy(id: number) {
                                 >
                                     <Link
                                         :href="`/admin/schedules/${schedule.id}/edit`"
-                                        class="text-gray-400 transition-colors hover:text-purple-600 dark:hover:text-purple-400"
+                                        class="text-gray-400 transition-colors hover:text-primary dark:hover:text-purple-400"
                                     >
                                         <Edit2 class="h-4 w-4" />
                                     </Link>
@@ -266,7 +266,7 @@ function destroy(id: number) {
                     :class="[
                         'rounded-xl px-3.5 py-2 text-sm font-medium transition-colors',
                         link.active
-                            ? 'bg-purple-600 text-white shadow-sm'
+                            ? 'bg-primary text-white shadow-sm'
                             : link.url
                               ? 'border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300'
                               : 'cursor-not-allowed border border-transparent text-gray-400',

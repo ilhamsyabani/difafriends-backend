@@ -178,7 +178,7 @@ return;
                 <div class="flex items-center gap-2">
                     <a href="/" class="flex items-center gap-1.5">
                         <div
-                            class="flex h-6 w-6 items-center justify-center rounded bg-purple-600"
+                            class="flex h-6 w-6 items-center justify-center rounded bg-primary"
                         >
                             <span class="text-xs font-bold text-white">DF</span>
                         </div>
@@ -296,7 +296,7 @@ return;
                                 <div class="mt-0.5 shrink-0">
                                     <div
                                         v-if="isCompleted(lecture.id)"
-                                        class="flex h-5 w-5 items-center justify-center rounded-full bg-purple-600"
+                                        class="flex h-5 w-5 items-center justify-center rounded-full bg-primary"
                                     >
                                         <svg
                                             class="h-3 w-3 text-white"
@@ -461,7 +461,7 @@ return;
                                 'flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-colors',
                                 isCompleted(currentLecture.id)
                                     ? 'cursor-default bg-green-900/40 text-green-400'
-                                    : 'bg-purple-600 text-white hover:bg-purple-700',
+                                    : 'bg-primary text-white hover:bg-purple-700',
                             ]"
                             :disabled="isCompleted(currentLecture.id)"
                         >

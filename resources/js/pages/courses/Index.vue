@@ -129,7 +129,7 @@ function formatDuration(minutes: number): string {
                                 :class="[
                                     'w-full rounded-lg px-3 py-2 text-left text-sm transition-colors',
                                     category === ''
-                                        ? 'bg-purple-100 font-medium text-purple-700 dark:bg-purple-900/30'
+                                        ? 'bg-purple-100 font-medium text-primary-hover dark:bg-purple-900/30'
                                         : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800',
                                 ]"
                             >
@@ -142,7 +142,7 @@ function formatDuration(minutes: number): string {
                                     :class="[
                                         'w-full rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors',
                                         category === cat.slug
-                                            ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300'
+                                            ? 'bg-purple-100 text-primary-hover dark:bg-purple-900/30 dark:text-purple-300'
                                             : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800',
                                     ]"
                                 >
@@ -155,7 +155,7 @@ function formatDuration(minutes: number): string {
                                     :class="[
                                         'w-full rounded-lg px-3 py-2 pl-6 text-left text-sm transition-colors',
                                         category === child.slug
-                                            ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400'
+                                            ? 'bg-purple-100 text-primary dark:bg-purple-900/30 dark:text-purple-400'
                                             : 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800',
                                     ]"
                                 >
@@ -181,7 +181,7 @@ function formatDuration(minutes: number): string {
                                 :class="[
                                     'w-full rounded-lg px-3 py-2 text-left text-sm transition-colors',
                                     price === opt.value
-                                        ? 'bg-purple-100 font-medium text-purple-700 dark:bg-purple-900/30'
+                                        ? 'bg-purple-100 font-medium text-primary-hover dark:bg-purple-900/30'
                                         : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800',
                                 ]"
                             >
@@ -299,7 +299,7 @@ function formatDuration(minutes: number): string {
                                     </svg>
                                 </div>
                                 <span
-                                    class="absolute top-3 left-3 rounded-full bg-white/90 px-2 py-1 text-xs font-medium text-purple-700 dark:bg-gray-900/90 dark:text-purple-300"
+                                    class="absolute top-3 left-3 rounded-full bg-white/90 px-2 py-1 text-xs font-medium text-primary-hover dark:bg-gray-900/90 dark:text-purple-300"
                                 >
                                     {{ course.category.name }}
                                 </span>
@@ -307,7 +307,7 @@ function formatDuration(minutes: number): string {
 
                             <div class="p-4">
                                 <h3
-                                    class="mb-1 line-clamp-2 text-sm font-semibold transition-colors group-hover:text-purple-600"
+                                    class="mb-1 line-clamp-2 text-sm font-semibold transition-colors group-hover:text-primary"
                                 >
                                     {{ course.title }}
                                 </h3>
@@ -322,7 +322,7 @@ function formatDuration(minutes: number): string {
                                         class="flex min-w-0 items-baseline gap-2"
                                     >
                                         <span
-                                            class="truncate font-bold text-purple-600"
+                                            class="truncate font-bold text-primary"
                                         >
                                             {{
                                                 formatPrice(
@@ -377,7 +377,7 @@ function formatDuration(minutes: number): string {
                             :class="[
                                 'rounded-lg px-3 py-2 text-sm transition-colors',
                                 link.active
-                                    ? 'bg-purple-600 font-medium text-white'
+                                    ? 'bg-primary font-medium text-white'
                                     : link.url
                                       ? 'border border-gray-200 hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800'
                                       : 'cursor-not-allowed text-gray-300 dark:text-gray-600',

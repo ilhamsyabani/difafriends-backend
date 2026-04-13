@@ -143,7 +143,7 @@ function initials(first: string, last: string): string {
                     <div class="flex items-center gap-2">
                         <h1 class="text-xl font-bold">Penilaian Kuis</h1>
                         <span
-                            class="rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
+                            class="rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-primary-hover dark:bg-purple-900/30 dark:text-purple-400"
                         >
                             Admin
                         </span>
@@ -238,7 +238,7 @@ function initials(first: string, last: string): string {
                         <div class="flex items-center gap-3">
                             <!-- Avatar inisial -->
                             <div
-                                class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-purple-100 text-sm font-bold text-purple-600 dark:bg-purple-900/30 dark:text-purple-400"
+                                class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-purple-100 text-sm font-bold text-primary dark:bg-purple-900/30 dark:text-purple-400"
                             >
                                 {{
                                     initials(
@@ -441,7 +441,7 @@ function initials(first: string, last: string): string {
                                     class="space-y-3 rounded-xl bg-purple-50 p-4 dark:bg-purple-900/10"
                                 >
                                     <p
-                                        class="text-xs font-medium text-purple-700 dark:text-purple-400"
+                                        class="text-xs font-medium text-primary-hover dark:text-purple-400"
                                     >
                                         Penilaian Admin
                                     </p>
@@ -469,7 +469,7 @@ function initials(first: string, last: string): string {
                                         <div class="flex items-end">
                                             <button
                                                 @click="submitGrade(answer.id)"
-                                                class="w-full rounded-lg bg-purple-600 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700"
+                                                class="w-full rounded-lg bg-primary py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700"
                                             >
                                                 Simpan Nilai
                                             </button>
@@ -539,7 +539,7 @@ function initials(first: string, last: string): string {
                         :class="[
                             'rounded-lg px-3 py-1.5 text-sm transition-colors',
                             link.active
-                                ? 'bg-purple-600 text-white'
+                                ? 'bg-primary text-white'
                                 : 'border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700',
                         ]"
                         v-html="link.label"

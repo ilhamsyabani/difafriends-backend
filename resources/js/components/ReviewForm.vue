@@ -194,7 +194,7 @@ const ratingErrorId = `review-rating-error-${props.targetId}`;
                 :disabled="form.processing || form.rating === 0"
                 :aria-busy="form.processing"
                 :aria-disabled="form.rating === 0"
-                class="inline-flex w-full items-center justify-center rounded-xl bg-purple-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-purple-700 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                class="inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-purple-700 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
             >
                 <span v-if="form.processing" aria-hidden="true" class="mr-2"
                     >⏳</span

@@ -112,7 +112,7 @@ const topRevenueMax = computed(() =>
                     <!-- Export CSV -->
                     <button
                         @click="exportCsv"
-                        class="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-purple-700"
+                        class="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-purple-700"
                     >
                         <Download class="h-4 w-4" />
                         Export CSV
@@ -173,7 +173,7 @@ const topRevenueMax = computed(() =>
                                 :class="[
                                     'h-5 w-5',
                                     card.color === 'purple'
-                                        ? 'text-purple-600'
+                                        ? 'text-primary'
                                         : card.color === 'blue'
                                           ? 'text-blue-600'
                                           : card.color === 'green'
@@ -209,7 +209,7 @@ const topRevenueMax = computed(() =>
                             {{ formatRp(item.value) }}
                         </div>
                         <div
-                            class="w-full rounded-t-lg bg-purple-500 transition-all hover:bg-purple-600 dark:bg-purple-600 dark:hover:bg-purple-500"
+                            class="w-full rounded-t-lg bg-purple-500 transition-all hover:bg-primary dark:bg-primary dark:hover:bg-purple-500"
                             :style="{
                                 height: barHeight(item.value, revenueMax),
                             }"
@@ -329,7 +329,7 @@ const topRevenueMax = computed(() =>
                                     {{ course.name }}
                                 </span>
                                 <span
-                                    class="ml-4 shrink-0 font-semibold text-purple-600"
+                                    class="ml-4 shrink-0 font-semibold text-primary"
                                 >
                                     {{ formatRp(course.total_revenue) }}
                                 </span>

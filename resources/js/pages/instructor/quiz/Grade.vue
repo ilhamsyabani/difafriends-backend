@@ -156,7 +156,7 @@ function formatDate(dt: string): string {
                     >
                         <div class="flex items-center gap-3">
                             <div
-                                class="flex h-9 w-9 items-center justify-center rounded-full bg-purple-100 text-sm font-bold text-purple-600 dark:bg-purple-900/30"
+                                class="flex h-9 w-9 items-center justify-center rounded-full bg-purple-100 text-sm font-bold text-primary dark:bg-purple-900/30"
                             >
                                 {{ attempt.user.first_name.charAt(0) }}
                             </div>
@@ -174,7 +174,7 @@ function formatDate(dt: string): string {
                         <div class="flex items-center gap-3">
                             <span
                                 v-if="attempt.score !== null"
-                                class="text-lg font-bold text-purple-600"
+                                class="text-lg font-bold text-primary"
                             >
                                 {{ attempt.score }}%
                             </span>
@@ -331,7 +331,7 @@ function formatDate(dt: string): string {
                                     class="space-y-3 rounded-xl bg-purple-50 p-4 dark:bg-purple-900/10"
                                 >
                                     <p
-                                        class="text-xs font-medium text-purple-700 dark:text-purple-400"
+                                        class="text-xs font-medium text-primary-hover dark:text-purple-400"
                                     >
                                         Penilaian Instruktur
                                     </p>
@@ -359,7 +359,7 @@ function formatDate(dt: string): string {
                                         <div class="flex items-end">
                                             <button
                                                 @click="submitGrade(answer.id)"
-                                                class="w-full rounded-lg bg-purple-600 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700"
+                                                class="w-full rounded-lg bg-primary py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700"
                                             >
                                                 Simpan Nilai
                                             </button>

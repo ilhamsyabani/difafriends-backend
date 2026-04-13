@@ -241,7 +241,7 @@ function submit() {
                         v-model="form.is_active"
                         type="checkbox"
                         id="is_active"
-                        class="h-4 w-4 rounded text-purple-600 focus:ring-purple-500"
+                        class="h-4 w-4 rounded text-primary focus:ring-purple-500"
                     />
                     <label
                         for="is_active"
@@ -258,7 +258,7 @@ function submit() {
                     <button
                         @click="submit"
                         :disabled="form.processing"
-                        class="rounded-lg bg-purple-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-purple-700 disabled:opacity-60"
+                        class="rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-purple-700 disabled:opacity-60"
                     >
                         {{
                             form.processing

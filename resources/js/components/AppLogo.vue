@@ -9,19 +9,21 @@ const appName = computed(() => (page.props.name as string) || 'DifaFriends');
 
 <template>
     <div class="flex items-center gap-2">
-        <div
-            class="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-purple-600"
-        >
-            <img
-                v-if="appLogo"
-                :src="appLogo"
-                :alt="appName"
-                class="h-full w-full object-contain"
-            />
-            <span v-else class="text-sm font-bold text-white">DF</span>
-        </div>
+        <!-- <div
+            class="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-primary"
+        > -->
+        <img
+            v-if="appLogo"
+            :src="appLogo"
+            :alt="appName"
+            class="h-6 object-contain"
+        />
+        <span v-else class="text-sm font-bold text-white">DF</span>
+        <!--</div> -->
         <div class="grid flex-1 text-left leading-tight">
-            <span class="truncate font-bold text-purple-700 dark:text-purple-400">
+            <span
+                class="text-primary-hover truncate font-bold dark:text-orange-400"
+            >
                 {{ appName }}
             </span>
             <span class="truncate text-xs text-gray-400">

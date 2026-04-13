@@ -18,7 +18,7 @@ class ScheduleController extends Controller
             ->withCount('bookings')
             ->orderBy('day_of_week')
             ->orderBy('start_time')
-            ->paginate(20);
+            ->paginate(5);
 
         return Inertia::render('admin/schedules/Index', [
             'schedules' => $schedules,

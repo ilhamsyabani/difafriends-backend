@@ -162,7 +162,7 @@ function formatDuration(seconds: number): string {
                 <div class="flex items-center gap-4">
                     <Link
                         href="/instructor/courses"
-                        class="group flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:border-purple-200 hover:bg-purple-50 hover:text-purple-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-purple-400"
+                        class="group flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:border-purple-200 hover:bg-purple-50 hover:text-primary dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-purple-400"
                     >
                         <ArrowLeft
                             class="h-5 w-5 transition-transform group-hover:-translate-x-1"
@@ -175,7 +175,7 @@ function formatDuration(seconds: number): string {
                             Kurikulum Kelas
                         </h1>
                         <p
-                            class="mt-1 line-clamp-1 text-sm font-medium text-purple-600 dark:text-purple-400"
+                            class="mt-1 line-clamp-1 text-sm font-medium text-primary dark:text-purple-400"
                         >
                             {{ course.title }}
                         </p>
@@ -184,7 +184,7 @@ function formatDuration(seconds: number): string {
 
                 <button
                     @click="openSectionForm()"
-                    class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-purple-700 hover:shadow focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:outline-none dark:focus:ring-offset-gray-900"
+                    class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-purple-700 hover:shadow focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:outline-none dark:focus:ring-offset-gray-900"
                 >
                     <Plus class="h-4 w-4" />
                     Tambah Bagian Baru
@@ -197,7 +197,7 @@ function formatDuration(seconds: number): string {
                 class="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-gray-200 bg-gray-50 py-20 dark:border-gray-800 dark:bg-gray-900/50"
             >
                 <div
-                    class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400"
+                    class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 text-primary dark:bg-purple-900/50 dark:text-purple-400"
                 >
                     <BookText class="h-6 w-6" />
                 </div>
@@ -299,7 +299,7 @@ function formatDuration(seconds: number): string {
                                 </Link>
                                 <Link
                                     :href="`/instructor/courses/${course.id}/quizzes/${section.quiz.id}/grade`"
-                                    class="inline-flex items-center gap-1.5 rounded-lg bg-purple-50 px-3 py-1.5 text-xs font-medium text-purple-700 transition-colors hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400 dark:hover:bg-purple-900/50"
+                                    class="inline-flex items-center gap-1.5 rounded-lg bg-purple-50 px-3 py-1.5 text-xs font-medium text-primary-hover transition-colors hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400 dark:hover:bg-purple-900/50"
                                 >
                                     <svg
                                         class="h-3.5 w-3.5"
@@ -321,7 +321,7 @@ function formatDuration(seconds: number): string {
                             <!-- Tombol + Materi -->
                             <button
                                 @click="openLectureForm(section.id)"
-                                class="inline-flex items-center gap-1.5 rounded-xl border border-purple-200 bg-purple-50 px-3.5 py-1.5 text-sm font-semibold text-purple-700 transition-colors hover:bg-purple-100 dark:border-purple-800/50 dark:bg-purple-900/30 dark:text-purple-300 dark:hover:bg-purple-900/50"
+                                class="inline-flex items-center gap-1.5 rounded-xl border border-purple-200 bg-purple-50 px-3.5 py-1.5 text-sm font-semibold text-primary-hover transition-colors hover:bg-purple-100 dark:border-purple-800/50 dark:bg-purple-900/30 dark:text-purple-300 dark:hover:bg-purple-900/50"
                             >
                                 <Plus class="h-4 w-4" />
                                 Materi
@@ -333,7 +333,7 @@ function formatDuration(seconds: number): string {
 
                             <button
                                 @click="openSectionForm(section)"
-                                class="p-2 text-gray-400 hover:text-purple-600 dark:hover:text-purple-400"
+                                class="p-2 text-gray-400 hover:text-primary dark:hover:text-purple-400"
                                 title="Edit Bagian"
                             >
                                 <Edit2 class="h-4 w-4" />
@@ -418,7 +418,7 @@ function formatDuration(seconds: number): string {
                                         @click="
                                             openLectureForm(section.id, lecture)
                                         "
-                                        class="rounded-lg p-2 text-gray-400 transition-colors hover:bg-white hover:text-purple-600 hover:shadow-sm dark:hover:bg-gray-700 dark:hover:text-purple-400"
+                                        class="rounded-lg p-2 text-gray-400 transition-colors hover:bg-white hover:text-primary hover:shadow-sm dark:hover:bg-gray-700 dark:hover:text-purple-400"
                                     >
                                         <Edit2 class="h-4 w-4" />
                                     </button>
@@ -516,7 +516,7 @@ function formatDuration(seconds: number): string {
                                 type="button"
                                 @click="submitSection"
                                 :disabled="sectionForm.processing"
-                                class="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-purple-700 disabled:opacity-70"
+                                class="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-sm font-medium text-white hover:bg-purple-700 disabled:opacity-70"
                             >
                                 <Loader2
                                     v-if="sectionForm.processing"
@@ -702,7 +702,7 @@ function formatDuration(seconds: number): string {
                                     "
                                     :class="
                                         lectureForm.is_free_preview
-                                            ? 'bg-purple-600'
+                                            ? 'bg-primary'
                                             : 'bg-gray-200 dark:bg-gray-700'
                                     "
                                     class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200"
@@ -731,7 +731,7 @@ function formatDuration(seconds: number): string {
                                 type="button"
                                 @click="submitLecture"
                                 :disabled="lectureForm.processing"
-                                class="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-purple-700 disabled:opacity-70"
+                                class="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-sm font-medium text-white hover:bg-purple-700 disabled:opacity-70"
                             >
                                 <Loader2
                                     v-if="lectureForm.processing"

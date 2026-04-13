@@ -24,6 +24,7 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarSeparator,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import type { NavItem } from '@/types';
@@ -32,7 +33,6 @@ const page = usePage();
 const user = (page.props.auth as any).user;
 const role = user?.role ?? 'user';
 
-//Menu per role
 const adminNav: NavItem[] = [
     { title: 'Dashboard', href: '/admin/dashboard', icon: LayoutGrid },
     { title: 'Kelola User', href: '/admin/users', icon: Users },
@@ -55,12 +55,6 @@ const companionNav: NavItem[] = [
     { title: 'Booking', href: '/companion/bookings', icon: ClipboardList },
 ];
 
-// const userNav: NavItem[] = [
-//     { title: 'Dashboard', href: '/dashboard', icon: LayoutGrid },
-//     { title: 'Kelas Saya', href: '/dashboard/courses', icon: BookOpen },
-//     { title: 'Riwayat', href: '/orders', icon: ShoppingCart },
-// ];
-//
 const userNav: NavItem[] = [
     { title: 'Dashboard', href: '/dashboard', icon: LayoutGrid },
     { title: 'Kelas Saya', href: '/user/enrollments', icon: BookOpen },
@@ -76,14 +70,15 @@ const mainNavItems =
             ? companionNav
             : userNav;
 
-const footerNavItems: NavItem[] = [
-    { title: 'Pengaturan', href: '/settings/profile', icon: Settings },
-];
+// const footerNavItems: NavItem[] = [
+//     { title: 'Pengaturan', href: '/settings/profile', icon: Settings },
+// ];
 </script>
 
 <template>
     <Sidebar collapsible="icon" variant="inset">
-        <SidebarHeader>
+        <!-- Logo header -->
+        <SidebarHeader class="border-b border-sidebar-border px-2 py-3">
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
@@ -95,13 +90,15 @@ const footerNavItems: NavItem[] = [
             </SidebarMenu>
         </SidebarHeader>
 
-        <SidebarContent>
+        <!-- Navigation -->
+        <SidebarContent class="py-3">
             <NavMain :items="mainNavItems" />
         </SidebarContent>
 
-        <SidebarFooter>
-            <NavFooter :items="footerNavItems" />
-            <NavUser />
+        <!-- Footer -->
+        <SidebarFooter class="border-t border-sidebar-border pb-3">
+            <!-- <NavFooter :items="footerNavItems" class="pt-2" />
+            <NavUser /> -->
         </SidebarFooter>
     </Sidebar>
     <slot />

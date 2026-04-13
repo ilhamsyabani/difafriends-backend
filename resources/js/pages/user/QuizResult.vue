@@ -231,7 +231,7 @@ function totalPoints(): number {
                             class="rounded-xl bg-purple-50 p-3 dark:bg-purple-900/20"
                         >
                             <p
-                                class="mb-1 text-xs font-medium text-purple-700 dark:text-purple-400"
+                                class="mb-1 text-xs font-medium text-primary-hover dark:text-purple-400"
                             >
                                 Feedback Instruktur:
                             </p>
@@ -267,14 +267,14 @@ function totalPoints(): number {
             <div class="mt-8 flex items-center justify-center gap-4">
                 <Link
                     :href="`/learn/${course.slug}`"
-                    class="rounded-xl bg-purple-600 px-6 py-2.5 font-medium text-white transition-colors hover:bg-purple-700"
+                    class="rounded-xl bg-primary px-6 py-2.5 font-medium text-white transition-colors hover:bg-purple-700"
                 >
                     Kembali ke Kelas
                 </Link>
                 <Link
                     v-if="!passed && quiz.passing_score > 0"
                     :href="`/learn/${course.slug}/quiz/${quiz.id}`"
-                    class="rounded-xl border border-purple-200 px-6 py-2.5 font-medium text-purple-600 transition-colors hover:bg-purple-50 dark:border-purple-800 dark:hover:bg-purple-900/20"
+                    class="rounded-xl border border-purple-200 px-6 py-2.5 font-medium text-primary transition-colors hover:bg-purple-50 dark:border-purple-800 dark:hover:bg-purple-900/20"
                 >
                     Kerjakan Ulang
                 </Link>

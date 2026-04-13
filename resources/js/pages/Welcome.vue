@@ -70,8 +70,8 @@ function getInitials(firstName: string, lastName: string): string {
 
 function stripHtml(html: string) {
     if (!html) {
-return '';
-}
+        return '';
+    }
 
     const tmp = document.createElement('DIV');
     tmp.innerHTML = html;
@@ -111,7 +111,7 @@ return '';
                             </p>
                             <Link
                                 :href="register()"
-                                class="inline-flex items-center justify-center rounded-xl bg-purple-600 px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:bg-purple-700 hover:shadow-purple-200"
+                                class="inline-flex items-center justify-center rounded-xl bg-primary px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:bg-orange-500 hover:shadow-primary/30"
                             >
                                 Coba Layanan Sekarang
                             </Link>
@@ -200,7 +200,7 @@ return '';
                                     :class="[
                                         'flex items-center gap-4 rounded-2xl border-2 p-4 text-left transition-all',
                                         activeServiceTab === 0
-                                            ? 'border-purple-600 bg-purple-50 dark:bg-purple-900/20'
+                                            ? 'border-primary bg-purple-50 dark:bg-purple-900/20'
                                             : 'border-transparent hover:bg-gray-50 dark:hover:bg-gray-900',
                                     ]"
                                 >
@@ -208,7 +208,7 @@ return '';
                                         class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white shadow-sm dark:bg-gray-800"
                                     >
                                         <svg
-                                            class="h-6 w-6 text-purple-600"
+                                            class="h-6 w-6 text-primary"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -225,7 +225,7 @@ return '';
                                         :class="[
                                             'text-lg font-semibold',
                                             activeServiceTab === 0
-                                                ? 'text-purple-700 dark:text-purple-300'
+                                                ? 'text-orange-500 dark:text-purple-300'
                                                 : 'text-gray-700 dark:text-gray-300',
                                         ]"
                                         >Asesmen Anak</span
@@ -237,7 +237,7 @@ return '';
                                     :class="[
                                         'flex items-center gap-4 rounded-2xl border-2 p-4 text-left transition-all',
                                         activeServiceTab === 1
-                                            ? 'border-purple-600 bg-purple-50 dark:bg-purple-900/20'
+                                            ? 'border-primary bg-purple-50 dark:bg-purple-900/20'
                                             : 'border-transparent hover:bg-gray-50 dark:hover:bg-gray-900',
                                     ]"
                                 >
@@ -245,7 +245,7 @@ return '';
                                         class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white shadow-sm dark:bg-gray-800"
                                     >
                                         <svg
-                                            class="h-6 w-6 text-purple-600"
+                                            class="h-6 w-6 text-primary"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -262,7 +262,7 @@ return '';
                                         :class="[
                                             'text-lg font-semibold',
                                             activeServiceTab === 1
-                                                ? 'text-purple-700 dark:text-purple-300'
+                                                ? 'text-orange-500 dark:text-purple-300'
                                                 : 'text-gray-700 dark:text-gray-300',
                                         ]"
                                         >Pendampingan Belajar Anak</span
@@ -290,7 +290,7 @@ return '';
                                     class="flex items-center gap-3 font-medium text-gray-700 dark:text-gray-300"
                                 >
                                     <svg
-                                        class="h-6 w-6 shrink-0 text-purple-600"
+                                        class="h-6 w-6 shrink-0 text-primary"
                                         fill="none"
                                         viewBox="0 0 24 24"
                                         stroke="currentColor"
@@ -304,7 +304,7 @@ return '';
                                     </svg>
                                     <a
                                         href="/pelatihan-guru"
-                                        class="transition-colors hover:text-purple-600"
+                                        class="transition-colors hover:text-primary"
                                         >Pelatihan Guru</a
                                     >
                                 </li>
@@ -312,7 +312,7 @@ return '';
                                     class="flex items-center gap-3 font-medium text-gray-700 dark:text-gray-300"
                                 >
                                     <svg
-                                        class="h-6 w-6 shrink-0 text-purple-600"
+                                        class="h-6 w-6 shrink-0 text-primary"
                                         fill="none"
                                         viewBox="0 0 24 24"
                                         stroke="currentColor"
@@ -326,7 +326,7 @@ return '';
                                     </svg>
                                     <a
                                         href="/pelatihan-ortu"
-                                        class="transition-colors hover:text-purple-600"
+                                        class="transition-colors hover:text-primary"
                                         >Pelatihan Orang Tua</a
                                     >
                                 </li>
@@ -365,7 +365,7 @@ return '';
                         </div>
                         <a
                             href="/courses"
-                            class="hidden items-center gap-1 font-medium text-purple-600 hover:text-purple-700 md:flex"
+                            class="hidden items-center gap-1 font-medium text-primary hover:text-orange-500 md:flex"
                             >Lihat semua &rarr;</a
                         >
                     </div>
@@ -385,14 +385,14 @@ return '';
                                     class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                 />
                                 <span
-                                    class="absolute top-4 left-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-purple-700 shadow-sm backdrop-blur"
+                                    class="absolute top-4 left-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-orange-500 shadow-sm backdrop-blur"
                                 >
                                     {{ course.category.name }}
                                 </span>
                             </div>
                             <div class="flex flex-1 flex-col p-6">
                                 <h3
-                                    class="mb-2 line-clamp-2 text-xl font-bold text-gray-900 transition-colors group-hover:text-purple-600 dark:text-white"
+                                    class="mb-2 line-clamp-2 text-xl font-bold text-gray-900 transition-colors group-hover:text-primary dark:text-white"
                                 >
                                     {{ course.title }}
                                 </h3>
@@ -408,7 +408,7 @@ return '';
                                     <div>
                                         <span
                                             v-if="course.discount_price"
-                                            class="text-lg font-extrabold text-purple-600"
+                                            class="text-lg font-extrabold text-primary"
                                             >{{
                                                 formatPrice(
                                                     course.discount_price,
@@ -417,7 +417,7 @@ return '';
                                         >
                                         <span
                                             v-else
-                                            class="text-lg font-extrabold text-purple-600"
+                                            class="text-lg font-extrabold text-primary"
                                             >{{
                                                 course.price === 0
                                                     ? 'Gratis'
@@ -465,7 +465,7 @@ return '';
                         </div>
                         <a
                             href="/companions"
-                            class="hidden items-center gap-1 font-medium text-purple-600 hover:text-purple-700 md:flex"
+                            class="hidden items-center gap-1 font-medium text-primary hover:text-orange-500 md:flex"
                         >
                             Lihat semua &rarr;
                         </a>
@@ -527,7 +527,7 @@ return '';
                             <div class="flex flex-1 flex-col">
                                 <!-- Nama -->
                                 <h3
-                                    class="mb-1 text-lg font-bold text-gray-900 transition-colors group-hover:text-purple-600 dark:text-white dark:group-hover:text-purple-400"
+                                    class="mb-1 text-lg font-bold text-gray-900 transition-colors group-hover:text-primary dark:text-white dark:group-hover:text-purple-400"
                                 >
                                     {{ companion.first_name }}
                                     {{ companion.last_name }}
@@ -578,7 +578,7 @@ return '';
                                         Mulai dari
                                     </p>
                                     <p
-                                        class="text-lg font-extrabold text-purple-600 dark:text-purple-400"
+                                        class="text-lg font-extrabold text-primary dark:text-purple-400"
                                     >
                                         {{
                                             formatPrice(
@@ -612,7 +612,7 @@ return '';
                         </div>
                         <a
                             href="/articles"
-                            class="hidden items-center gap-1 font-medium text-purple-600 hover:text-purple-700 md:flex"
+                            class="hidden items-center gap-1 font-medium text-primary hover:text-orange-500 md:flex"
                         >
                             Lihat semua &rarr;
                         </a>
@@ -654,7 +654,7 @@ return '';
                                     >
                                 </div>
                                 <span
-                                    class="absolute top-4 left-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-purple-700 shadow-sm backdrop-blur dark:bg-gray-900/90 dark:text-purple-300"
+                                    class="absolute top-4 left-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-orange-500 shadow-sm backdrop-blur dark:bg-gray-900/90 dark:text-purple-300"
                                 >
                                     Pendidikan
                                 </span>
@@ -663,7 +663,7 @@ return '';
                             <!-- Konten -->
                             <div class="flex flex-1 flex-col p-6">
                                 <h3
-                                    class="mb-3 line-clamp-2 text-xl leading-snug font-bold text-gray-900 transition-colors group-hover:text-purple-600 dark:text-white dark:group-hover:text-purple-400"
+                                    class="mb-3 line-clamp-2 text-xl leading-snug font-bold text-gray-900 transition-colors group-hover:text-primary dark:text-white dark:group-hover:text-purple-400"
                                 >
                                     {{ article.title }}
                                 </h3>
@@ -681,7 +681,7 @@ return '';
                                     <div class="flex items-center gap-2.5">
                                         <!-- Avatar Penulis -->
                                         <div
-                                            class="flex h-7 w-7 items-center justify-center rounded-full bg-purple-100 text-[10px] font-bold text-purple-600 dark:bg-purple-900/30"
+                                            class="flex h-7 w-7 items-center justify-center rounded-full bg-purple-100 text-[10px] font-bold text-primary dark:bg-purple-900/30"
                                         >
                                             {{
                                                 article.author?.first_name?.charAt(
@@ -718,7 +718,7 @@ return '';
             <!-- ── CTA BERLANGGANAN ──────────────────────────────────────── -->
             <section class="px-4 py-16">
                 <div
-                    class="mx-auto max-w-7xl rounded-[40px] bg-gradient-to-r from-purple-600 to-indigo-700 px-8 py-16 text-center text-white shadow-2xl md:px-16 lg:text-left"
+                    class="mx-auto max-w-7xl rounded-[40px] bg-gradient-to-r from-primary to-orange-500 px-8 py-16 text-center text-white shadow-2xl md:px-16 lg:text-left"
                 >
                     <div class="grid items-center gap-8 lg:grid-cols-2">
                         <div>
@@ -728,7 +728,7 @@ return '';
                             <a
                                 href="https://wa.me/6285159540559?text=Saya%20tertarik%20buat%20coba%20layanan%20Difafriends%20dong%20kak..!"
                                 target="_blank"
-                                class="inline-block rounded-xl bg-white px-8 py-4 font-bold text-purple-600 transition-all hover:bg-gray-100 hover:shadow-lg"
+                                class="inline-block rounded-xl bg-white px-8 py-4 font-bold text-primary transition-all hover:bg-gray-100 hover:shadow-lg"
                             >
                                 Mulai Berlangganan
                             </a>
@@ -778,7 +778,7 @@ return '';
                                     Danang Pradana (CAND) M.B.A
                                 </h5>
                                 <p
-                                    class="mt-1 text-sm font-medium text-purple-600"
+                                    class="mt-1 text-sm font-medium text-primary"
                                 >
                                     Co-founder & COO
                                 </p>
@@ -804,7 +804,7 @@ return '';
                                     Annis Na'immatun S.P.d
                                 </h5>
                                 <p
-                                    class="mt-1 text-sm font-medium text-purple-600"
+                                    class="mt-1 text-sm font-medium text-primary"
                                 >
                                     Founder & CEO
                                 </p>
@@ -830,7 +830,7 @@ return '';
                                     Ilham Syabani
                                 </h5>
                                 <p
-                                    class="mt-1 text-sm font-medium text-purple-600"
+                                    class="mt-1 text-sm font-medium text-primary"
                                 >
                                     Head of Technology
                                 </p>
