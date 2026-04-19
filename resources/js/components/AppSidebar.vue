@@ -26,7 +26,11 @@ import {
     SidebarMenuItem,
     SidebarSeparator,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { dashboard as userDashboard } from '@/routes';
+import { dashboard as adminDashboard } from '@/routes/admin';
+import { dashboard as instructorDashboard } from '@/routes/instructor';
+import { dashboard as companionDashboard } from '@/routes/companion';
+import { computed } from 'vue';
 import type { NavItem } from '@/types';
 
 const page = usePage();
@@ -70,6 +74,13 @@ const mainNavItems =
             ? companionNav
             : userNav;
 
+const dashboardHref = computed(() => {
+    if (role === 'admin') return adminDashboard.url();
+    if (role === 'instructor') return instructorDashboard.url();
+    if (role === 'companion') return companionDashboard.url();
+    return userDashboard.url();
+});
+
 // const footerNavItems: NavItem[] = [
 //     { title: 'Pengaturan', href: '/settings/profile', icon: Settings },
 // ];
@@ -82,7 +93,7 @@ const mainNavItems =
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
-                        <Link :href="dashboard()">
+                        <Link :href="dashboardHref">
                             <AppLogo />
                         </Link>
                     </SidebarMenuButton>

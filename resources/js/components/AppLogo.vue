@@ -22,7 +22,7 @@ const appName = computed(() => (page.props.name as string) || 'DifaFriends');
         <!--</div> -->
         <div class="grid flex-1 text-left leading-tight">
             <span
-                class="text-primary-hover truncate font-bold dark:text-orange-400"
+                class="truncate font-bold text-gray-900 dark:text-white"
             >
                 {{ appName }}
             </span>

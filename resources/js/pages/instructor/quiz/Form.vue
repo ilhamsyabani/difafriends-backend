@@ -2,12 +2,20 @@
 import { Head, Link, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 
 const props = defineProps<{
     course: { id: number; title: string };
     section: { id: number; title: string };
     quiz: {
         id: number;
+        type: string;
         title: string;
         description: string | null;
         is_required: boolean;
@@ -29,8 +37,15 @@ const props = defineProps<{
 
 const isEdit = !!props.quiz;
 
+const quizTypeOptions = [
+    { value: 'pretest', label: 'Pre-Test', desc: 'Dikerjakan sebelum materi' },
+    { value: 'quiz', label: 'Kuis', desc: 'Latihan di tengah materi' },
+    { value: 'posttest', label: 'Post-Test', desc: 'Dikerjakan setelah materi' },
+];
+
 // ── Form kuis ──────────────────────────────────────────
 const quizForm = useForm({
+    type: props.quiz?.type ?? 'quiz',
     title: props.quiz?.title ?? '',
     description: props.quiz?.description ?? '',
     is_required: props.quiz?.is_required ?? false,
@@ -86,14 +101,13 @@ function addOption() {
 
 function removeOption(idx: number) {
     if (questionForm.options.length <= 2) {
-return;
-}
+        return;
+    }
 
     questionForm.options.splice(idx, 1);
 }
 
 function setCorrect(idx: number) {
-    // Hanya 1 jawaban benar untuk PG
     questionForm.options.forEach((o, i) => {
         o.is_correct = i === idx;
     });
@@ -120,8 +134,8 @@ function submitQuestion() {
 
 function deleteQuestion(qId: number) {
     if (!confirm('Hapus soal ini?')) {
-return;
-}
+        return;
+    }
 
     const base = `/instructor/courses/${props.course.id}/sections/${props.section.id}/quiz/${props.quiz!.id}/questions`;
     router.delete(`${base}/${qId}`);
@@ -167,11 +181,39 @@ function totalPoints(): number {
 
             <!-- Form Pengaturan Kuis -->
             <div
-                class="space-y-4 rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
+                class="space-y-4 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900"
             >
                 <h2 class="font-semibold text-gray-700 dark:text-gray-300">
                     Pengaturan Kuis
                 </h2>
+
+                <!-- Tipe Kuis -->
+                <div>
+                    <label class="mb-1.5 block text-sm font-medium">
+                        Tipe Kuis <span class="text-red-500">*</span>
+                    </label>
+                    <Select v-model="quizForm.type">
+                        <SelectTrigger class="w-full">
+                            <SelectValue placeholder="Pilih tipe kuis..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem
+                                v-for="opt in quizTypeOptions"
+                                :key="opt.value"
+                                :value="opt.value"
+                            >
+                                <span class="font-medium">{{ opt.label }}</span>
+                                <span class="ml-1.5 text-xs text-muted-foreground">— {{ opt.desc }}</span>
+                            </SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <p
+                        v-if="quizForm.errors.type"
+                        class="mt-1 text-xs text-red-500"
+                    >
+                        {{ quizForm.errors.type }}
+                    </p>
+                </div>
 
                 <div>
                     <label class="mb-1.5 block text-sm font-medium">
@@ -180,8 +222,8 @@ function totalPoints(): number {
                     <input
                         v-model="quizForm.title"
                         type="text"
-                        placeholder="Contoh: Kuis Akhir Bagian 1"
-                        class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900"
+                        placeholder="Contoh: Pre-Test Bagian 1"
+                        class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-primary/50 focus:outline-none dark:border-gray-700 dark:bg-gray-950"
                     />
                     <p
                         v-if="quizForm.errors.title"
@@ -199,7 +241,7 @@ function totalPoints(): number {
                         v-model="quizForm.description"
                         rows="2"
                         placeholder="Petunjuk pengerjaan kuis..."
-                        class="w-full resize-none rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900"
+                        class="w-full resize-none rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-primary/50 focus:outline-none dark:border-gray-700 dark:bg-gray-950"
                     />
                 </div>
 
@@ -213,7 +255,7 @@ function totalPoints(): number {
                             type="number"
                             min="0"
                             max="100"
-                            class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900"
+                            class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-primary/50 focus:outline-none dark:border-gray-700 dark:bg-gray-950"
                         />
                         <p class="mt-1 text-xs text-gray-400">
                             0 = tidak ada nilai minimum
@@ -224,7 +266,7 @@ function totalPoints(): number {
                             v-model="quizForm.is_required"
                             type="checkbox"
                             id="is_required"
-                            class="h-4 w-4 rounded text-primary focus:ring-purple-500"
+                            class="h-4 w-4 rounded text-primary focus:ring-primary/50"
                         />
                         <label for="is_required" class="cursor-pointer text-sm">
                             Kuis wajib dikerjakan
@@ -233,12 +275,12 @@ function totalPoints(): number {
                 </div>
 
                 <div
-                    class="flex items-center gap-3 border-t border-gray-100 pt-2 dark:border-gray-700"
+                    class="flex items-center gap-3 border-t border-gray-100 pt-2 dark:border-gray-800"
                 >
                     <button
                         @click="submitQuiz"
                         :disabled="quizForm.processing"
-                        class="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700 disabled:opacity-60"
+                        class="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white transition-colors hover:opacity-90 disabled:opacity-60"
                     >
                         {{
                             quizForm.processing
@@ -254,11 +296,11 @@ function totalPoints(): number {
             <!-- Daftar Soal — hanya tampil jika quiz sudah dibuat -->
             <div
                 v-if="isEdit"
-                class="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+                class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900"
             >
                 <!-- Header soal -->
                 <div
-                    class="flex items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-gray-700"
+                    class="flex items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-gray-800"
                 >
                     <div>
                         <h2 class="font-semibold">Daftar Soal</h2>
@@ -269,7 +311,7 @@ function totalPoints(): number {
                     </div>
                     <button
                         @click="openQuestionForm()"
-                        class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700"
+                        class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:opacity-90"
                     >
                         + Tambah Soal
                     </button>
@@ -300,18 +342,18 @@ function totalPoints(): number {
                 <!-- List soal -->
                 <div
                     v-else
-                    class="divide-y divide-gray-100 dark:divide-gray-700"
+                    class="divide-y divide-gray-100 dark:divide-gray-800"
                 >
                     <div
                         v-for="(q, idx) in quiz!.questions"
                         :key="q.id"
-                        class="px-5 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/30"
+                        class="px-5 py-4 transition-colors hover:bg-gray-50/80 dark:hover:bg-gray-800/50"
                     >
                         <div class="flex items-start justify-between gap-4">
                             <div class="flex min-w-0 flex-1 items-start gap-3">
                                 <!-- Nomor -->
                                 <span
-                                    class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-purple-100 text-xs font-bold text-primary dark:bg-purple-900/30"
+                                    class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary dark:bg-primary/20"
                                 >
                                     {{ idx + 1 }}
                                 </span>
@@ -384,7 +426,7 @@ function totalPoints(): number {
                             <div class="flex shrink-0 items-center gap-2">
                                 <button
                                     @click="openQuestionForm(q)"
-                                    class="text-xs font-medium text-primary hover:text-primary-hover"
+                                    class="text-xs font-medium text-primary hover:underline"
                                 >
                                     Edit
                                 </button>
@@ -408,7 +450,7 @@ function totalPoints(): number {
             @click.self="showQuestionForm = false"
         >
             <div
-                class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-800"
+                class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-900"
             >
                 <h2 class="mb-5 text-lg font-bold">
                     {{ editingQuestion ? 'Edit Soal' : 'Tambah Soal Baru' }}
@@ -433,7 +475,7 @@ function totalPoints(): number {
                                 :class="[
                                     'flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 px-4 py-2.5 text-sm font-medium transition-colors',
                                     questionForm.type === opt.value
-                                        ? 'border-purple-500 bg-purple-50 text-primary-hover dark:bg-purple-900/20 dark:text-purple-300'
+                                        ? 'border-primary bg-primary/5 text-primary dark:bg-primary/10'
                                         : 'border-gray-200 text-gray-500 dark:border-gray-700',
                                 ]"
                             >
@@ -457,7 +499,7 @@ function totalPoints(): number {
                             v-model="questionForm.question"
                             rows="3"
                             placeholder="Tuliskan pertanyaan di sini..."
-                            class="w-full resize-none rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900"
+                            class="w-full resize-none rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-primary/50 focus:outline-none dark:border-gray-700 dark:bg-gray-950"
                         />
                         <p
                             v-if="questionForm.errors.question"
@@ -477,7 +519,7 @@ function totalPoints(): number {
                             type="number"
                             min="1"
                             max="100"
-                            class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900"
+                            class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-primary/50 focus:outline-none dark:border-gray-700 dark:bg-gray-950"
                         />
                     </div>
 
@@ -490,7 +532,7 @@ function totalPoints(): number {
                             </label>
                             <button
                                 @click="addOption"
-                                class="text-xs font-medium text-primary hover:text-primary-hover"
+                                class="text-xs font-medium text-primary hover:underline"
                             >
                                 + Tambah Pilihan
                             </button>
@@ -535,7 +577,7 @@ function totalPoints(): number {
                                     v-model="opt.option_text"
                                     type="text"
                                     :placeholder="`Pilihan ${String.fromCharCode(65 + idx)}`"
-                                    class="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900"
+                                    class="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-primary/50 focus:outline-none dark:border-gray-700 dark:bg-gray-950"
                                 />
 
                                 <button
@@ -581,12 +623,12 @@ function totalPoints(): number {
                 </div>
 
                 <div
-                    class="mt-6 flex items-center gap-3 border-t border-gray-100 pt-4 dark:border-gray-700"
+                    class="mt-6 flex items-center gap-3 border-t border-gray-100 pt-4 dark:border-gray-800"
                 >
                     <button
                         @click="submitQuestion"
                         :disabled="questionForm.processing"
-                        class="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700 disabled:opacity-60"
+                        class="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white transition-colors hover:opacity-90 disabled:opacity-60"
                     >
                         {{
                             questionForm.processing

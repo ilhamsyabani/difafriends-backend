@@ -25,6 +25,9 @@ const labelMap: Record<string, string> = {
     archived: 'Diarsipkan',
     active: 'Aktif',
     inactive: 'Nonaktif',
+    pretest: 'Pre-Test',
+    quiz: 'Kuis',
+    posttest: 'Post-Test',
 };
 
 const colorMap: Record<string, string> = {
@@ -35,6 +38,9 @@ const colorMap: Record<string, string> = {
     completed: 'info',
     pending: 'warning',
     review: 'warning',
+    pretest: 'info',
+    quiz: 'neutral',
+    posttest: 'warning',
     expired: 'neutral',
     draft: 'neutral',
     archived: 'neutral',

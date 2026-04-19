@@ -144,7 +144,7 @@ function getInitials(firstName: string, lastName: string) {
 
                     <Link
                         href="/admin/users/create"
-                        class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-purple-700 hover:shadow focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:outline-none dark:focus:ring-offset-gray-900"
+                        class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-orange-500 hover:shadow focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:outline-none dark:focus:ring-offset-gray-900"
                     >
                         <Plus class="h-4 w-4" />
                         Pengguna Baru
@@ -331,7 +331,7 @@ function getInitials(firstName: string, lastName: string) {
                                     >
                                         <Link
                                             :href="`/admin/users/${user.id}/edit`"
-                                            class="text-gray-400 transition-colors hover:text-primary dark:hover:text-purple-400"
+                                            class="text-gray-400 transition-colors hover:text-primary dark:hover:text-primary"
                                             title="Edit Pengguna"
                                         >
                                             <span class="sr-only">Edit</span>

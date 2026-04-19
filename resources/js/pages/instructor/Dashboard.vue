@@ -58,7 +58,7 @@ const { formatPrice } = useFormatters();
 
             <!-- Kelas list -->
             <div
-                class="overflow-hidden rounded-2xl border border-border bg-card"
+                class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900"
             >
                 <SectionHeader
                     title="Kelas Saya"
@@ -84,7 +84,7 @@ const { formatPrice } = useFormatters();
                     <div
                         v-for="course in stats.courses"
                         :key="course.id"
-                        class="flex items-center justify-between border-b border-border px-5 py-4 transition-colors last:border-0 hover:bg-muted/30"
+                        class="flex items-center justify-between border-b border-gray-100 px-5 py-4 transition-colors last:border-0 hover:bg-gray-50/80 dark:border-gray-800 dark:hover:bg-gray-800/50"
                     >
                         <div class="min-w-0 flex-1">
                             <p class="truncate font-medium">

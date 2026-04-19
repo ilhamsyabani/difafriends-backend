@@ -195,7 +195,7 @@ function destroy(id: number) {
                     <div class="relative w-full flex-1 sm:w-auto sm:flex-none">
                         <select
                             v-model="categoryId"
-                            class="w-full appearance-none rounded-xl border border-gray-200 bg-white px-4 py-2.5 pr-8 text-sm text-gray-700 shadow-sm transition-colors focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
+                            class="w-full appearance-none rounded-xl border border-gray-200 bg-white px-4 py-2.5 pr-8 text-sm text-gray-700 shadow-sm transition-colors focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
                         >
                             <option value="">Semua Kategori</option>
                             <option
@@ -217,7 +217,7 @@ function destroy(id: number) {
                     <div class="relative w-full flex-1 sm:w-auto sm:flex-none">
                         <select
                             v-model="status"
-                            class="w-full appearance-none rounded-xl border border-gray-200 bg-white px-4 py-2.5 pr-8 text-sm text-gray-700 shadow-sm transition-colors focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
+                            class="w-full appearance-none rounded-xl border border-gray-200 bg-white px-4 py-2.5 pr-8 text-sm text-gray-700 shadow-sm transition-colors focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
                         >
                             <option value="">Semua Status</option>
                             <option value="published">Published</option>
@@ -235,7 +235,7 @@ function destroy(id: number) {
                     <div class="relative w-full flex-1 sm:w-auto sm:flex-none">
                         <select
                             v-model="rating"
-                            class="w-full appearance-none rounded-xl border border-gray-200 bg-white px-4 py-2.5 pr-8 text-sm text-gray-700 shadow-sm transition-colors focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
+                            class="w-full appearance-none rounded-xl border border-gray-200 bg-white px-4 py-2.5 pr-8 text-sm text-gray-700 shadow-sm transition-colors focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
                         >
                             <option value="">Semua Rating</option>
                             <option value="4.5">4.5 Ke atas</option>
@@ -252,7 +252,7 @@ function destroy(id: number) {
                     <!-- Tombol Kelas Baru -->
                     <Link
                         href="/admin/courses/create"
-                        class="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-purple-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:outline-none sm:w-auto dark:focus:ring-offset-gray-900"
+                        class="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-orange-500 focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:outline-none sm:w-auto dark:focus:ring-offset-gray-900"
                     >
                         <Plus class="h-4 w-4" />
                         Kelas Baru
@@ -392,7 +392,7 @@ function destroy(id: number) {
                                                 class="mt-1 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400"
                                             >
                                                 <span
-                                                    class="rounded bg-purple-50 px-1.5 py-0.5 font-medium text-primary-hover dark:bg-purple-900/30 dark:text-purple-400"
+                                                    class="rounded bg-primary/10 px-1.5 py-0.5 font-medium text-primary dark:bg-primary/20 dark:text-primary"
                                                 >
                                                     {{
                                                         course.category?.name ??
@@ -551,7 +551,7 @@ function destroy(id: number) {
 
                                         <Link
                                             :href="`/admin/courses/${course.id}/enrollments`"
-                                            class="text-gray-400 transition-colors hover:text-primary dark:hover:text-purple-400"
+                                            class="text-gray-400 transition-colors hover:text-primary dark:hover:text-primary"
                                             title="Kelola Peserta"
                                         >
                                             <span class="sr-only">Peserta</span>
@@ -560,7 +560,7 @@ function destroy(id: number) {
 
                                         <Link
                                             :href="`/admin/courses/${course.id}/edit`"
-                                            class="text-gray-400 transition-colors hover:text-primary dark:hover:text-purple-400"
+                                            class="text-gray-400 transition-colors hover:text-primary dark:hover:text-primary"
                                             title="Edit Kursus"
                                         >
                                             <span class="sr-only">Edit</span>

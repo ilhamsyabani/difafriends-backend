@@ -172,9 +172,7 @@ const { formatPrice, formatDate } = useFormatters();
             </div>
 
             <!-- Recent Orders -->
-            <div
-                class="overflow-hidden rounded-2xl border border-border bg-card"
-            >
+            <div class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
                 <SectionHeader title="Transaksi Terbaru" href="/admin/orders" />
 
                 <EmptyState
@@ -182,71 +180,34 @@ const { formatPrice, formatDate } = useFormatters();
                     message="Belum ada transaksi."
                 />
 
-                <table v-else class="w-full text-sm">
-                    <thead class="bg-muted/50">
-                        <tr>
-                            <th
-                                class="px-5 py-3 text-left text-xs font-medium tracking-wide text-muted-foreground uppercase"
+                <div v-else class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="border-b border-gray-100 bg-gray-50/50 dark:border-gray-800 dark:bg-gray-800/50">
+                            <tr>
+                                <th class="px-5 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Invoice</th>
+                                <th class="px-5 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Pengguna</th>
+                                <th class="px-5 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Item</th>
+                                <th class="px-5 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Total</th>
+                                <th class="px-5 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Status</th>
+                                <th class="px-5 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Tanggal</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                            <tr
+                                v-for="order in stats.recentOrders"
+                                :key="order.id"
+                                class="transition-colors hover:bg-gray-50/80 dark:hover:bg-gray-800/50"
                             >
-                                Invoice
-                            </th>
-                            <th
-                                class="px-5 py-3 text-left text-xs font-medium tracking-wide text-muted-foreground uppercase"
-                            >
-                                Pengguna
-                            </th>
-                            <th
-                                class="px-5 py-3 text-left text-xs font-medium tracking-wide text-muted-foreground uppercase"
-                            >
-                                Item
-                            </th>
-                            <th
-                                class="px-5 py-3 text-left text-xs font-medium tracking-wide text-muted-foreground uppercase"
-                            >
-                                Total
-                            </th>
-                            <th
-                                class="px-5 py-3 text-left text-xs font-medium tracking-wide text-muted-foreground uppercase"
-                            >
-                                Status
-                            </th>
-                            <th
-                                class="px-5 py-3 text-left text-xs font-medium tracking-wide text-muted-foreground uppercase"
-                            >
-                                Tanggal
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-border">
-                        <tr
-                            v-for="order in stats.recentOrders"
-                            :key="order.id"
-                            class="transition-colors hover:bg-muted/30"
-                        >
-                            <td
-                                class="px-5 py-3 font-mono text-xs text-muted-foreground"
-                            >
-                                {{ order.invoice_number }}
-                            </td>
-                            <td class="px-5 py-3">
-                                {{ order.user.first_name }}
-                                {{ order.user.last_name }}
-                            </td>
-                            <td class="max-w-xs truncate px-5 py-3">
-                                {{ order.item_name }}
-                            </td>
-                            <td class="px-5 py-3 font-semibold text-brand">
-                                {{ formatPrice(order.final_amount) }}
-                            </td>
-                            <td class="px-5 py-3">
-                                <StatusBadge :status="order.status" />
-                            </td>
-                            <td class="px-5 py-3 text-xs text-muted-foreground">
-                                {{ formatDate(order.created_at) }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                                <td class="px-5 py-4 font-mono text-xs text-gray-500 dark:text-gray-400">{{ order.invoice_number }}</td>
+                                <td class="px-5 py-4 font-medium text-gray-900 dark:text-white">{{ order.user.first_name }} {{ order.user.last_name }}</td>
+                                <td class="max-w-xs truncate px-5 py-4 text-gray-600 dark:text-gray-300">{{ order.item_name }}</td>
+                                <td class="px-5 py-4 font-semibold text-primary">{{ formatPrice(order.final_amount) }}</td>
+                                <td class="px-5 py-4"><StatusBadge :status="order.status" /></td>
+                                <td class="px-5 py-4 text-xs text-gray-500 dark:text-gray-400">{{ formatDate(order.created_at) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </AppLayout>

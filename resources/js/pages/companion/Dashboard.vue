@@ -58,7 +58,7 @@ const { formatPrice, formatDateTime } = useFormatters();
 
             <!-- Upcoming Bookings -->
             <div
-                class="overflow-hidden rounded-2xl border border-border bg-card"
+                class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900"
             >
                 <SectionHeader
                     title="Booking Terbaru"
@@ -74,7 +74,7 @@ const { formatPrice, formatDateTime } = useFormatters();
                     <div
                         v-for="booking in stats.recentBookings"
                         :key="booking.id"
-                        class="flex items-center justify-between border-b border-border px-5 py-4 last:border-0"
+                        class="flex items-center justify-between border-b border-gray-100 px-5 py-4 transition-colors last:border-0 hover:bg-gray-50/80 dark:border-gray-800 dark:hover:bg-gray-800/50"
                     >
                         <div>
                             <p class="font-medium">

@@ -12,7 +12,7 @@ defineProps<{
 </script>
 
 <template>
-    <div class="rounded-2xl border border-border bg-card p-5">
+    <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <div class="mb-3 flex items-center justify-between">
             <span class="text-sm text-muted-foreground">{{ label }}</span>
             <div

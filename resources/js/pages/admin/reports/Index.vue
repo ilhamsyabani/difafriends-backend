@@ -8,6 +8,14 @@ import {
     BookOpen,
 } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import AppLayout from '@/layouts/AppLayout.vue';
 
 interface MonthData {
@@ -81,10 +89,10 @@ const topRevenueMax = computed(() =>
     <AppLayout>
         <Head title="Laporan & Analitik" />
 
-        <div class="max-w-7xl space-y-8 p-6">
+        <div class="max-w-7xl p-6 sm:p-10">
             <!-- Header -->
             <div
-                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+                class="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
             >
                 <div>
                     <h1
@@ -99,20 +107,34 @@ const topRevenueMax = computed(() =>
 
                 <div class="flex items-center gap-3">
                     <!-- Pilih Tahun -->
-                    <select
+                    <Select
                         v-model="selectedYear"
                         @change="changeYear(selectedYear)"
-                        class="rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-purple-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900"
                     >
-                        <option v-for="y in availableYears" :key="y" :value="y">
-                            {{ y }}
-                        </option>
-                    </select>
+                        <SelectTrigger
+                            class="mt-1 w-28 rounded-xl border-transparent bg-gray-50 px-4 py-5 text-sm transition-all focus:border-purple-500 focus:bg-white focus:ring-4 focus:ring-purple-500/10 dark:bg-gray-800 dark:text-white dark:focus:bg-gray-900"
+                        >
+                            <SelectValue placeholder="Pilih kategori..." />
+                        </SelectTrigger>
+                        <SelectContent
+                            class="rounded-xl border-gray-100 shadow-lg dark:border-gray-800"
+                        >
+                            <SelectGroup>
+                                <SelectItem
+                                    v-for="y in availableYears"
+                                    :key="y"
+                                    :value="y"
+                                >
+                                    {{ y }}
+                                </SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
 
                     <!-- Export CSV -->
                     <button
                         @click="exportCsv"
-                        class="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-purple-700"
+                        class="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-purple-700"
                     >
                         <Download class="h-4 w-4" />
                         Export CSV
@@ -121,7 +143,7 @@ const topRevenueMax = computed(() =>
             </div>
 
             <!-- ── Summary Cards ──────────────────────────────── -->
-            <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <div class="mb-2 grid grid-cols-2 gap-4 lg:grid-cols-4">
                 <div
                     v-for="card in [
                         {
@@ -192,7 +214,7 @@ const topRevenueMax = computed(() =>
 
             <!-- ── Revenue Chart ──────────────────────────────── -->
             <div
-                class="rounded-2xl border border-gray-100 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
+                class="mb-2 rounded-2xl border border-gray-100 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
             >
                 <h2 class="mb-6 font-semibold text-gray-900 dark:text-white">
                     Revenue per Bulan (Rp)
@@ -223,7 +245,7 @@ const topRevenueMax = computed(() =>
             </div>
 
             <!-- ── Enrollments & User Growth ──────────────────── -->
-            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <div class="mb-2 grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <!-- Enrollments -->
                 <div
                     class="rounded-2xl border border-gray-100 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"

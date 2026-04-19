@@ -1,158 +1,250 @@
 <script setup lang="ts">
-import { Link, usePage } from '@inertiajs/vue3';
-// import AppLogoIcon from '@/components/AppLogoIcon.vue';
+import { Link } from '@inertiajs/vue3';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { home } from '@/routes';
-
-const page = usePage();
-const appName = (page.props.name as string) || 'DifaFriends';
-// const appLogo = page.props.appLogo as string | null;
 
 defineProps<{
     title?: string;
     description?: string;
 }>();
 
-const features = [
-    'Kurikulum khusus untuk anak berkebutuhan khusus',
-    'Pendampingan oleh terapis profesional',
-    'Laporan perkembangan berkala',
-    'Komunitas orang tua & pendidik inklusif',
+const slides = [
+    {
+        img: '/img/slide/learning-cuate.svg',
+        alt: 'Ilustrasi Belajar',
+        title: 'Belajar Bersama Ahlinya',
+        desc: 'Kelas online berbasis bukti, dirancang khusus untuk anak berkebutuhan khusus.',
+    },
+    {
+        img: '/img/slide/graduation-cuate.svg',
+        alt: 'Ilustrasi Tentor',
+        title: 'Tentor Bersertifikat',
+        desc: 'Pendamping profesional siap membantu tumbuh kembang si kecil setiap hari.',
+    },
+    {
+        img: '/img/slide/overview-cuate.svg',
+        alt: 'Ilustrasi Grafik',
+        title: 'Pantau Perkembangan Anak',
+        desc: 'Asesmen berkala dan laporan kemajuan yang mudah dipahami orang tua.',
+    },
 ];
+
+const current = ref(0);
+let timer: ReturnType<typeof setInterval>;
+
+function goTo(i: number) {
+    current.value = i;
+    resetTimer();
+}
+
+function resetTimer() {
+    clearInterval(timer);
+    timer = setInterval(() => {
+        current.value = (current.value + 1) % slides.length;
+    }, 4000);
+}
+
+onMounted(() => resetTimer());
+onUnmounted(() => clearInterval(timer));
 </script>
 
 <template>
-    <div class="min-h-svh lg:grid lg:grid-cols-2">
-        <!-- Left: Brand Panel -->
-        <div
-            class="from-pimary relative hidden overflow-hidden bg-gradient-to-br from-primary/60 via-primary/90 to-orange-500 lg:flex lg:flex-col"
+    <div class="flex min-h-svh">
+        <!-- Panel Kiri -->
+        <aside
+            class="relative hidden w-6/10 shrink-0 overflow-hidden bg-gradient-to-br from-primary to-primary/60 lg:flex lg:flex-col"
         >
-            <!-- Decorative blobs -->
+            <!-- Decorative ring shapes -->
             <div
-                class="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-white/5 blur-3xl"
-            />
+                class="pointer-events-none absolute top-16 right-16 h-40 w-40 rounded-full border border-white/15"
+            ></div>
             <div
-                class="absolute -right-32 -bottom-32 h-80 w-80 rounded-full bg-orange-100/10 blur-3xl"
-            />
+                class="pointer-events-none absolute top-20 right-20 h-28 w-28 rounded-full border border-white/10"
+            ></div>
             <div
-                class="absolute top-1/2 right-0 h-64 w-64 -translate-y-1/2 rounded-full bg-white/[0.03] blur-2xl"
-            />
+                class="pointer-events-none absolute bottom-20 left-10 h-32 w-32 rounded-full border border-white/15"
+            ></div>
+            <div
+                class="pointer-events-none absolute bottom-16 left-16 h-20 w-20 rounded-full border border-white/10"
+            ></div>
 
             <!-- Logo -->
             <div class="relative z-10 p-10">
-                <Link :href="home()" class="flex w-fit items-center gap-3">
+                <Link :href="home()">
                     <img
                         src="/img/logo.png"
-                        alt="DifaFriends"
-                        class="h-6 object-contain"
+                        alt="Difafriends"
+                        class="h-7 brightness-0 invert"
                     />
                 </Link>
             </div>
 
-            <!-- Center content -->
+            <!-- Slides -->
             <div
-                class="relative z-10 flex flex-1 flex-col justify-center px-10"
+                class="relative z-10 flex flex-1 items-center justify-center px-12"
             >
-                <div class="mb-10">
-                    <div
-                        class="mb-5 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-medium text-orange-50 ring-1 ring-white/20"
-                    >
-                        ✦ Platform Edukasi Inklusif
-                    </div>
-                    <h2
-                        class="mb-4 text-4xl leading-tight font-bold tracking-tight text-white"
-                    >
-                        Mendampingi Setiap Langkah
-                        <span class="text-orange-100">Tumbuh Kembang ABK</span>
-                    </h2>
-                    <p class="text-base leading-relaxed text-orange-50/80">
-                        Bergabunglah dengan ribuan orang tua dan pendidik yang
-                        telah mempercayakan perkembangan anak mereka kepada
-                        Difafriends.
-                    </p>
-                </div>
+                <div class="w-full max-w-sm rounded-3xl">
+                    <!-- Ilustrasi -->
+                    <Transition name="fade" mode="out-in">
+                        <img
+                            :key="current"
+                            :src="slides[current].img"
+                            :alt="slides[current].alt"
+                            class="slide-img mx-auto"
+                        />
+                    </Transition>
 
-                <ul class="space-y-4">
-                    <li
-                        v-for="feature in features"
-                        :key="feature"
-                        class="flex items-center gap-3 text-sm text-orange-100"
-                    >
-                        <div
-                            class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-orange-100/25 ring-1 ring-orange-300/30"
-                        >
-                            <svg
-                                class="h-3 w-3 text-orange-200"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
+                    <!-- Teks -->
+                    <Transition name="fade" mode="out-in">
+                        <div :key="'text-' + current">
+                            <h2
+                                class="mb-3 text-2xl font-bold tracking-tight text-white"
                             >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2.5"
-                                    d="M5 13l4 4L19 7"
-                                />
-                            </svg>
+                                {{ slides[current].title }}
+                            </h2>
+                            <p class="text-sm leading-relaxed text-white/70">
+                                {{ slides[current].desc }}
+                            </p>
                         </div>
-                        {{ feature }}
-                    </li>
-                </ul>
-            </div>
+                    </Transition>
 
-            <!-- Bottom stats -->
-            <div class="relative z-10 border-t border-white/10 p-10">
-                <div class="grid grid-cols-3 gap-4 text-center">
-                    <div>
-                        <div class="text-2xl font-bold text-white">500+</div>
-                        <div class="mt-0.5 text-xs text-orange-300">
-                            Pengguna Aktif
-                        </div>
-                    </div>
-                    <div>
-                        <div class="text-2xl font-bold text-white">50+</div>
-                        <div class="mt-0.5 text-xs text-orange-300">
-                            Kelas Tersedia
-                        </div>
-                    </div>
-                    <div>
-                        <div class="text-2xl font-bold text-white">30+</div>
-                        <div class="mt-0.5 text-xs text-orange-300">
-                            Terapis Profesional
-                        </div>
+                    <!-- Dots -->
+                    <div class="mt-8 flex items-center justify-center gap-2">
+                        <button
+                            v-for="(_, i) in slides"
+                            :key="i"
+                            class="h-2 rounded-full transition-all duration-300"
+                            :class="
+                                current === i
+                                    ? 'w-6 bg-white'
+                                    : 'w-2 bg-white/40 hover:bg-white/60'
+                            "
+                            @click="goTo(i)"
+                        />
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Right: Form Panel -->
-        <div
-            class="flex flex-col items-center justify-center bg-background px-6 py-12 lg:px-16"
+            <!-- Badge platform — mirip hero landing -->
+            <div class="relative z-10 flex justify-center pb-4">
+                <span
+                    class="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold text-white"
+                >
+                    <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
+                    Platform #1 Edukasi Inklusif Indonesia
+                </span>
+            </div>
+
+            <!-- Footer -->
+            <div
+                class="relative z-10 px-12 py-4 text-center text-[11px] text-white/40"
+            >
+                © {{ new Date().getFullYear() }} DifaFriends
+            </div>
+        </aside>
+
+        <!-- Panel Kanan — Form -->
+        <main
+            class="flex flex-1 flex-col items-center justify-center bg-white px-6 py-12 dark:bg-[#0a0a0a]"
         >
             <!-- Mobile logo -->
             <div class="mb-8 flex lg:hidden">
-                <Link :href="home()" class="flex items-center gap-2">
+                <Link :href="home()">
                     <img
                         src="/img/logo.png"
                         alt="DifaFriends"
-                        class="h-6 object-contain"
+                        class="h-7 dark:hidden"
+                    />
+                    <img
+                        src="/img/logo.png"
+                        alt="DifaFriends"
+                        class="hidden h-7 brightness-0 invert dark:block"
                     />
                 </Link>
             </div>
 
-            <div class="w-full max-w-sm">
-                <div class="mb-8 space-y-2">
-                    <h1
-                        class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-                    >
-                        {{ title }}
-                    </h1>
-                    <p class="text-sm text-muted-foreground">
-                        {{ description }}
-                    </p>
-                </div>
-
+            <!-- Form -->
+            <div class="w-full max-w-[380px]">
                 <slot />
             </div>
-        </div>
+
+            <!-- Footer -->
+            <p class="mt-10 text-[11px] text-gray-400 dark:text-gray-600">
+                © {{ new Date().getFullYear() }} DifaFriends ·
+                <a href="#" class="hover:text-gray-600 dark:hover:text-gray-400"
+                    >Privasi</a
+                >
+                &nbsp;·&nbsp;
+                <a href="#" class="hover:text-gray-600 dark:hover:text-gray-400"
+                    >Syarat</a
+                >
+            </p>
+        </main>
     </div>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+    transition:
+        opacity 0.4s ease,
+        transform 0.4s ease;
+}
+.fade-enter-from {
+    opacity: 0;
+    transform: translateY(8px);
+}
+.fade-leave-to {
+    opacity: 0;
+    transform: translateY(-8px);
+}
+
+.slide-img {
+    filter: none;
+}
+
+/* Floating animation for glow orbs */
+@keyframes float-slow {
+    0%,
+    100% {
+        transform: translateY(0px) scale(1);
+    }
+    50% {
+        transform: translateY(-24px) scale(1.05);
+    }
+}
+@keyframes float-mid {
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        transform: translate(-50%, calc(-50% - 16px)) scale(1.08);
+    }
+}
+@keyframes float-reverse {
+    0%,
+    100% {
+        transform: translateY(0px) scale(1);
+    }
+    50% {
+        transform: translateY(20px) scale(0.95);
+    }
+}
+
+aside > div:nth-child(1) {
+    animation: float-slow 8s ease-in-out infinite;
+}
+aside > div:nth-child(2) {
+    animation: float-reverse 10s ease-in-out infinite;
+}
+aside > div:nth-child(3) {
+    animation: float-mid 12s ease-in-out infinite;
+}
+aside > div:nth-child(4) {
+    animation: float-slow 7s ease-in-out infinite 1s;
+}
+aside > div:nth-child(5) {
+    animation: float-reverse 9s ease-in-out infinite 2s;
+}
+</style>

@@ -127,15 +127,15 @@
     --chart-4: hsl(43 74% 66%);
     --chart-5: hsl(27 87% 67%);
     --radius: 0.625rem;
-    --sidebar-background: hsl(222 47% 11%);
-    --sidebar-foreground: hsl(215 20% 65%);
+    --sidebar-background: hsl(0 0% 99%);
+    --sidebar-foreground: hsl(215 16% 35%);
     --sidebar-primary: hsl(27 98% 62%);
     --sidebar-primary-foreground: hsl(0 0% 98%);
-    --sidebar-accent: hsl(222 40% 17%);
-    --sidebar-accent-foreground: hsl(0 0% 95%);
-    --sidebar-border: hsl(222 35% 18%);
+    --sidebar-accent: hsl(0 0% 96%);
+    --sidebar-accent-foreground: hsl(0 0% 10%);
+    --sidebar-border: hsl(0 0% 92%);
     --sidebar-ring: hsl(27 98% 70%);
-    --sidebar: hsl(222 47% 11%);
+    --sidebar: hsl(0 0% 99%);
 
     /* ── Brand tokens — semua purple usage di-alias ke sini ─────────── */
     --brand: hsl(262 83% 58%);
@@ -156,11 +156,11 @@
 }
 
 .dark {
-    --background: hsl(0 0% 3.9%);
+    --background: hsl(0 0% 6%);
     --foreground: hsl(0 0% 98%);
-    --card: hsl(0 0% 3.9%);
+    --card: hsl(0 0% 10%);
     --card-foreground: hsl(0 0% 98%);
-    --popover: hsl(0 0% 3.9%);
+    --popover: hsl(0 0% 10%);
     --popover-foreground: hsl(0 0% 98%);
     --primary: hsl(27 98% 65%);
     --primary-hover: hsl(27 98% 55%);
