@@ -40,14 +40,20 @@ import { login, register } from '@/routes';
                             href="/courses"
                             class="text-gray-600 transition-colors hover:text-primary dark:text-gray-400"
                         >
-                            Pelatihan
+                            Kelas
                         </Link>
+                        <p class="text-gray-400 dark:text-gray-300">
+                            Intervensi
+                        </p>
+                        <!-- Companion/Intervensi disabled
                         <Link
                             href="/companions"
                             class="text-gray-600 transition-colors hover:text-primary dark:text-gray-400"
+                            :disabled="true"
                         >
                             Intervensi
                         </Link>
+                        -->
                     </nav>
 
                     <!-- Auth -->
