@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'scalev' => [
+        'webhook_secret' => env('SCALEV_WEBHOOK_SECRET'),
+    ],
+
 ];

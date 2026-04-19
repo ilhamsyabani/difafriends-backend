@@ -94,6 +94,7 @@ class CourseController extends Controller
             'prerequisites' => 'nullable|string',
             'status' => 'required|in:draft,review,published,archived',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,webp|max:2048',
+            'scalev_product_id' => 'nullable|string|max:255|unique:courses,scalev_product_id',
         ]);
 
         if ($request->hasFile('thumbnail')) {
@@ -133,6 +134,7 @@ class CourseController extends Controller
             'prerequisites' => 'nullable|string',
             'status' => 'required|in:draft,review,published,archived',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,webp|max:2048',
+            'scalev_product_id' => 'nullable|string|max:255|unique:courses,scalev_product_id,'.$course->id,
         ]);
 
         if ($request->hasFile('thumbnail')) {

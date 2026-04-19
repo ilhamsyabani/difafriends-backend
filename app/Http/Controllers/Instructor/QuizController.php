@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Instructor;
 
+use App\Enums\QuizType;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\CourseSection;
 use App\Models\Quiz;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -38,6 +40,7 @@ class QuizController extends Controller
         abort_if($course->instructor_id !== $request->user()->id, 403);
 
         $validated = $request->validate([
+            'type' => ['required', 'string', Rule::enum(QuizType::class)],
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'is_required' => 'boolean',
@@ -74,6 +77,7 @@ class QuizController extends Controller
         abort_if($course->instructor_id !== $request->user()->id, 403);
 
         $validated = $request->validate([
+            'type' => ['required', 'string', Rule::enum(QuizType::class)],
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'is_required' => 'boolean',

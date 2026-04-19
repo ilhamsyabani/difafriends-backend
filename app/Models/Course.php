@@ -31,6 +31,7 @@ class Course extends Model
         'prerequisites',
         'is_featured',
         'status',
+        'scalev_product_id',
     ];
 
     protected $casts = [

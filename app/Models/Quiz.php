@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\QuizType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,6 +15,7 @@ class Quiz extends Model
     protected $fillable = [
         'course_id',
         'section_id',
+        'type',
         'title',
         'description',
         'is_required',
@@ -23,6 +25,7 @@ class Quiz extends Model
     protected function casts(): array
     {
         return [
+            'type' => QuizType::class,
             'is_required' => 'boolean',
             'passing_score' => 'integer',
         ];
