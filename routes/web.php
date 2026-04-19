@@ -29,6 +29,7 @@ use App\Http\Controllers\LearnController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ScalevWebhookController;
 use App\Http\Controllers\UserOrderController;
 use App\Models\Article;
 use App\Models\Booking;
@@ -66,6 +67,7 @@ Route::get('/', function () {
                 'last_name' => $c->last_name,
                 'photo' => $c->photo,
                 'bio' => $c->bio ?? 'Berpengalaman mengajar anak difabel.',
+                'city' => $c->city,
                 'starting_price' => $c->schedules->min('price') ?? 50000,
             ]),
         'articles' => Article::with('author')
@@ -87,6 +89,11 @@ Route::get('/verify/{number}', [CertificateController::class, 'verify'])->name('
 // Webhook Midtrans — no auth, no CSRF
 Route::post('/webhook/midtrans', [OrderController::class, 'webhook'])
     ->name('webhook.midtrans')
+    ->withoutMiddleware(['web']);
+
+// Webhook Scalev — no auth, no CSRF
+Route::post('/webhook/scalev', [ScalevWebhookController::class, 'handle'])
+    ->name('webhook.scalev')
     ->withoutMiddleware(['web']);
 
 // ── Authenticated Routes ──────────────────────────────
@@ -304,7 +311,7 @@ Route::middleware(['auth', 'verified', 'role:instructor'])
         Route::post('quiz-answers/{answer}/grade',
             [QuizGradeController::class, 'grade']
         )->name('quiz.answer.grade');
-});
+    });
 
 // ── Companion Routes ──────────────────────────────────
 Route::middleware(['auth', 'verified', 'role:companion'])
@@ -338,6 +345,13 @@ Route::middleware(['auth', 'verified', 'role:companion'])
         )->name('schedules.toggle-status');
 
         Route::get('/bookings', [CompanionBookingController::class, 'index'])->name('bookings.index');
-});
+    });
 
 require __DIR__.'/settings.php';
+
+// ── Error page preview (dev only) ────────────────────────────────────────────
+if (app()->environment('local')) {
+    Route::get('/dev/errors/{status}', function (int $status) {
+        return Inertia::render('ErrorPage', ['status' => $status]);
+    })->where('status', '[0-9]+');
+}
