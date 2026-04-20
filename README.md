@@ -1176,15 +1176,13 @@ Semua fitur di bagian "Sudah Selesai" sudah ada dan berjalan. Jangan suggest mem
 ### Pola yang Sudah Disepakati
 1. **Tidak ada cart** — langsung checkout satu item
 2. **Instruktur tidak bisa daftar sendiri** — admin yang daftarkan
-3. **Admin tidak bisa edit kelas** — hanya approve/reject
-4. **Webhook** butuh server online (gunakan Ngrok untuk development)
-5. **Role system** tidak pakai Spatie Permission, tapi PHP Enum custom
-6. **Inertia.js** — bukan full SPA, bukan full SSR. Middleware semua via server-side
-7. **Database-agnostic** — tidak boleh ada raw SQL yang spesifik satu engine (no `strftime`, no `DATE_FORMAT`, no `GROUP_CONCAT` MySQL/SQLite specific)
-8. **Wayfinder** — selalu gunakan typed route functions dari `@/actions/`, jangan hardcode URL di Vue
-9. **Meeting link** — method bernama `generateMeet` (bukan `setZoom`), karena tidak harus pakai Zoom
-10. **Spatie Activity Log v5** — perubahan ada di `attribute_changes` (bukan `properties`). Gunakan `$log->attribute_changes->get('attributes')` untuk melihat perubahan
-11. **Notifications** — semua implements `ShouldQueue`, jangan kirim synchronous
+3. **Webhook** butuh server online (gunakan Ngrok untuk development)
+4. **Role system** tidak pakai Spatie Permission, tapi PHP Enum custom
+5. **Inertia.js** — bukan full SPA, bukan full SSR. Middleware semua via server-side
+6. **Database-agnostic** — tidak boleh ada raw SQL yang spesifik satu engine (no `strftime`, no `DATE_FORMAT`, no `GROUP_CONCAT` MySQL/SQLite specific)
+7. **Meeting link** — method bernama `generateMeet` (bukan `setZoom`), karena tidak harus pakai Zoom
+8. **Spatie Activity Log v5** — perubahan ada di `attribute_changes` (bukan `properties`). Gunakan `$log->attribute_changes->get('attributes')` untuk melihat perubahan
+9. **Notifications** — semua implements `ShouldQueue`, jangan kirim synchronous
 
 ### Saat Menambah Fitur Baru
 1. Selalu cek role middleware yang dibutuhkan
