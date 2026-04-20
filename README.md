@@ -1,6 +1,6 @@
 # DifaFriends — Dokumentasi Project Lengkap
 > Platform Edukasi Inklusif untuk Anak Difabel
-> Versi Dokumentasi: 1.2 | April 2026
+> Versi Dokumentasi: 1.3 | April 2026
 
 ---
 
@@ -20,17 +20,19 @@ DifaFriends adalah platform LMS (Learning Management System) marketplace berbasi
 
 ### Tech Stack
 ```
-Backend      : Laravel 12 (PHP 8.2+)
+Backend      : Laravel 12 (PHP 8.4)
 Frontend     : Vue 3 + Inertia.js v2 (SPA via Inertia)
 Styling      : Tailwind CSS v4
-Database     : SQLite (dev) / PostgreSQL / MySQL (prod) — database-agnostic
+Database     : SQLite (dev) / PostgreSQL (prod) — database-agnostic
 Auth         : Laravel Fortify (dengan 2FA/TOTP)
-Payment      : Midtrans Snap (Sandbox)
+Payment      : Midtrans Snap + Scalev Webhook
 Typed Routes : Laravel Wayfinder v0
-Queue        : Laravel Queue (database driver)
-Storage      : Laravel Storage (public disk)
-Testing      : Pest PHP v4
-Code Style   : Laravel Pint
+Queue        : Laravel Queue (database driver, production: Redis)
+Storage      : Laravel Storage (public disk, production: Cloudflare R2/S3)
+Testing      : Pest PHP v4 (123 tests)
+Code Style   : Laravel Pint + Prettier + ESLint
+Monitoring   : Laravel Pulse v1
+Activity Log : Spatie Activity Log v5
 ```
 
 ### Struktur Project
@@ -86,16 +88,17 @@ Tidak ada pemisahan frontend/backend repository.
 ### Enum Classes (app/Enums/)
 
 ```php
-Roles::class           → user, instructor, companion, admin
-OrderStatus::class     → pending, paid, expired, cancelled, refunded
-PaymentStatus::class   → pending, settlement, capture, deny, cancel, expire, fraud
-BookingStatus::class   → pending, confirmed, completed, cancelled
-CourseStatus::class    → draft, review, published, archived
+Roles::class            → user, instructor, companion, admin
+OrderStatus::class      → pending, paid, expired, cancelled, refunded
+PaymentStatus::class    → pending, settlement, capture, expired, expire, cancel, fraud, deny
+                          (capture & expire ditambahkan agar cocok dengan status raw Midtrans)
+BookingStatus::class    → pending, confirmed, completed, cancelled
+CourseStatus::class     → draft, review, published, archived
 EnrollmentStatus::class → active, completed, expired
-SessionType::class     → online, offline
-ResourceType::class    → pdf, video, link, file
-LectureType::class     → video, text, quiz
-DayOfWeek::class       → 0-6 (int, Minggu=0, Sabtu=6)
+SessionType::class      → online, offline
+ResourceType::class     → pdf, video, link, file
+LectureType::class      → video, text, quiz
+DayOfWeek::class        → 0-6 (int, Minggu=0, Sabtu=6)
 ```
 
 ### Tabel Database (24 Migrations)
@@ -224,6 +227,10 @@ start_at, end_at (timestamp)
 type (enum: SessionType — online/offline)
 status (enum: BookingStatus)
 notes (text, nullable)
+meeting_link (string, nullable — diisi admin setelah booking confirmed)
+confirmed_at (timestamp, nullable)
+completed_at (timestamp, nullable)
+cancelled_at (timestamp, nullable)
 created_at, updated_at
 ```
 
@@ -536,7 +543,8 @@ Instructor buat kelas:
 
 ### Cara Kerja
 ```
-Channel: database (tersimpan di tabel notifications)
+Channel: mail + database (sesuai jenis notifikasi)
+Queue: semua Notification implements ShouldQueue → dikirim async
 Auto-polling: setiap 30 detik via setInterval di NotificationBell.vue
 Badge: unread count di bell icon
 Dropdown: list 10 notifikasi terbaru
@@ -545,19 +553,39 @@ Mark read: klik notifikasi individual atau "Tandai semua dibaca"
 
 ### Notification Classes
 ```php
-OrderPaidNotification       → kirim ke user setelah bayar kelas
-BookingConfirmedNotification → kirim ke student setelah booking confirmed
-CourseApprovedNotification  → kirim ke instructor setelah kelas di-approve
+OrderPaidNotification           → mail + database → user setelah bayar kelas
+BookingConfirmedNotification    → mail + database → student setelah booking confirmed
+BookingMeetingLinkNotification  → database only  → student + tutor saat admin set meeting link
+CourseApprovedNotification      → mail + database → instructor setelah kelas di-approve
+ScalevWelcomeNotification       → mail only      → user baru via Scalev webhook (berisi password)
 ```
+
+### SMTP Configuration
+```env
+MAIL_MAILER=smtp
+MAIL_SCHEME=tls
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your-email@gmail.com
+MAIL_PASSWORD=your-app-password   ← gunakan Google App Password, bukan password biasa
+MAIL_FROM_ADDRESS="noreply@difafriends.com"
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+### Email Template
+Custom branding DifaFriends dipublish ke `resources/views/vendor/mail/`:
+- Warna utama: `#7B2D8B` (purple)
+- Header: logo DifaFriends
+- Footer: copyright + link difafriends.com + pengaturan akun
 
 ### API Routes Notifikasi
 ```
-GET  /notifications          → list + unread count
+GET  /notifications           → list + unread count
 POST /notifications/{id}/read → tandai 1 notif dibaca
 POST /notifications/read-all  → tandai semua dibaca
 ```
 
-### Data Struktur Notifikasi
+### Data Struktur Notifikasi (database channel)
 ```json
 {
   "type": "order_paid",
@@ -627,9 +655,29 @@ MIDTRANS_IS_3DS=true
 
 ### Webhook Security
 ```php
-// Verifikasi signature:
+// Midtrans — verifikasi signature:
 // SHA512(order_id + status_code + gross_amount + server_key)
-// Exempt dari CSRF: bootstrap/app.php → validateCsrfTokens(except: ['webhook/midtrans'])
+// Exempt dari CSRF: bootstrap/app.php → validateCsrfTokens(except: ['webhook/midtrans', 'webhook/scalev'])
+```
+
+### Scalev Webhook
+```
+POST /webhook/scalev
+Header: X-Scalev-Secret: {SCALEV_WEBHOOK_SECRET}
+
+Payload:
+{
+  "payment_status": "paid",
+  "product_id": "SCALEV-PROD-xxx",    ← cocokkan ke courses.scalev_product_id
+  "customer": { "name": "...", "email": "..." }
+}
+
+Flow:
+1. Verifikasi X-Scalev-Secret header
+2. Cari Course via scalev_product_id
+3. Jika user belum ada → buat user baru dengan password random → kirim ScalevWelcomeNotification
+4. Jika user sudah ada → skip (tidak kirim email)
+5. Buat Enrollment jika belum ada (idempoten)
 ```
 
 ### Sandbox Testing
@@ -715,7 +763,7 @@ GET         /admin/orders/{order}                                → admin.order
 GET         /admin/companions                                    → admin.companions.index
 GET         /admin/companions/{user}/schedules                   → admin.companions.schedules
 GET         /admin/bookings                                      → admin.bookings.index
-POST        /admin/bookings/{booking}/zoom                       → admin.bookings.zoom
+POST        /admin/bookings/{booking}/meeting                    → admin.bookings.meeting (generateMeet)
 GET         /admin/reports                                       → admin.reports.index
 GET         /admin/reports/export                                → admin.reports.export
 GET|POST    /admin/articles                                      → admin.articles.*
@@ -758,7 +806,8 @@ GET  /learn/{slug}/quiz/{quiz}/result  → quiz.result  — lihat hasil & review
 
 ### Webhook
 ```
-POST /webhook/midtrans    → OrderController@webhook (no CSRF, no auth)
+POST /webhook/midtrans    → OrderController@webhook          (no CSRF, no auth)
+POST /webhook/scalev      → ScalevWebhookController@handle   (no CSRF, no auth)
 ```
 
 ---
@@ -792,47 +841,54 @@ php artisan migrate:fresh --seed
 ## 11. FITUR YANG SUDAH SELESAI (STATUS APRIL 2026)
 
 ```
-✅ Authentication       — register, login, redirect per role, 2FA/TOTP via Fortify
-✅ Settings Profile     — edit first_name, last_name, photo, bio, phone, city
-✅ Settings Security    — ganti password, toggle 2FA
-✅ Landing Page         — hero, features, categories dari DB, kelas featured
-✅ Katalog Kelas        — filter kategori, search, sort, pagination
-✅ Detail Kelas         — tabs deskripsi/kurikulum/review, sidebar beli
-✅ Checkout             — Midtrans Snap popup, order creation
-✅ Webhook Midtrans     — verifikasi signature, aktivasi enrollment
-✅ Halaman Belajar      — video player YouTube, sidebar kurikulum, progress tracking
-✅ Companion List       — avatar, kota, harga, search
-✅ Companion Profile    — jadwal, ulasan, booking modal
-✅ Booking Flow         — pilih jadwal → pilih tanggal → Midtrans popup
-✅ User Orders          — riwayat transaksi semua order
-✅ User Enrollments     — kelas yang diikuti, tombol lanjut belajar
-✅ Review System        — ulasan polymorphic untuk kursus & booking
-✅ Certificate          — generate otomatis (GenerateCertificateJob) + unduh PDF
-✅ Verifikasi Sertifikat— halaman publik /verify/{number}
-✅ Quiz System          — kuis per section, pilihan ganda (auto-grade) + esai (manual)
-✅ Quiz Grading         — instruktur nilai esai, admin bisa nilai semua kuis
-✅ Admin Dashboard      — stats cards, alert kelas pending, tabel transaksi terbaru
-✅ Admin User CRUD      — create/edit/delete user, assign role
-✅ Admin Category CRUD  — create/edit/delete kategori dengan parent
-✅ Admin Course         — list + approve/reject kelas + manage konten
-✅ Admin Order          — list, detail, export CSV
-✅ Admin Schedule       — CRUD jadwal companion
-✅ Admin Companions     — daftar companion + jadwal
-✅ Admin Bookings       — list booking + set Zoom link
-✅ Admin Articles       — CRUD artikel/blog
-✅ Admin Reports        — laporan revenue, enrollment, user growth per bulan (cached)
-✅ Admin Quiz Grading   — penilaian esai untuk semua kursus (tanpa batasan instruktur)
-✅ Instructor Dashboard — stats kelas, total siswa, revenue
+✅ Authentication         — register, login, redirect per role, 2FA/TOTP via Fortify
+✅ Settings Profile       — edit first_name, last_name, photo, bio, phone, city
+✅ Settings Security      — ganti password, toggle 2FA
+✅ Landing Page           — hero, features, categories dari DB, kelas featured
+✅ Katalog Kelas          — filter kategori, search, sort, pagination
+✅ Detail Kelas           — tabs deskripsi/kurikulum/review, sidebar beli
+✅ Checkout               — Midtrans Snap popup, order creation
+✅ Webhook Midtrans       — verifikasi signature SHA512, aktivasi enrollment, konfirmasi booking
+✅ Webhook Scalev         — buat user baru + enrollment, kirim welcome email + password
+✅ Halaman Belajar        — video player YouTube, sidebar kurikulum, progress tracking
+✅ Companion List         — avatar, kota, harga, search
+✅ Companion Profile      — jadwal, ulasan, booking modal
+✅ Booking Flow           — pilih jadwal → pilih tanggal → Midtrans popup
+✅ User Orders            — riwayat transaksi semua order
+✅ User Enrollments       — kelas yang diikuti, tombol lanjut belajar
+✅ Review System          — ulasan polymorphic untuk kursus & booking
+✅ Certificate            — generate otomatis (GenerateCertificateJob) + unduh PDF
+✅ Verifikasi Sertifikat  — halaman publik /verify/{number}
+✅ Quiz System            — kuis per section, pilihan ganda (auto-grade) + esai (manual)
+✅ Quiz Grading           — instruktur nilai esai, admin bisa nilai semua kuis
+✅ Admin Dashboard        — stats cards, alert kelas pending, tabel transaksi terbaru
+✅ Admin User CRUD        — create/edit/delete user, assign role
+✅ Admin Category CRUD    — create/edit/delete kategori dengan parent
+✅ Admin Course           — list + approve/reject kelas + manage konten + kirim notif ke instruktur
+✅ Admin Order            — list, detail, export CSV
+✅ Admin Schedule         — CRUD jadwal companion
+✅ Admin Companions       — daftar companion + jadwal
+✅ Admin Bookings         — list booking + set meeting link (generateMeet) + notif ke student & tutor
+✅ Admin Articles         — CRUD artikel/blog
+✅ Admin Reports          — laporan revenue, enrollment, user growth per bulan (cached)
+✅ Admin Quiz Grading     — penilaian esai untuk semua kursus (tanpa batasan instruktur)
+✅ Admin Log Aktivitas    — riwayat perubahan data via Spatie Activity Log v5
+✅ Instructor Dashboard   — stats kelas, total siswa, revenue
 ✅ Instructor Course CRUD — create/edit/delete kelas milik sendiri + filter rating/harga
-✅ Instructor Manage    — kelola sections, lectures, kuis via halaman manage
-✅ Instructor Quiz      — buat/edit kuis per section + tambah soal PG & esai
-✅ Instructor Grading   — nilai jawaban esai milik kursus sendiri
-✅ Companion Dashboard  — stats booking, upcoming, revenue
-✅ Companion Schedule   — CRUD jadwal tersedia + toggle aktif/nonaktif
-✅ Companion Bookings   — list booking masuk sebagai tutor
-✅ Notification Bell    — badge unread, dropdown, mark read, auto-polling 30s
-✅ Wayfinder            — typed route functions dihasilkan otomatis (resources/js/actions/)
-✅ Database-Agnostic    — semua query refactor ke Eloquent/Query Builder (no raw SQL)
+✅ Instructor Manage      — kelola sections, lectures, kuis via halaman manage
+✅ Instructor Quiz        — buat/edit kuis per section + tambah soal PG & esai
+✅ Instructor Grading     — nilai jawaban esai milik kursus sendiri
+✅ Companion Dashboard    — stats booking, upcoming, revenue
+✅ Companion Schedule     — CRUD jadwal tersedia + toggle aktif/nonaktif
+✅ Companion Bookings     — list booking masuk sebagai tutor
+✅ Notification Bell      — badge unread, dropdown, mark read, auto-polling 30s
+✅ Email Notifications    — SMTP Gmail configured, custom template branding DifaFriends (#7B2D8B)
+✅ Async Notifications    — semua Notification implements ShouldQueue
+✅ Laravel Pulse          — monitoring /pulse (hanya admin), snapshot per menit via schedule
+✅ Spatie Activity Log v5 — log perubahan User, Course, Booking di admin panel
+✅ Wayfinder              — typed route functions dihasilkan otomatis (resources/js/actions/)
+✅ Database-Agnostic      — semua query refactor ke Eloquent/Query Builder (no raw SQL)
+✅ CI/CD                  — GitHub Actions: lint, tests, auto-deploy via SSH ke VPS
 ```
 
 ---
@@ -840,11 +896,10 @@ php artisan migrate:fresh --seed
 ## 12. FITUR YANG BELUM SELESAI / TODO
 
 ```
-⏳ Webhook Online      — butuh Ngrok/expose untuk test webhook dari Midtrans di lokal
+⏳ Webhook Lokal       — butuh Ngrok/expose untuk test webhook dari Midtrans & Scalev di lokal
 ⏳ Search Global       — search lintas kelas dan companion
-⏳ Email Notification  — saat ini hanya database channel, belum SMTP
-⏳ Companion Booking Detail — halaman detail booking individual untuk companion
 ⏳ Admin Export Excel  — maatwebsite/excel sudah terinstall, belum diimplementasikan
+⏳ PDF Certificate     — GenerateCertificateJob sudah ada, generate PDF via DomPDF belum
 ```
 
 ---
@@ -1024,12 +1079,20 @@ php artisan test --compact tests/Feature/QuizTest.php
 php artisan test --compact --filter="admin dapat membuka"
 ```
 
-### Test Suite
+### Test Suite (123 tests)
 
 | File | Cakupan |
 |---|---|
 | `tests/Feature/QuizTest.php` | Alur kuis dari sisi siswa (9 test) |
 | `tests/Feature/Admin/QuizGradeTest.php` | Penilaian kuis admin (9 test) |
+| `tests/Feature/Admin/ReportTest.php` | Laporan revenue & grafik bulanan (12 test) |
+| `tests/Feature/Admin/BookingMeetingLinkTest.php` | Set meeting link via admin (5 test) |
+| `tests/Feature/WebhookMidtransTest.php` | Webhook Midtrans: settlement, capture, expire, booking (6 test) |
+| `tests/Feature/WebhookScalevTest.php` | Webhook Scalev: user baru, idempoten, validasi secret (6 test) |
+| `tests/Feature/NotificationTest.php` | CourseApproved, BookingConfirmed, MeetingLink channels (5 test) |
+| `tests/Feature/ActivityLogTest.php` | Spatie Activity Log v5 untuk User, Course, Booking |
+| `tests/Feature/PulseMonitoringTest.php` | Laravel Pulse access control per role |
+| `tests/Feature/Companion/BookingTest.php` | Companion booking list & filter |
 
 ### Konvensi Test
 
@@ -1092,7 +1155,15 @@ MIDTRANS_SERVER_KEY=SB-Mid-server-xxxxx
 MIDTRANS_CLIENT_KEY=SB-Mid-client-xxxxx
 MIDTRANS_IS_PRODUCTION=false
 
-QUEUE_CONNECTION=sync  # atau database untuk production
+SCALEV_WEBHOOK_SECRET=your-secret-key
+
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your-email@gmail.com
+MAIL_PASSWORD=your-app-password
+
+QUEUE_CONNECTION=database  # production: redis
 ```
 
 ---
@@ -1106,11 +1177,14 @@ Semua fitur di bagian "Sudah Selesai" sudah ada dan berjalan. Jangan suggest mem
 1. **Tidak ada cart** — langsung checkout satu item
 2. **Instruktur tidak bisa daftar sendiri** — admin yang daftarkan
 3. **Admin tidak bisa edit kelas** — hanya approve/reject
-4. **Webhook Midtrans** butuh server online (gunakan Ngrok untuk development)
-5. **Role system** tidak pakai Spatie, tapi PHP Enum custom
+4. **Webhook** butuh server online (gunakan Ngrok untuk development)
+5. **Role system** tidak pakai Spatie Permission, tapi PHP Enum custom
 6. **Inertia.js** — bukan full SPA, bukan full SSR. Middleware semua via server-side
 7. **Database-agnostic** — tidak boleh ada raw SQL yang spesifik satu engine (no `strftime`, no `DATE_FORMAT`, no `GROUP_CONCAT` MySQL/SQLite specific)
 8. **Wayfinder** — selalu gunakan typed route functions dari `@/actions/`, jangan hardcode URL di Vue
+9. **Meeting link** — method bernama `generateMeet` (bukan `setZoom`), karena tidak harus pakai Zoom
+10. **Spatie Activity Log v5** — perubahan ada di `attribute_changes` (bukan `properties`). Gunakan `$log->attribute_changes->get('attributes')` untuk melihat perubahan
+11. **Notifications** — semua implements `ShouldQueue`, jangan kirim synchronous
 
 ### Saat Menambah Fitur Baru
 1. Selalu cek role middleware yang dibutuhkan
@@ -1140,5 +1214,73 @@ BUKAN: reviews.course_id (kolom ini tidak ada)
 
 ---
 
-*Dokumentasi ini terakhir diperbarui April 2026.*
+## 19. MONITORING & LOGGING
+
+### Laravel Pulse (`/pulse`)
+```
+Akses: hanya admin (Gate::define('viewPulse', ...))
+Non-admin / guest: 403 Forbidden (bukan redirect)
+Schedule: pulse:snapshot setiap menit (routes/console.php)
+Worker: supervisorctl → difafriends-pulse (php artisan pulse:work)
+```
+
+### Spatie Activity Log v5
+```php
+// Model yang di-log: User, Course, Booking
+// Breaking change v5: perubahan di attribute_changes, bukan properties
+// Cara akses:
+$log->attribute_changes->get('attributes')   // nilai baru (created/updated)
+$log->attribute_changes->get('old')          // nilai lama (updated/deleted)
+
+// Halaman admin: /admin/logs (Admin\LogActivityController@index)
+```
+
+---
+
+## 20. DEPLOYMENT
+
+### Branch Strategy
+```
+main    → production (auto-deploy via GitHub Actions saat push)
+develop → staging / feature development
+```
+
+### CI/CD Pipeline (GitHub Actions)
+```yaml
+# .github/workflows/tests.yml  → jalankan Pest setiap push ke main/develop
+# .github/workflows/lint.yml   → Pint + Prettier + ESLint
+# .github/workflows/deploy.yml → SSH ke VPS dan jalankan deploy.sh (hanya main)
+```
+
+### GitHub Secrets yang Diperlukan
+```
+SSH_HOST         → IP/domain server VPS
+SSH_USERNAME     → user SSH (ubuntu/root)
+SSH_PRIVATE_KEY  → private key SSH
+SSH_PORT         → (opsional, default 22)
+```
+
+### Production Server (VPS)
+```
+OS: Ubuntu 22.04/24.04
+Web: Nginx + PHP 8.4-FPM
+DB:  PostgreSQL 16
+Cache/Queue: Redis
+Supervisor processes:
+  - difafriends-worker   → queue:work redis (2 procs)
+  - difafriends-pulse    → pulse:work (1 proc)
+  - difafriends-schedule → schedule:work (1 proc)
+SSL: Certbot (Let's Encrypt)
+```
+
+### Deploy Manual
+```bash
+bash /var/www/difafriends/deploy/deploy.sh
+```
+
+Script ini melakukan: git pull → composer install → npm build → migrate → storage:link → optimize → restart supervisor.
+
+---
+
+*Dokumentasi ini terakhir diperbarui April 2026 (v1.3).*
 *Update dokumentasi setiap kali ada perubahan signifikan pada arsitektur atau fitur.*
