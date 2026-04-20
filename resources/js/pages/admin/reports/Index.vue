@@ -68,7 +68,6 @@ function formatRp(value: number): string {
     }).format(value);
 }
 
-// ── Helpers untuk chart bar murni CSS ──────────────────────
 function maxValue(data: MonthData[]): number {
     return Math.max(...data.map((d) => d.value), 1);
 }
@@ -90,9 +89,8 @@ const topRevenueMax = computed(() =>
         <Head title="Laporan & Analitik" />
 
         <div class="max-w-7xl p-6 sm:p-10">
-            <!-- Header -->
             <div
-                class="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+                class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
             >
                 <div>
                     <h1
@@ -106,7 +104,6 @@ const topRevenueMax = computed(() =>
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <!-- Pilih Tahun -->
                     <Select
                         v-model="selectedYear"
                         @change="changeYear(selectedYear)"
@@ -114,7 +111,7 @@ const topRevenueMax = computed(() =>
                         <SelectTrigger
                             class="mt-1 w-28 rounded-xl border-transparent bg-gray-50 px-4 py-5 text-sm transition-all focus:border-purple-500 focus:bg-white focus:ring-4 focus:ring-purple-500/10 dark:bg-gray-800 dark:text-white dark:focus:bg-gray-900"
                         >
-                            <SelectValue placeholder="Pilih kategori..." />
+                            <SelectValue placeholder="Pilih tahun..." />
                         </SelectTrigger>
                         <SelectContent
                             class="rounded-xl border-gray-100 shadow-lg dark:border-gray-800"
@@ -131,10 +128,9 @@ const topRevenueMax = computed(() =>
                         </SelectContent>
                     </Select>
 
-                    <!-- Export CSV -->
                     <button
                         @click="exportCsv"
-                        class="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-purple-700"
+                        class="inline-flex h-[42px] items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-purple-700"
                     >
                         <Download class="h-4 w-4" />
                         Export CSV
@@ -142,8 +138,7 @@ const topRevenueMax = computed(() =>
                 </div>
             </div>
 
-            <!-- ── Summary Cards ──────────────────────────────── -->
-            <div class="mb-2 grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <div class="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
                 <div
                     v-for="card in [
                         {
@@ -175,7 +170,9 @@ const topRevenueMax = computed(() =>
                     class="rounded-2xl border border-gray-100 bg-white p-5 dark:border-gray-700 dark:bg-gray-800"
                 >
                     <div class="mb-3 flex items-center justify-between">
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                        <p
+                            class="text-sm font-medium text-gray-500 dark:text-gray-400"
+                        >
                             {{ card.label }}
                         </p>
                         <div
@@ -183,11 +180,16 @@ const topRevenueMax = computed(() =>
                                 'flex h-9 w-9 items-center justify-center rounded-xl',
                                 card.color === 'purple'
                                     ? 'bg-purple-100 dark:bg-purple-900/30'
-                                    : card.color === 'blue'
-                                      ? 'bg-blue-100 dark:bg-blue-900/30'
-                                      : card.color === 'green'
-                                        ? 'bg-green-100 dark:bg-green-900/30'
-                                        : 'bg-amber-100 dark:bg-amber-900/30',
+                                    : '',
+                                card.color === 'blue'
+                                    ? 'bg-blue-100 dark:bg-blue-900/30'
+                                    : '',
+                                card.color === 'green'
+                                    ? 'bg-green-100 dark:bg-green-900/30'
+                                    : '',
+                                card.color === 'amber'
+                                    ? 'bg-amber-100 dark:bg-amber-900/30'
+                                    : '',
                             ]"
                         >
                             <component
@@ -196,11 +198,16 @@ const topRevenueMax = computed(() =>
                                     'h-5 w-5',
                                     card.color === 'purple'
                                         ? 'text-primary'
-                                        : card.color === 'blue'
-                                          ? 'text-blue-600'
-                                          : card.color === 'green'
-                                            ? 'text-green-600'
-                                            : 'text-amber-600',
+                                        : '',
+                                    card.color === 'blue'
+                                        ? 'text-blue-600'
+                                        : '',
+                                    card.color === 'green'
+                                        ? 'text-green-600'
+                                        : '',
+                                    card.color === 'amber'
+                                        ? 'text-amber-600'
+                                        : '',
                                 ]"
                             />
                         </div>
@@ -212,41 +219,50 @@ const topRevenueMax = computed(() =>
                 </div>
             </div>
 
-            <!-- ── Revenue Chart ──────────────────────────────── -->
             <div
-                class="mb-2 rounded-2xl border border-gray-100 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
+                class="mb-6 rounded-2xl border border-gray-100 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
             >
                 <h2 class="mb-6 font-semibold text-gray-900 dark:text-white">
                     Revenue per Bulan (Rp)
                 </h2>
-                <div class="flex h-48 items-end gap-1.5">
+
+                <div class="flex h-56 flex-col">
                     <div
-                        v-for="item in revenueChart"
-                        :key="item.month"
-                        class="group relative flex flex-1 flex-col items-center gap-1"
+                        class="flex flex-1 items-end gap-1.5 border-b border-gray-100 sm:gap-3 dark:border-gray-700"
                     >
                         <div
-                            class="absolute bottom-6 hidden w-max rounded-lg bg-gray-900 px-2 py-1 text-xs text-white group-hover:block dark:bg-gray-100 dark:text-gray-900"
+                            v-for="item in revenueChart"
+                            :key="item.month"
+                            class="group relative flex h-full w-full items-end justify-center"
                         >
-                            {{ formatRp(item.value) }}
+                            <div
+                                class="relative w-full rounded-t-md bg-purple-500 transition-all duration-300 hover:bg-primary dark:bg-primary dark:hover:bg-purple-500"
+                                :style="{
+                                    height: barHeight(item.value, revenueMax),
+                                    minHeight: '4px',
+                                }"
+                            >
+                                <div
+                                    class="absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 rounded-lg bg-gray-900 px-2 py-1 text-xs whitespace-nowrap text-white shadow-lg group-hover:block dark:bg-gray-100 dark:text-gray-900"
+                                >
+                                    {{ formatRp(item.value) }}
+                                </div>
+                            </div>
                         </div>
-                        <div
-                            class="w-full rounded-t-lg bg-purple-500 transition-all hover:bg-primary dark:bg-primary dark:hover:bg-purple-500"
-                            :style="{
-                                height: barHeight(item.value, revenueMax),
-                            }"
-                            style="min-height: 4px"
-                        />
-                        <span class="text-xs text-gray-400">{{
-                            item.month
-                        }}</span>
+                    </div>
+                    <div class="flex gap-1.5 pt-2 sm:gap-3">
+                        <span
+                            v-for="item in revenueChart"
+                            :key="'label-' + item.month"
+                            class="w-full truncate text-center text-xs font-medium text-gray-400"
+                        >
+                            {{ item.month }}
+                        </span>
                     </div>
                 </div>
             </div>
 
-            <!-- ── Enrollments & User Growth ──────────────────── -->
-            <div class="mb-2 grid grid-cols-1 gap-6 lg:grid-cols-2">
-                <!-- Enrollments -->
+            <div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <div
                     class="rounded-2xl border border-gray-100 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
                 >
@@ -255,32 +271,46 @@ const topRevenueMax = computed(() =>
                     >
                         Pendaftaran Kelas per Bulan
                     </h2>
-                    <div class="flex h-36 items-end gap-1.5">
+
+                    <div class="flex h-44 flex-col">
                         <div
-                            v-for="item in enrollmentChart"
-                            :key="item.month"
-                            class="group relative flex flex-1 flex-col items-center gap-1"
+                            class="flex flex-1 items-end gap-1.5 border-b border-gray-100 sm:gap-2 dark:border-gray-700"
                         >
                             <div
-                                class="absolute bottom-6 hidden w-max rounded-lg bg-gray-900 px-2 py-1 text-xs text-white group-hover:block dark:bg-gray-100 dark:text-gray-900"
+                                v-for="item in enrollmentChart"
+                                :key="item.month"
+                                class="group relative flex h-full w-full items-end justify-center"
                             >
-                                {{ item.value }} pendaftar
+                                <div
+                                    class="relative w-full rounded-t-md bg-blue-500 transition-all duration-300 hover:bg-blue-600"
+                                    :style="{
+                                        height: barHeight(
+                                            item.value,
+                                            enrollMax,
+                                        ),
+                                        minHeight: '4px',
+                                    }"
+                                >
+                                    <div
+                                        class="absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 rounded-lg bg-gray-900 px-2 py-1 text-xs whitespace-nowrap text-white shadow-lg group-hover:block dark:bg-gray-100 dark:text-gray-900"
+                                    >
+                                        {{ item.value }} pendaftar
+                                    </div>
+                                </div>
                             </div>
-                            <div
-                                class="w-full rounded-t-lg bg-blue-500 transition-all hover:bg-blue-600"
-                                :style="{
-                                    height: barHeight(item.value, enrollMax),
-                                }"
-                                style="min-height: 4px"
-                            />
-                            <span class="text-xs text-gray-400">{{
-                                item.month
-                            }}</span>
+                        </div>
+                        <div class="flex gap-1.5 pt-2 sm:gap-2">
+                            <span
+                                v-for="item in enrollmentChart"
+                                :key="'label-' + item.month"
+                                class="w-full truncate text-center text-xs font-medium text-gray-400"
+                            >
+                                {{ item.month }}
+                            </span>
                         </div>
                     </div>
                 </div>
 
-                <!-- User Growth -->
                 <div
                     class="rounded-2xl border border-gray-100 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
                 >
@@ -289,33 +319,44 @@ const topRevenueMax = computed(() =>
                     >
                         Pengguna Baru per Bulan
                     </h2>
-                    <div class="flex h-36 items-end gap-1.5">
+
+                    <div class="flex h-44 flex-col">
                         <div
-                            v-for="item in userGrowth"
-                            :key="item.month"
-                            class="group relative flex flex-1 flex-col items-center gap-1"
+                            class="flex flex-1 items-end gap-1.5 border-b border-gray-100 sm:gap-2 dark:border-gray-700"
                         >
                             <div
-                                class="absolute bottom-6 hidden w-max rounded-lg bg-gray-900 px-2 py-1 text-xs text-white group-hover:block dark:bg-gray-100 dark:text-gray-900"
+                                v-for="item in userGrowth"
+                                :key="item.month"
+                                class="group relative flex h-full w-full items-end justify-center"
                             >
-                                {{ item.value }} user
+                                <div
+                                    class="relative w-full rounded-t-md bg-green-500 transition-all duration-300 hover:bg-green-600"
+                                    :style="{
+                                        height: barHeight(item.value, userMax),
+                                        minHeight: '4px',
+                                    }"
+                                >
+                                    <div
+                                        class="absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 rounded-lg bg-gray-900 px-2 py-1 text-xs whitespace-nowrap text-white shadow-lg group-hover:block dark:bg-gray-100 dark:text-gray-900"
+                                    >
+                                        {{ item.value }} user
+                                    </div>
+                                </div>
                             </div>
-                            <div
-                                class="w-full rounded-t-lg bg-green-500 transition-all hover:bg-green-600"
-                                :style="{
-                                    height: barHeight(item.value, userMax),
-                                }"
-                                style="min-height: 4px"
-                            />
-                            <span class="text-xs text-gray-400">{{
-                                item.month
-                            }}</span>
+                        </div>
+                        <div class="flex gap-1.5 pt-2 sm:gap-2">
+                            <span
+                                v-for="item in userGrowth"
+                                :key="'label-' + item.month"
+                                class="w-full truncate text-center text-xs font-medium text-gray-400"
+                            >
+                                {{ item.month }}
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ── Top Kelas berdasarkan Revenue ─────────────── -->
             <div
                 class="rounded-2xl border border-gray-100 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
             >
@@ -330,7 +371,7 @@ const topRevenueMax = computed(() =>
                     Belum ada data.
                 </div>
 
-                <div v-else class="space-y-3">
+                <div v-else class="space-y-4">
                     <div
                         v-for="(course, i) in topCourses"
                         :key="i"
@@ -338,8 +379,9 @@ const topRevenueMax = computed(() =>
                     >
                         <span
                             class="w-5 shrink-0 text-right text-sm font-bold text-gray-400"
-                            >{{ i + 1 }}</span
                         >
+                            {{ i + 1 }}
+                        </span>
 
                         <div class="min-w-0 flex-1">
                             <div
@@ -357,16 +399,16 @@ const topRevenueMax = computed(() =>
                                 </span>
                             </div>
                             <div
-                                class="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-700"
+                                class="mt-2 h-2 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-700"
                             >
                                 <div
-                                    class="h-full rounded-full bg-purple-500"
+                                    class="h-full rounded-full bg-purple-500 transition-all duration-500"
                                     :style="{
                                         width: `${(course.total_revenue / topRevenueMax) * 100}%`,
                                     }"
                                 />
                             </div>
-                            <p class="mt-0.5 text-xs text-gray-400">
+                            <p class="mt-1 text-xs text-gray-400">
                                 {{ course.total_orders }} transaksi
                             </p>
                         </div>
