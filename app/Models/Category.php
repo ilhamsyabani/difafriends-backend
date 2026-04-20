@@ -69,4 +69,3 @@ class Category extends Model
     }
 }
 
-$rootCategories = Category::root()->with('children')->get();
