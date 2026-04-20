@@ -401,7 +401,7 @@ const jsonLd = JSON.stringify({
             </section>
 
             <!-- ── STATS ────────────────────────────────────────────────── -->
-            <section
+            <!-- <section
                 class="border-y border-gray-100 bg-white py-12 dark:border-gray-800 dark:bg-gray-900"
             >
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -424,7 +424,7 @@ const jsonLd = JSON.stringify({
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> -->
 
             <!-- ── PARTNERS ─────────────────────────────────────────────── -->
             <section
