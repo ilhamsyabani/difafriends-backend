@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
-use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 class User extends Authenticatable
 {
@@ -21,7 +21,7 @@ class User extends Authenticatable
         return LogOptions::defaults()
             ->logOnly(['first_name', 'last_name', 'email', 'role', 'is_active'])
             ->logOnlyDirty()
-            ->dontSubmitEmptyLogs()
+            ->dontLogEmptyChanges()
             ->setDescriptionForEvent(fn (string $eventName) => "User {$eventName}");
     }
 

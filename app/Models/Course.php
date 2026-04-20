@@ -11,8 +11,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
+
 
 class Course extends Model
 {
@@ -23,7 +24,7 @@ class Course extends Model
         return LogOptions::defaults()
             ->logOnly(['title', 'status', 'price', 'is_featured', 'scalev_product_id'])
             ->logOnlyDirty()
-            ->dontSubmitEmptyLogs()
+            ->dontLogEmptyChanges()
             ->setDescriptionForEvent(fn (string $eventName) => "Course {$eventName}");
     }
 

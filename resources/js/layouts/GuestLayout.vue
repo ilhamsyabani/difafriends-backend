@@ -42,7 +42,7 @@ import { login, register } from '@/routes';
                         >
                             Kelas
                         </Link>
-                        <p class="text-gray-400 dark:text-gray-300">
+                        <p class="text-gray-400 dark:text-gray-600">
                             Intervensi
                         </p>
                         <!-- Companion/Intervensi disabled

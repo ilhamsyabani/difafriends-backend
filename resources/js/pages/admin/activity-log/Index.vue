@@ -27,7 +27,9 @@ const props = defineProps<{
             created_at: string;
         }>;
         links: any[];
-        meta: { current_page: number; last_page: number; total: number };
+        current_page: number;
+        last_page: number;
+        total: number;
     };
     causers: Array<{ id: number; name: string }>;
     filters: {
@@ -39,9 +41,9 @@ const props = defineProps<{
     };
 }>();
 
-const causerId = ref(props.filters.causer_id ?? '');
-const logName = ref(props.filters.log_name ?? '');
-const event = ref(props.filters.event ?? '');
+const causerId = ref(props.filters.causer_id ?? 'all');
+const logName = ref(props.filters.log_name ?? 'all');
+const event = ref(props.filters.event ?? 'all');
 const dateFrom = ref(props.filters.date_from ?? '');
 const dateTo = ref(props.filters.date_to ?? '');
 
@@ -51,9 +53,9 @@ function applyFilters() {
     router.get(
         '/admin/activity-log',
         {
-            causer_id: causerId.value || undefined,
-            log_name: logName.value || undefined,
-            event: event.value || undefined,
+            causer_id: causerId.value === 'all' ? undefined : causerId.value,
+            log_name: logName.value === 'all' ? undefined : logName.value,
+            event: event.value === 'all' ? undefined : event.value,
             date_from: dateFrom.value || undefined,
             date_to: dateTo.value || undefined,
         },
@@ -97,7 +99,7 @@ function toggleExpand(id: number) {
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
-                            <SelectItem value="">Semua pengguna</SelectItem>
+                            <SelectItem value="all">Semua pengguna</SelectItem>
                             <SelectItem
                                 v-for="c in causers"
                                 :key="c.id"
@@ -115,7 +117,7 @@ function toggleExpand(id: number) {
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
-                            <SelectItem value="">Semua model</SelectItem>
+                            <SelectItem value="all">Semua model</SelectItem>
                             <SelectItem value="default">User</SelectItem>
                             <SelectItem value="Course">Course</SelectItem>
                             <SelectItem value="Booking">Booking</SelectItem>
@@ -129,7 +131,7 @@ function toggleExpand(id: number) {
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
-                            <SelectItem value="">Semua event</SelectItem>
+                            <SelectItem value="all">Semua event</SelectItem>
                             <SelectItem value="created">Created</SelectItem>
                             <SelectItem value="updated">Updated</SelectItem>
                             <SelectItem value="deleted">Deleted</SelectItem>
@@ -218,7 +220,7 @@ function toggleExpand(id: number) {
 
             <!-- Pagination -->
             <div class="flex items-center justify-between text-sm text-gray-500">
-                <span>Total {{ activities.meta.total }} log</span>
+                <span>Total {{ activities.total }} log</span>
                 <div class="flex gap-1">
                     <template v-for="link in activities.links" :key="link.label">
                         <button
