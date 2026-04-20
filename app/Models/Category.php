@@ -68,4 +68,3 @@ class Category extends Model
         return $this->children()->exists();
     }
 }
-

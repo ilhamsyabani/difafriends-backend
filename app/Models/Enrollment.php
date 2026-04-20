@@ -87,16 +87,17 @@ class Enrollment extends Model
             || ($this->expired_at && now()->greaterThan($this->expired_at));
     }
 
-    //Scope untuk hitungan  progeres
-    public function scopeWithProgress(Builder $query):Builder {
+    // Scope untuk hitungan  progeres
+    public function scopeWithProgress(Builder $query): Builder
+    {
         return $query->with(['course' => function ($query) {
             $query->withCount('lectures');
         }])
-        ->whithCount([
-            'courseProgresses as completed_lectures' => function ($query) {
-                $query->where('is_completed', true);
-            },
-        ]);
+            ->whithCount([
+                'courseProgresses as completed_lectures' => function ($query) {
+                    $query->where('is_completed', true);
+                },
+            ]);
     }
 
     // Hitung persentase progress (0-100
