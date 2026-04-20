@@ -22,19 +22,24 @@ npm run build
 echo "==> Jalankan migrasi..."
 php artisan migrate --force
 
+echo "==> Link storage publik..."
+php artisan storage:link --force
+
 echo "==> Clear & cache config..."
 php artisan optimize
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
+php artisan event:cache
 
 echo "==> Set permission..."
 chown -R www-data:www-data $APP_DIR
 chmod -R 755 $APP_DIR/storage
 chmod -R 755 $APP_DIR/bootstrap/cache
 
-echo "==> Restart queue worker..."
+echo "==> Restart queue & pulse worker..."
 supervisorctl restart difafriends-worker:*
+supervisorctl restart difafriends-pulse:*
 
 echo ""
 echo "Deploy selesai!"

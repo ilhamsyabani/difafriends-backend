@@ -131,6 +131,29 @@ numprocs=2
 redirect_stderr=true
 stdout_logfile=$APP_DIR/storage/logs/worker.log
 stopwaitsecs=3600
+
+[program:difafriends-pulse]
+process_name=%(program_name)s_%(process_num)02d
+command=php $APP_DIR/artisan pulse:work
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+user=www-data
+numprocs=1
+redirect_stderr=true
+stdout_logfile=$APP_DIR/storage/logs/pulse.log
+stopwaitsecs=3600
+
+[program:difafriends-schedule]
+process_name=%(program_name)s
+command=php $APP_DIR/artisan schedule:work
+autostart=true
+autorestart=true
+user=www-data
+numprocs=1
+redirect_stderr=true
+stdout_logfile=$APP_DIR/storage/logs/schedule.log
 SUPERVISOR
 
 supervisorctl reread
