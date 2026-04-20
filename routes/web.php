@@ -237,7 +237,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])
 
         // Bookings
         Route::get('/bookings', [AdminBookingController::class, 'index'])->name('bookings.index');
-        Route::post('/bookings/{booking}/zoom', [AdminBookingController::class, 'setZoom'])->name('bookings.zoom');
+        Route::post('/bookings/{booking}/meeting', [AdminBookingController::class, 'generateMeet'])->name('bookings.meeting');
 
         // Reports / Laporan
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');

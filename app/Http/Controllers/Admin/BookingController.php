@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Notifications\BookingMeetingLinkNotification;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -31,7 +32,10 @@ class BookingController extends Controller
             'meeting_link' => $request->meeting_link,
         ]);
 
-        // TODO: Kirim notifikasi ke student & tutor dengan zoom link
+        $notification = new BookingMeetingLinkNotification($booking);
+        $booking->student->notify($notification);
+        $booking->tutor->notify($notification);
+
         return back()->with('success', 'Meeting link berhasil disimpan dan dikirim ke peserta.');
     }
 }

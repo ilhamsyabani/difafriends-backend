@@ -6,7 +6,9 @@ enum PaymentStatus: string
 {
     case Pending = 'pending';
     case Settlement = 'settlement';
+    case Capture = 'capture';
     case Expired = 'expired';
+    case Expire = 'expire';
     case Cancel = 'cancel';
     case Fraud = 'fraud';
     case Deny = 'deny';
@@ -15,8 +17,8 @@ enum PaymentStatus: string
     {
         return match ($this) {
             PaymentStatus::Pending => 'Menunggu',
-            PaymentStatus::Settlement => 'Berhasil',
-            PaymentStatus::Expired => 'Kedaluwarsa',
+            PaymentStatus::Settlement, PaymentStatus::Capture => 'Berhasil',
+            PaymentStatus::Expired, PaymentStatus::Expire => 'Kedaluwarsa',
             PaymentStatus::Cancel => 'Dibatalkan',
             PaymentStatus::Fraud => 'Terindikasi Fraud',
             PaymentStatus::Deny => 'Ditolak',
@@ -25,7 +27,7 @@ enum PaymentStatus: string
 
     public function isSuccess(): bool
     {
-        return $this === PaymentStatus::Settlement;
+        return in_array($this, [PaymentStatus::Settlement, PaymentStatus::Capture]);
     }
 
     public function isFailed(): bool

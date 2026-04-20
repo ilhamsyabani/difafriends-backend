@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Course;
 use App\Models\User;
+use App\Notifications\CourseApprovedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -170,6 +171,8 @@ class CourseController extends Controller
     public function approve(Course $course)
     {
         $course->update(['status' => CourseStatus::Published->value]);
+
+        $course->instructor->notify(new CourseApprovedNotification($course));
 
         return back()->with('success', "Kelas '{$course->title}' dipublikasikan.");
     }

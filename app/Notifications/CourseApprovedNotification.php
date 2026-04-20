@@ -2,42 +2,35 @@
 
 namespace App\Notifications;
 
+use App\Models\Course;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class CourseApprovedNotification extends Notification
+class CourseApprovedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(public Course $course) {}
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['mail', 'database'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
-    // public function toMail(object $notifiable): MailMessage
-    // {
-    //     return (new MailMessage)
-    //         ->line('The introduction to the notification.')
-    //         ->action('Notification Action', url('/'))
-    //         ->line('Thank you for using our application!');
-    // }
+    public function toMail(object $notifiable): MailMessage
+    {
+        return (new MailMessage)
+            ->subject("Kelas \"{$this->course->title}\" Sudah Dipublikasikan!")
+            ->greeting("Halo, {$notifiable->first_name}!")
+            ->line('Kabar baik! Kelas yang kamu ajukan sudah direview dan disetujui oleh tim admin.')
+            ->line("**Kelas:** {$this->course->title}")
+            ->action('Lihat Kelas', url("/courses/{$this->course->slug}"))
+            ->line('Sekarang kelas kamu sudah bisa ditemukan dan dibeli oleh siswa.')
+            ->salutation('Salam, Tim DifaFriends');
+    }
+
     public function toDatabase(object $notifiable): array
     {
         return [
@@ -46,18 +39,6 @@ class CourseApprovedNotification extends Notification
             'message' => "Kelas \"{$this->course->title}\" sudah dipublikasikan.",
             'url' => "/courses/{$this->course->slug}",
             'icon' => 'book-open',
-        ];
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
-    {
-        return [
-            //
         ];
     }
 }

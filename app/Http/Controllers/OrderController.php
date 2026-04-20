@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\BookingStatus;
 use App\Enums\OrderStatus;
+use App\Models\Booking;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Notifications\BookingConfirmedNotification;
 use App\Notifications\OrderPaidNotification;
 use App\Services\MidtransService;
 use App\Services\OrderService;
@@ -143,9 +146,13 @@ class OrderController extends Controller
         }
 
         $order->update(['status' => OrderStatus::Paid]);
-        $this->activateEnrollment($order);
 
-        $order->user->notify(new OrderPaidNotification($order));
+        if ($order->orderable_type === Course::class) {
+            $this->activateEnrollment($order);
+            $order->user->notify(new OrderPaidNotification($order));
+        } elseif ($order->orderable_type === Booking::class) {
+            $this->confirmBooking($order);
+        }
     }
 
     private function handleExpired(Order $order): void
@@ -172,5 +179,21 @@ class OrderController extends Controller
                 'enrolled_at' => now(),
             ]
         );
+    }
+
+    private function confirmBooking(Order $order): void
+    {
+        $booking = Booking::find($order->orderable_id);
+
+        if (! $booking) {
+            return;
+        }
+
+        $booking->update([
+            'status' => BookingStatus::Confirmed,
+            'confirmed_at' => now(),
+        ]);
+
+        $booking->student->notify(new BookingConfirmedNotification($booking));
     }
 }
