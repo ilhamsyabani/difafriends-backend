@@ -2,6 +2,7 @@
 
 use App\Enums\ArticlesStatus;
 use App\Enums\Roles;
+use App\Http\Controllers\Admin\ActivityLogController as AdminActivityLogController;
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\CompanionController as AdminCompanionController;
@@ -241,6 +242,9 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         // Reports / Laporan
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
+
+        // Activity Log
+        Route::get('/activity-log', [AdminActivityLogController::class, 'index'])->name('activity-log.index');
 
         // Articles
         Route::resource('articles', App\Http\Controllers\Admin\ArticleController::class);

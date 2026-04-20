@@ -11,6 +11,7 @@ import {
     ClipboardList,
     Settings,
     BarChart2,
+    Activity,
 } from 'lucide-vue-next';
 import AppLogo from '@/components/AppLogo.vue';
 import NavFooter from '@/components/NavFooter.vue';
@@ -46,6 +47,7 @@ const adminNav: NavItem[] = [
     { title: 'Artikel', href: '/admin/articles', icon: Newspaper },
     { title: 'Transaksi', href: '/admin/orders', icon: ShoppingCart },
     { title: 'Laporan', href: '/admin/reports', icon: BarChart2 },
+    { title: 'Log Aktivitas', href: '/admin/activity-log', icon: Activity },
 ];
 
 const instructorNav: NavItem[] = [
