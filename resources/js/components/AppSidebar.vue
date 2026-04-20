@@ -9,14 +9,12 @@ import {
     ShoppingCart,
     Calendar,
     ClipboardList,
-    Settings,
     BarChart2,
     Activity,
 } from 'lucide-vue-next';
+import { computed } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
-import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
-import NavUser from '@/components/NavUser.vue';
 import {
     Sidebar,
     SidebarContent,
@@ -25,13 +23,11 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarSeparator,
 } from '@/components/ui/sidebar';
 import { dashboard as userDashboard } from '@/routes';
 import { dashboard as adminDashboard } from '@/routes/admin';
-import { dashboard as instructorDashboard } from '@/routes/instructor';
 import { dashboard as companionDashboard } from '@/routes/companion';
-import { computed } from 'vue';
+import { dashboard as instructorDashboard } from '@/routes/instructor';
 import type { NavItem } from '@/types';
 
 const page = usePage();
@@ -77,9 +73,18 @@ const mainNavItems =
             : userNav;
 
 const dashboardHref = computed(() => {
-    if (role === 'admin') return adminDashboard.url();
-    if (role === 'instructor') return instructorDashboard.url();
-    if (role === 'companion') return companionDashboard.url();
+    if (role === 'admin') {
+        return adminDashboard.url();
+    }
+
+    if (role === 'instructor') {
+        return instructorDashboard.url();
+    }
+
+    if (role === 'companion') {
+        return companionDashboard.url();
+    }
+
     return userDashboard.url();
 });
 

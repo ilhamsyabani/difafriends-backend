@@ -369,7 +369,7 @@ function destroy(id: number) {
                                                 class="mt-1 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400"
                                             >
                                                 <span
-                                                    class="rounded bg-purple-50 px-1.5 py-0.5 font-medium text-primary-hover dark:bg-purple-900/30 dark:text-purple-400"
+                                                    class="text-primary-hover rounded bg-purple-50 px-1.5 py-0.5 font-medium dark:bg-purple-900/30 dark:text-purple-400"
                                                 >
                                                     {{
                                                         course.category?.name ??

@@ -30,8 +30,8 @@ export function useFormatters() {
 
     function formatDuration(minutes: number): string {
         if (minutes < 60) {
-return `${minutes} menit`;
-}
+            return `${minutes} menit`;
+        }
 
         const h = Math.floor(minutes / 60);
         const m = minutes % 60;
@@ -47,8 +47,8 @@ return `${minutes} menit`;
      */
     function assetUrl(path: string | null | undefined): string | null {
         if (!path) {
-return null;
-}
+            return null;
+        }
 
         if (
             path.startsWith('http://') ||

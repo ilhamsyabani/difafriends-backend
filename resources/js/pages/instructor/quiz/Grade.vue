@@ -54,8 +54,8 @@ function initGradeForm(attemptId: number) {
     const attempt = props.attempts.data.find((a) => a.id === attemptId);
 
     if (!attempt) {
-return;
-}
+        return;
+    }
 
     attempt.answers
         .filter((a) => a.question.type === 'essay')
@@ -331,7 +331,7 @@ function formatDate(dt: string): string {
                                     class="space-y-3 rounded-xl bg-purple-50 p-4 dark:bg-purple-900/10"
                                 >
                                     <p
-                                        class="text-xs font-medium text-primary-hover dark:text-purple-400"
+                                        class="text-primary-hover text-xs font-medium dark:text-purple-400"
                                     >
                                         Penilaian Instruktur
                                     </p>

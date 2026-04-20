@@ -42,14 +42,14 @@ watch(search, (val) => {
 
 function minPrice(schedules: Array<{ price: number }>): string {
     if (!schedules.length) {
-return 'Hubungi untuk harga';
-}
+        return 'Hubungi untuk harga';
+    }
 
     const min = Math.min(...schedules.map((s) => s.price));
 
     if (min === 0) {
-return 'Gratis';
-}
+        return 'Gratis';
+    }
 
     return (
         'Mulai ' +

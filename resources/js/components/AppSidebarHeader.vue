@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { router, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
-import { LogOut, Settings } from 'lucide-vue-next';
 import { Link } from '@inertiajs/vue3';
+import { LogOut, Settings } from 'lucide-vue-next';
+import { computed } from 'vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import NotificationBell from '@/components/NotificationBell.vue';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -79,7 +79,7 @@ const handleLogout = () => {
                         </AvatarFallback>
                     </Avatar>
                     <div class="hidden text-left md:block">
-                        <p class="text-sm font-medium leading-none">
+                        <p class="text-sm leading-none font-medium">
                             {{ user?.name }}
                         </p>
                         <p
@@ -109,9 +109,7 @@ const handleLogout = () => {
                     :side-offset="8"
                 >
                     <DropdownMenuLabel class="p-0 font-normal">
-                        <div
-                            class="flex items-center gap-2.5 px-3 py-2.5"
-                        >
+                        <div class="flex items-center gap-2.5 px-3 py-2.5">
                             <Avatar class="h-8 w-8 rounded-lg">
                                 <AvatarImage
                                     v-if="user?.avatar"

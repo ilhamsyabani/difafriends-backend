@@ -60,16 +60,16 @@ function onDrop(e: DragEvent) {
     const file = e.dataTransfer?.files[0];
 
     if (file) {
-handleFile(file);
-}
+        handleFile(file);
+    }
 }
 
 function onFileInput(e: Event) {
     const file = (e.target as HTMLInputElement).files?.[0];
 
     if (file) {
-handleFile(file);
-}
+        handleFile(file);
+    }
 }
 
 function handleFile(file: File) {

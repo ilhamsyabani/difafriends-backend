@@ -37,8 +37,8 @@ function onPhotoChange(e: Event) {
     const file = (e.target as HTMLInputElement).files?.[0];
 
     if (!file) {
-return;
-}
+        return;
+    }
 
     const reader = new FileReader();
     reader.onload = (ev) => {
@@ -49,12 +49,12 @@ return;
 
 const avatarUrl = computed(() => {
     if (photoPreview.value) {
-return photoPreview.value;
-}
+        return photoPreview.value;
+    }
 
     if (user.value?.photo) {
-return `/storage/${user.value.photo}`;
-}
+        return `/storage/${user.value.photo}`;
+    }
 
     const name = encodeURIComponent(
         `${user.value?.first_name ?? ''} ${user.value?.last_name ?? ''}`,
@@ -116,7 +116,7 @@ const genderOptions = [
                                 {{ user?.first_name }} {{ user?.last_name }}
                             </p>
                             <span
-                                class="w-fit rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-primary-hover dark:bg-purple-900/30 dark:text-purple-400"
+                                class="text-primary-hover w-fit rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium dark:bg-purple-900/30 dark:text-purple-400"
                             >
                                 {{ roleLabel[user?.role] ?? user?.role }}
                             </span>

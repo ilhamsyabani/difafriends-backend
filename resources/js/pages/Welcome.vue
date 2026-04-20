@@ -58,6 +58,7 @@ function formatPrice(price: number): string {
 function formatDuration(minutes: number): string {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
+
     return hours > 0 ? `${hours}j ${mins}m` : `${mins}m`;
 }
 
@@ -68,18 +69,23 @@ function getInitials(firstName: string, lastName: string): string {
 }
 
 function stripHtml(html: string): string {
-    if (!html) return '';
+    if (!html) {
+        return '';
+    }
+
     const tmp = document.createElement('DIV');
     tmp.innerHTML = html;
+
     return tmp.textContent || tmp.innerText || '';
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- used in template
 const stats = [
     { value: '100+', label: 'Anak Terbantu' },
     { value: '10+', label: 'Tentor Bersertifikat' },
     { value: '4', label: 'Kelas Tersedia' },
     { value: '4.9', label: 'Rating Rata-rata' },
-];
+] as const;
 
 const partners = [
     'Kemendikbud',

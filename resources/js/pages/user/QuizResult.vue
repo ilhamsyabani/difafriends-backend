@@ -231,7 +231,7 @@ function totalPoints(): number {
                             class="rounded-xl bg-purple-50 p-3 dark:bg-purple-900/20"
                         >
                             <p
-                                class="mb-1 text-xs font-medium text-primary-hover dark:text-purple-400"
+                                class="text-primary-hover mb-1 text-xs font-medium dark:text-purple-400"
                             >
                                 Feedback Instruktur:
                             </p>

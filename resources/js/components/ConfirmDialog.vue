@@ -22,7 +22,6 @@ watch(isOpen, async (val) => {
         (cancelBtnRef.value?.$el as HTMLButtonElement)?.focus();
     }
 });
-
 </script>
 
 <template>

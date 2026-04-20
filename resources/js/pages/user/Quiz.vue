@@ -85,7 +85,7 @@ async function startQuiz() {
         attemptId.value = res.data.attempt_id;
         isStarted.value = true;
         initAnswers();
-    } catch (_e) {
+    } catch {
         alert('Gagal memulai kuis. Coba lagi.');
     } finally {
         isLoading.value = false;
@@ -122,7 +122,7 @@ async function submitQuiz() {
                 `/learn/${props.course.slug}/quiz/${props.quiz.id}/result`,
             );
         }
-    } catch (_e) {
+    } catch {
         alert('Gagal submit kuis. Coba lagi.');
     } finally {
         isLoading.value = false;
@@ -318,7 +318,7 @@ function isAnswered(questionId: number): boolean {
                                         currentIdx === idx
                                             ? 'bg-primary text-white'
                                             : isAnswered(q.id)
-                                              ? 'bg-purple-100 text-primary-hover dark:bg-purple-900/30 dark:text-purple-300'
+                                              ? 'text-primary-hover bg-purple-100 dark:bg-purple-900/30 dark:text-purple-300'
                                               : 'bg-gray-100 text-gray-500 dark:bg-gray-700',
                                     ]"
                                 >
@@ -507,7 +507,7 @@ function isAnswered(questionId: number): boolean {
                             <button
                                 v-else
                                 @click="goToQuestion(currentIdx + 1)"
-                                class="flex items-center gap-2 text-sm font-medium text-primary transition-colors hover:text-primary-hover"
+                                class="hover:text-primary-hover flex items-center gap-2 text-sm font-medium text-primary transition-colors"
                             >
                                 Berikutnya
                                 <svg

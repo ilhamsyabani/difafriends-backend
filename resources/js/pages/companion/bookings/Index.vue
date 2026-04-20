@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Head, Link, router } from '@inertiajs/vue3';
 import { CalendarClock, Video } from 'lucide-vue-next';
-import AppLayout from '@/layouts/AppLayout.vue';
 import EmptyState from '@/components/EmptyState.vue';
 import StatusBadge from '@/components/StatusBadge.vue';
 import { useFormatters } from '@/composables/useFormatters';
+import AppLayout from '@/layouts/AppLayout.vue';
 
 interface Student {
     id: number;
@@ -35,7 +35,7 @@ interface PaginatedBookings {
     meta: { current_page: number; last_page: number; total: number };
 }
 
-const props = defineProps<{
+defineProps<{
     bookings: PaginatedBookings;
     filters: { status: string | null };
 }>();
@@ -81,7 +81,9 @@ function filterByStatus(status: string) {
                         >
                             Daftar Booking
                         </h1>
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        <p
+                            class="mt-1 text-sm text-gray-500 dark:text-gray-400"
+                        >
                             Kelola sesi pendampingan dari siswa
                         </p>
                     </div>
@@ -130,14 +132,18 @@ function filterByStatus(status: string) {
                                 <th class="px-5 py-3">Meeting</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                        <tbody
+                            class="divide-y divide-gray-100 dark:divide-gray-800"
+                        >
                             <tr
                                 v-for="booking in bookings.data"
                                 :key="booking.id"
                                 class="transition-colors hover:bg-gray-50/80 dark:hover:bg-gray-800/40"
                             >
                                 <td class="px-5 py-4">
-                                    <p class="font-medium text-gray-900 dark:text-white">
+                                    <p
+                                        class="font-medium text-gray-900 dark:text-white"
+                                    >
                                         {{ booking.student.first_name }}
                                         {{ booking.student.last_name }}
                                     </p>
@@ -145,11 +151,16 @@ function filterByStatus(status: string) {
                                         {{ booking.student.email }}
                                     </p>
                                 </td>
-                                <td class="px-5 py-4 text-gray-700 dark:text-gray-300">
+                                <td
+                                    class="px-5 py-4 text-gray-700 dark:text-gray-300"
+                                >
                                     {{ formatDateTime(booking.start_at) }}
                                 </td>
-                                <td class="px-5 py-4 text-gray-600 dark:text-gray-400">
-                                    {{ booking.schedule.session_duration }} menit
+                                <td
+                                    class="px-5 py-4 text-gray-600 dark:text-gray-400"
+                                >
+                                    {{ booking.schedule.session_duration }}
+                                    menit
                                 </td>
                                 <td class="px-5 py-4 font-semibold text-brand">
                                     {{ formatPrice(booking.schedule.price) }}
@@ -168,10 +179,7 @@ function filterByStatus(status: string) {
                                         <Video class="h-3.5 w-3.5" />
                                         Buka
                                     </a>
-                                    <span
-                                        v-else
-                                        class="text-xs text-gray-400"
-                                    >
+                                    <span v-else class="text-xs text-gray-400">
                                         Belum ada
                                     </span>
                                 </td>

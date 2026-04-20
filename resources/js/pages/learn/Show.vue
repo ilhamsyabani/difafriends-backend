@@ -61,8 +61,8 @@ const currentLecture = computed(() => {
         );
 
         if (found) {
-return found;
-}
+            return found;
+        }
     }
 
     return null;
@@ -123,8 +123,8 @@ function getYoutubeEmbedUrl(url: string): string {
 
 async function markCompleted(lectureId: number) {
     if (isCompleted(lectureId)) {
-return;
-}
+        return;
+    }
 
     try {
         const res = await axios.post(`/learn/${props.course.slug}/progress`, {

@@ -151,7 +151,7 @@ function stripHtml(html: string) {
                     <button
                         v-if="search"
                         @click="search = ''"
-                        class="mt-6 font-medium text-primary hover:text-primary-hover dark:text-purple-400"
+                        class="hover:text-primary-hover mt-6 font-medium text-primary dark:text-purple-400"
                     >
                         Reset Pencarian
                     </button>
@@ -186,7 +186,7 @@ function stripHtml(html: string) {
                             </div>
                             <!-- Badge Kategori (Bisa diganti dinamis nanti jika ada tabel relasi kategory artikel) -->
                             <span
-                                class="absolute top-4 left-4 rounded-full bg-white/90 px-3 py-1.5 text-xs font-bold text-primary-hover shadow-sm backdrop-blur dark:bg-gray-900/90 dark:text-purple-300"
+                                class="text-primary-hover absolute top-4 left-4 rounded-full bg-white/90 px-3 py-1.5 text-xs font-bold shadow-sm backdrop-blur dark:bg-gray-900/90 dark:text-purple-300"
                             >
                                 Pendidikan
                             </span>

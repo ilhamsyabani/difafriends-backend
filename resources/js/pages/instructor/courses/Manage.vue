@@ -299,7 +299,7 @@ function formatDuration(seconds: number): string {
                                 </Link>
                                 <Link
                                     :href="`/instructor/courses/${course.id}/quizzes/${section.quiz.id}/grade`"
-                                    class="inline-flex items-center gap-1.5 rounded-lg bg-purple-50 px-3 py-1.5 text-xs font-medium text-primary-hover transition-colors hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400 dark:hover:bg-purple-900/50"
+                                    class="text-primary-hover inline-flex items-center gap-1.5 rounded-lg bg-purple-50 px-3 py-1.5 text-xs font-medium transition-colors hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400 dark:hover:bg-purple-900/50"
                                 >
                                     <svg
                                         class="h-3.5 w-3.5"
@@ -321,7 +321,7 @@ function formatDuration(seconds: number): string {
                             <!-- Tombol + Materi -->
                             <button
                                 @click="openLectureForm(section.id)"
-                                class="inline-flex items-center gap-1.5 rounded-xl border border-purple-200 bg-purple-50 px-3.5 py-1.5 text-sm font-semibold text-primary-hover transition-colors hover:bg-purple-100 dark:border-purple-800/50 dark:bg-purple-900/30 dark:text-purple-300 dark:hover:bg-purple-900/50"
+                                class="text-primary-hover inline-flex items-center gap-1.5 rounded-xl border border-purple-200 bg-purple-50 px-3.5 py-1.5 text-sm font-semibold transition-colors hover:bg-purple-100 dark:border-purple-800/50 dark:bg-purple-900/30 dark:text-purple-300 dark:hover:bg-purple-900/50"
                             >
                                 <Plus class="h-4 w-4" />
                                 Materi

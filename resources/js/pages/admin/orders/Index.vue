@@ -63,16 +63,16 @@ const exportUrl = computed(() => {
     const params = new URLSearchParams();
 
     if (search.value) {
-params.append('search', search.value);
-}
+        params.append('search', search.value);
+    }
 
     if (status.value) {
-params.append('status', status.value);
-}
+        params.append('status', status.value);
+    }
 
     if (type.value) {
-params.append('type', type.value);
-}
+        params.append('type', type.value);
+    }
 
     return `/admin/orders/export?${params.toString()}`;
 });
@@ -299,7 +299,7 @@ const statusColor = (val: string) => {
                                         />
                                         <div
                                             v-else
-                                            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-purple-100 text-xs font-bold text-primary-hover dark:bg-purple-900/50 dark:text-purple-400"
+                                            class="text-primary-hover flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-purple-100 text-xs font-bold dark:bg-purple-900/50 dark:text-purple-400"
                                         >
                                             {{
                                                 (order.user.first_name?.[0] ||

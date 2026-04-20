@@ -71,8 +71,8 @@ function applyFilters() {
 
 function formatPrice(p: number): string {
     if (p === 0) {
-return 'Gratis';
-}
+        return 'Gratis';
+    }
 
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -129,7 +129,7 @@ function formatDuration(minutes: number): string {
                                 :class="[
                                     'w-full rounded-lg px-3 py-2 text-left text-sm transition-colors',
                                     category === ''
-                                        ? 'bg-purple-100 font-medium text-primary-hover dark:bg-purple-900/30'
+                                        ? 'text-primary-hover bg-purple-100 font-medium dark:bg-purple-900/30'
                                         : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800',
                                 ]"
                             >
@@ -142,7 +142,7 @@ function formatDuration(minutes: number): string {
                                     :class="[
                                         'w-full rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors',
                                         category === cat.slug
-                                            ? 'bg-purple-100 text-primary-hover dark:bg-purple-900/30 dark:text-purple-300'
+                                            ? 'text-primary-hover bg-purple-100 dark:bg-purple-900/30 dark:text-purple-300'
                                             : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800',
                                     ]"
                                 >
@@ -181,7 +181,7 @@ function formatDuration(minutes: number): string {
                                 :class="[
                                     'w-full rounded-lg px-3 py-2 text-left text-sm transition-colors',
                                     price === opt.value
-                                        ? 'bg-purple-100 font-medium text-primary-hover dark:bg-purple-900/30'
+                                        ? 'text-primary-hover bg-purple-100 font-medium dark:bg-purple-900/30'
                                         : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800',
                                 ]"
                             >
@@ -299,7 +299,7 @@ function formatDuration(minutes: number): string {
                                     </svg>
                                 </div>
                                 <span
-                                    class="absolute top-3 left-3 rounded-full bg-white/90 px-2 py-1 text-xs font-medium text-primary-hover dark:bg-gray-900/90 dark:text-purple-300"
+                                    class="text-primary-hover absolute top-3 left-3 rounded-full bg-white/90 px-2 py-1 text-xs font-medium dark:bg-gray-900/90 dark:text-purple-300"
                                 >
                                     {{ course.category.name }}
                                 </span>

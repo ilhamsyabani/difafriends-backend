@@ -23,7 +23,9 @@ const breadcrumbItems: BreadcrumbItem[] = [
 ];
 
 const page = usePage();
-const flash = computed(() => page.props.flash as { success?: string; error?: string });
+const flash = computed(
+    () => page.props.flash as { success?: string; error?: string },
+);
 
 const previewUrl = ref<string | null>(props.currentLogo);
 
@@ -41,6 +43,7 @@ function onFileChange(e: Event) {
     const input = e.target as HTMLInputElement;
     const file = input.files?.[0] ?? null;
     form.logo = file;
+
     if (file) {
         previewUrl.value = URL.createObjectURL(file);
     }
@@ -93,7 +96,10 @@ function removeLogo() {
                             placeholder="DifaFriends"
                             :disabled="form.processing"
                         />
-                        <p v-if="form.errors.app_name" class="text-sm text-red-500">
+                        <p
+                            v-if="form.errors.app_name"
+                            class="text-sm text-red-500"
+                        >
                             {{ form.errors.app_name }}
                         </p>
                     </div>
@@ -113,10 +119,16 @@ function removeLogo() {
                                     alt="Preview logo"
                                     class="h-full w-full object-contain p-2"
                                 />
-                                <span v-else class="text-xl font-bold text-muted-foreground">DF</span>
+                                <span
+                                    v-else
+                                    class="text-xl font-bold text-muted-foreground"
+                                    >DF</span
+                                >
                             </div>
 
-                            <div class="space-y-1 text-sm text-muted-foreground">
+                            <div
+                                class="space-y-1 text-sm text-muted-foreground"
+                            >
                                 <p>Format: PNG, JPG, SVG, WebP</p>
                                 <p>Ukuran maks: 2MB</p>
                                 <p>Rekomendasi: gambar persegi (1:1)</p>

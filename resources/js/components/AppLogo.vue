@@ -21,9 +21,7 @@ const appName = computed(() => (page.props.name as string) || 'DifaFriends');
         <span v-else class="text-sm font-bold text-white">DF</span>
         <!--</div> -->
         <div class="grid flex-1 text-left leading-tight">
-            <span
-                class="truncate font-bold text-gray-900 dark:text-white"
-            >
+            <span class="truncate font-bold text-gray-900 dark:text-white">
                 {{ appName }}
             </span>
             <span class="truncate text-xs text-gray-400">

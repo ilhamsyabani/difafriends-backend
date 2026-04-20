@@ -35,7 +35,9 @@ const props = defineProps<{
 }>();
 
 const page = usePage();
-const flash = computed(() => page.props.flash as { success?: string; error?: string });
+const flash = computed(
+    () => page.props.flash as { success?: string; error?: string },
+);
 
 const search = ref(props.filters.search ?? '');
 let searchTimeout: ReturnType<typeof setTimeout>;
@@ -86,6 +88,7 @@ function statusLabel(status: string) {
         completed: 'Selesai',
         expired: 'Kadaluarsa',
     };
+
     return map[status] ?? status;
 }
 </script>
@@ -104,7 +107,9 @@ function statusLabel(status: string) {
                     <ArrowLeft class="h-4 w-4" />
                     Kembali ke Daftar Kelas
                 </Link>
-                <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                <h1
+                    class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+                >
                     Kelola Peserta
                 </h1>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -127,13 +132,19 @@ function statusLabel(status: string) {
             </div>
 
             <!-- Assign User -->
-            <div class="mb-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <h2 class="mb-4 text-base font-semibold text-gray-900 dark:text-white">
+            <div
+                class="mb-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900"
+            >
+                <h2
+                    class="mb-4 text-base font-semibold text-gray-900 dark:text-white"
+                >
                     Tambah Peserta
                 </h2>
 
                 <div class="relative">
-                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <div
+                        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+                    >
                         <Search class="h-4 w-4 text-gray-400" />
                     </div>
                     <Input
@@ -146,14 +157,19 @@ function statusLabel(status: string) {
                 </div>
 
                 <!-- Hasil pencarian -->
-                <div v-if="users.length > 0" class="mt-3 divide-y divide-gray-100 rounded-xl border border-gray-200 dark:divide-gray-800 dark:border-gray-700">
+                <div
+                    v-if="users.length > 0"
+                    class="mt-3 divide-y divide-gray-100 rounded-xl border border-gray-200 dark:divide-gray-800 dark:border-gray-700"
+                >
                     <div
                         v-for="user in users"
                         :key="user.id"
                         class="flex items-center justify-between px-4 py-3"
                     >
                         <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">
+                            <p
+                                class="text-sm font-medium text-gray-900 dark:text-white"
+                            >
                                 {{ user.first_name }} {{ user.last_name }}
                             </p>
                             <p class="text-xs text-gray-500 dark:text-gray-400">
@@ -182,31 +198,54 @@ function statusLabel(status: string) {
             </div>
 
             <!-- Daftar Peserta -->
-            <div class="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <div class="flex items-center justify-between border-b border-gray-100 px-6 py-4 dark:border-gray-800">
-                    <h2 class="text-base font-semibold text-gray-900 dark:text-white">
+            <div
+                class="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900"
+            >
+                <div
+                    class="flex items-center justify-between border-b border-gray-100 px-6 py-4 dark:border-gray-800"
+                >
+                    <h2
+                        class="text-base font-semibold text-gray-900 dark:text-white"
+                    >
                         Peserta Terdaftar
                     </h2>
-                    <span class="rounded-full bg-purple-50 px-2.5 py-1 text-xs font-medium text-primary-hover dark:bg-purple-900/30 dark:text-purple-400">
-                        {{ enrollments.meta?.total ?? enrollments.data.length }} peserta
+                    <span
+                        class="text-primary-hover rounded-full bg-purple-50 px-2.5 py-1 text-xs font-medium dark:bg-purple-900/30 dark:text-purple-400"
+                    >
+                        {{ enrollments.meta?.total ?? enrollments.data.length }}
+                        peserta
                     </span>
                 </div>
 
-                <div v-if="enrollments.data.length > 0" class="divide-y divide-gray-100 dark:divide-gray-800">
+                <div
+                    v-if="enrollments.data.length > 0"
+                    class="divide-y divide-gray-100 dark:divide-gray-800"
+                >
                     <div
                         v-for="enrollment in enrollments.data"
                         :key="enrollment.id"
                         class="flex items-center justify-between px-6 py-4"
                     >
                         <div class="flex items-center gap-3">
-                            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-purple-100 text-sm font-semibold text-primary-hover dark:bg-purple-900/30 dark:text-purple-400">
-                                {{ enrollment.user.first_name.charAt(0).toUpperCase() }}
+                            <div
+                                class="text-primary-hover flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-purple-100 text-sm font-semibold dark:bg-purple-900/30 dark:text-purple-400"
+                            >
+                                {{
+                                    enrollment.user.first_name
+                                        .charAt(0)
+                                        .toUpperCase()
+                                }}
                             </div>
                             <div>
-                                <p class="text-sm font-medium text-gray-900 dark:text-white">
-                                    {{ enrollment.user.first_name }} {{ enrollment.user.last_name }}
+                                <p
+                                    class="text-sm font-medium text-gray-900 dark:text-white"
+                                >
+                                    {{ enrollment.user.first_name }}
+                                    {{ enrollment.user.last_name }}
                                 </p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">
+                                <p
+                                    class="text-xs text-gray-500 dark:text-gray-400"
+                                >
                                     {{ enrollment.user.email }}
                                 </p>
                             </div>
@@ -222,12 +261,19 @@ function statusLabel(status: string) {
                                         : 'bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
                                 ]"
                             >
-                                {{ enrollment.order_id ? 'Berbayar' : 'Ditugaskan' }}
+                                {{
+                                    enrollment.order_id
+                                        ? 'Berbayar'
+                                        : 'Ditugaskan'
+                                }}
                             </span>
 
                             <!-- Badge status -->
                             <span
-                                :class="['rounded-full px-2.5 py-1 text-xs font-medium', statusClass(enrollment.status)]"
+                                :class="[
+                                    'rounded-full px-2.5 py-1 text-xs font-medium',
+                                    statusClass(enrollment.status),
+                                ]"
                             >
                                 {{ statusLabel(enrollment.status) }}
                             </span>
@@ -244,7 +290,10 @@ function statusLabel(status: string) {
                     </div>
                 </div>
 
-                <div v-else class="flex flex-col items-center justify-center gap-3 py-16 text-gray-400 dark:text-gray-500">
+                <div
+                    v-else
+                    class="flex flex-col items-center justify-center gap-3 py-16 text-gray-400 dark:text-gray-500"
+                >
                     <Users class="h-10 w-10" />
                     <p class="text-sm">Belum ada peserta di kelas ini.</p>
                 </div>

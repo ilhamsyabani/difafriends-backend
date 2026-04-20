@@ -187,9 +187,7 @@ function destroy(id: number) {
                                 >
                                     {{ schedule.session_duration }} menit/sesi
                                 </p>
-                                <p
-                                    class="text-sm font-semibold text-primary"
-                                >
+                                <p class="text-sm font-semibold text-primary">
                                     {{ formatPrice(schedule.price) }}
                                 </p>
                             </td>

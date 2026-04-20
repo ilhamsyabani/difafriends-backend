@@ -69,8 +69,8 @@ function toggleSection(id: number) {
 
 function formatPrice(p: number): string {
     if (p === 0) {
-return 'Gratis';
-}
+        return 'Gratis';
+    }
 
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -100,8 +100,8 @@ function totalDuration(): number {
 
 function averageRating(): number {
     if (!props.course.reviews.length) {
-return 0;
-}
+        return 0;
+    }
 
     const sum = props.course.reviews.reduce((acc, r) => acc + r.rating, 0);
 
@@ -110,8 +110,8 @@ return 0;
 
 async function handleBuy() {
     if (props.isEnrolled) {
-return;
-}
+        return;
+    }
 
     // Cek sudah login
     if (!(usePage().props.auth as any).user) {
@@ -145,13 +145,13 @@ return;
 
         script.onload = () => {
             (window as any).snap.pay(snap_token, {
-                onSuccess: (_result: any) => {
+                onSuccess: () => {
                     router.visit('/orders');
                 },
-                onPending: (_result: any) => {
+                onPending: () => {
                     router.visit('/orders');
                 },
-                onError: (_result: any) => {
+                onError: () => {
                     alert('Pembayaran gagal. Silakan coba lagi.');
                 },
                 onClose: () => {
@@ -576,9 +576,7 @@ return;
                         <div class="space-y-4 p-5">
                             <!-- Harga -->
                             <div class="flex items-baseline gap-3">
-                                <span
-                                    class="text-3xl font-bold text-primary"
-                                >
+                                <span class="text-3xl font-bold text-primary">
                                     {{
                                         formatPrice(
                                             course.discount_price ??

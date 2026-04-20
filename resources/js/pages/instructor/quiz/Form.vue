@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import AppLayout from '@/layouts/AppLayout.vue';
 import {
     Select,
     SelectContent,
@@ -9,6 +8,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import AppLayout from '@/layouts/AppLayout.vue';
 
 const props = defineProps<{
     course: { id: number; title: string };
@@ -40,7 +40,11 @@ const isEdit = !!props.quiz;
 const quizTypeOptions = [
     { value: 'pretest', label: 'Pre-Test', desc: 'Dikerjakan sebelum materi' },
     { value: 'quiz', label: 'Kuis', desc: 'Latihan di tengah materi' },
-    { value: 'posttest', label: 'Post-Test', desc: 'Dikerjakan setelah materi' },
+    {
+        value: 'posttest',
+        label: 'Post-Test',
+        desc: 'Dikerjakan setelah materi',
+    },
 ];
 
 // ── Form kuis ──────────────────────────────────────────
@@ -203,7 +207,10 @@ function totalPoints(): number {
                                 :value="opt.value"
                             >
                                 <span class="font-medium">{{ opt.label }}</span>
-                                <span class="ml-1.5 text-xs text-muted-foreground">— {{ opt.desc }}</span>
+                                <span
+                                    class="ml-1.5 text-xs text-muted-foreground"
+                                    >— {{ opt.desc }}</span
+                                >
                             </SelectItem>
                         </SelectContent>
                     </Select>

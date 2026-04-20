@@ -75,8 +75,8 @@ function formatTime(time: string): string {
 
 function formatPrice(price: number): string {
     if (price === 0) {
-return 'Gratis';
-}
+        return 'Gratis';
+    }
 
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -339,7 +339,7 @@ async function submitBooking() {
                                         class="mb-4 flex items-center justify-between"
                                     >
                                         <span
-                                            class="rounded-lg bg-purple-100 px-3 py-1 text-xs font-bold tracking-wider text-primary-hover uppercase dark:bg-purple-900/50 dark:text-purple-300"
+                                            class="text-primary-hover rounded-lg bg-purple-100 px-3 py-1 text-xs font-bold tracking-wider uppercase dark:bg-purple-900/50 dark:text-purple-300"
                                         >
                                             {{
                                                 getDayName(schedule.day_of_week)
@@ -588,7 +588,7 @@ async function submitBooking() {
                                             >Total Tagihan</span
                                         >
                                         <span
-                                            class="text-lg font-bold text-primary-hover dark:text-purple-400"
+                                            class="text-primary-hover text-lg font-bold dark:text-purple-400"
                                         >
                                             {{
                                                 formatPrice(

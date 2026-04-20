@@ -39,7 +39,21 @@ export default defineConfigWithVueTs(
         },
         rules: {
             'vue/multi-word-component-names': 'off',
+            'vue/no-v-text-v-html-on-component': 'off',
+            'vue/script-setup-uses-vars': 'error',
             '@typescript-eslint/no-explicit-any': 'off',
+            '@typescript-eslint/no-unused-vars': [
+                'error',
+                {
+                    args: 'all',
+                    argsIgnorePattern: '^_',
+                    caughtErrors: 'all',
+                    caughtErrorsIgnorePattern: '^_',
+                    destructuredArrayIgnorePattern: '^_',
+                    varsIgnorePattern: '^_',
+                    ignoreRestSiblings: true,
+                },
+            ],
             '@typescript-eslint/consistent-type-imports': [
                 'error',
                 {

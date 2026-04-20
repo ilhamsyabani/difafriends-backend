@@ -20,12 +20,26 @@ defineProps<{
 
         <!-- Heading -->
         <div class="mb-7">
-            <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
-                <svg class="h-6 w-6 text-primary" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
+            <div
+                class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10"
+            >
+                <svg
+                    class="h-6 w-6 text-primary"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+                    />
                 </svg>
             </div>
-            <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            <h1
+                class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+            >
                 Lupa password?
             </h1>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -40,9 +54,17 @@ defineProps<{
             {{ status }}
         </div>
 
-        <Form v-bind="email.form()" v-slot="{ errors, processing }" class="flex flex-col gap-5">
+        <Form
+            v-bind="email.form()"
+            v-slot="{ errors, processing }"
+            class="flex flex-col gap-5"
+        >
             <div class="grid gap-1.5">
-                <Label for="email" class="text-xs font-medium text-gray-600 dark:text-gray-400">Alamat Email</Label>
+                <Label
+                    for="email"
+                    class="text-xs font-medium text-gray-600 dark:text-gray-400"
+                    >Alamat Email</Label
+                >
                 <Input
                     id="email"
                     type="email"
@@ -67,7 +89,10 @@ defineProps<{
 
             <p class="text-center text-sm text-gray-500 dark:text-gray-400">
                 Ingat password?
-                <a :href="login()" class="font-semibold text-gray-900 underline-offset-2 hover:underline dark:text-white">
+                <a
+                    :href="login()"
+                    class="font-semibold text-gray-900 underline-offset-2 hover:underline dark:text-white"
+                >
                     Masuk di sini
                 </a>
             </p>

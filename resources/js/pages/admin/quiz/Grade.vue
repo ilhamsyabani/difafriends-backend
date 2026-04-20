@@ -60,8 +60,8 @@ function toggleAttempt(attemptId: number) {
     const attempt = props.attempts.data.find((a) => a.id === attemptId);
 
     if (!attempt) {
-return;
-}
+        return;
+    }
 
     attempt.answers
         .filter((a) => a.question.type === 'essay')
@@ -97,8 +97,8 @@ function statusBadge(status: string): string {
 
 function formatDate(dt: string | null): string {
     if (!dt) {
-return '—';
-}
+        return '—';
+    }
 
     return new Date(dt).toLocaleString('id-ID', {
         day: 'numeric',
@@ -143,7 +143,7 @@ function initials(first: string, last: string): string {
                     <div class="flex items-center gap-2">
                         <h1 class="text-xl font-bold">Penilaian Kuis</h1>
                         <span
-                            class="rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-primary-hover dark:bg-purple-900/30 dark:text-purple-400"
+                            class="text-primary-hover rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium dark:bg-purple-900/30 dark:text-purple-400"
                         >
                             Admin
                         </span>
@@ -441,7 +441,7 @@ function initials(first: string, last: string): string {
                                     class="space-y-3 rounded-xl bg-purple-50 p-4 dark:bg-purple-900/10"
                                 >
                                     <p
-                                        class="text-xs font-medium text-primary-hover dark:text-purple-400"
+                                        class="text-primary-hover text-xs font-medium dark:text-purple-400"
                                     >
                                         Penilaian Admin
                                     </p>

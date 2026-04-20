@@ -54,8 +54,8 @@ function getDayName(val: string | number): string {
 // Memformat waktu dari "08:00:00" menjadi "08:00"
 function formatTime(timeStr: string): string {
     if (!timeStr) {
-return '';
-}
+        return '';
+    }
 
     return timeStr.substring(0, 5);
 }

@@ -24,12 +24,26 @@ const inputEmail = ref(props.email);
 
         <!-- Heading -->
         <div class="mb-7">
-            <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
-                <svg class="h-6 w-6 text-primary" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            <div
+                class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10"
+            >
+                <svg
+                    class="h-6 w-6 text-primary"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                 </svg>
             </div>
-            <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            <h1
+                class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+            >
                 Buat password baru
             </h1>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -45,7 +59,11 @@ const inputEmail = ref(props.email);
             class="flex flex-col gap-5"
         >
             <div class="grid gap-1.5">
-                <Label for="email" class="text-xs font-medium text-gray-600 dark:text-gray-400">Email</Label>
+                <Label
+                    for="email"
+                    class="text-xs font-medium text-gray-600 dark:text-gray-400"
+                    >Email</Label
+                >
                 <Input
                     id="email"
                     type="email"
@@ -59,7 +77,11 @@ const inputEmail = ref(props.email);
             </div>
 
             <div class="grid gap-1.5">
-                <Label for="password" class="text-xs font-medium text-gray-600 dark:text-gray-400">Password Baru</Label>
+                <Label
+                    for="password"
+                    class="text-xs font-medium text-gray-600 dark:text-gray-400"
+                    >Password Baru</Label
+                >
                 <PasswordInput
                     id="password"
                     name="password"
@@ -72,7 +94,11 @@ const inputEmail = ref(props.email);
             </div>
 
             <div class="grid gap-1.5">
-                <Label for="password_confirmation" class="text-xs font-medium text-gray-600 dark:text-gray-400">Konfirmasi Password</Label>
+                <Label
+                    for="password_confirmation"
+                    class="text-xs font-medium text-gray-600 dark:text-gray-400"
+                    >Konfirmasi Password</Label
+                >
                 <PasswordInput
                     id="password_confirmation"
                     name="password_confirmation"

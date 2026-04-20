@@ -259,7 +259,7 @@ function getInitials(firstName: string, lastName: string) {
                                         <!-- Fallback Inisial Jika Tidak Ada Foto -->
                                         <div
                                             v-else
-                                            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-purple-100 text-sm font-bold text-primary-hover dark:bg-purple-900/50 dark:text-purple-400"
+                                            class="text-primary-hover flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-purple-100 text-sm font-bold dark:bg-purple-900/50 dark:text-purple-400"
                                         >
                                             {{
                                                 getInitials(
