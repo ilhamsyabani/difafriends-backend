@@ -109,22 +109,28 @@ function getInitials(firstName: string, lastName: string): string {
             <!-- Empty State -->
             <div
                 v-if="companions.data.length === 0"
-                class="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-gray-200 bg-gray-50 py-20 dark:border-gray-800 dark:bg-gray-900/50"
+                class="flex flex-col items-center justify-center rounded-3xl border border-dashed border-gray-200 bg-gray-50/50 py-20 dark:border-gray-800 dark:bg-gray-900/50"
             >
                 <div
-                    class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gray-200 text-gray-400 dark:bg-gray-800 dark:text-gray-500"
+                    class="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800"
                 >
-                    <Users class="h-7 w-7" />
+                    <Users class="h-8 w-8 text-gray-400 dark:text-gray-500" />
                 </div>
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white">
-                    Tidak Ditemukan
+                    Guru Pendamping Tidak Ditemukan
                 </h3>
                 <p
-                    class="mt-1 max-w-sm text-center text-sm text-gray-500 dark:text-gray-400"
+                    class="mt-2 max-w-sm text-center text-sm text-gray-500 dark:text-gray-400"
                 >
-                    Maaf, tidak ada guru pendamping yang cocok dengan kata kunci
-                    pencarian Anda saat ini.
+                    Coba gunakan kata kunci pencarian yang lain.
                 </p>
+                <button
+                    v-if="search"
+                    @click="search = ''"
+                    class="mt-6 text-sm font-medium text-primary hover:text-primary-hover dark:text-purple-400"
+                >
+                    Reset Pencarian
+                </button>
             </div>
 
             <!-- Grid Cards -->
