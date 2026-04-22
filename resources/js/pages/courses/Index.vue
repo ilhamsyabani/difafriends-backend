@@ -242,25 +242,47 @@ function formatDuration(minutes: number): string {
                     <!-- Empty State -->
                     <div
                         v-if="courses.data.length === 0"
-                        class="py-20 text-center text-gray-400"
+                        class="flex flex-col items-center justify-center rounded-3xl border border-dashed border-gray-200 bg-gray-50/50 py-20 dark:border-gray-800 dark:bg-gray-900/50"
                     >
-                        <svg
-                            class="mx-auto mb-4 h-16 w-16 opacity-30"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
+                        <div
+                            class="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800"
                         >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="1"
-                                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                        </svg>
-                        <p class="font-medium">Kelas tidak ditemukan</p>
-                        <p class="mt-1 text-sm">
-                            Coba ubah filter pencarian kamu
+                            <svg
+                                class="h-8 w-8 text-gray-400 dark:text-gray-500"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="1.5"
+                                    d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"
+                                />
+                            </svg>
+                        </div>
+                        <h3
+                            class="text-lg font-bold text-gray-900 dark:text-white"
+                        >
+                            Kelas tidak ditemukan
+                        </h3>
+                        <p
+                            class="mt-2 max-w-sm text-center text-sm text-gray-500 dark:text-gray-400"
+                        >
+                            Coba ubah filter atau kata kunci pencarian kamu.
                         </p>
+                        <button
+                            v-if="search || category || price || sort !== 'latest'"
+                            @click="
+                                search = '';
+                                category = '';
+                                price = '';
+                                sort = 'latest';
+                            "
+                            class="mt-6 text-sm font-medium text-primary hover:text-primary-hover dark:text-purple-400"
+                        >
+                            Reset Filter
+                        </button>
                     </div>
 
                     <!-- ✅ Grid course — 2 kolom cukup untuk area 3/4 -->

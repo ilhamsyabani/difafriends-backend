@@ -127,31 +127,39 @@ function stripHtml(html: string) {
                 <!-- Empty State -->
                 <div
                     v-if="articles.data.length === 0"
-                    class="flex flex-col items-center justify-center rounded-[40px] border border-dashed border-gray-200 bg-gray-50 py-20 dark:border-gray-800 dark:bg-gray-900/50"
+                    class="flex flex-col items-center justify-center rounded-3xl border border-dashed border-gray-200 bg-gray-50/50 py-20 dark:border-gray-800 dark:bg-gray-900/50"
                 >
-                    <svg
-                        class="mb-4 h-16 w-16 text-gray-300 dark:text-gray-600"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                    <div
+                        class="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800"
                     >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="1.5"
-                            d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-                        />
-                    </svg>
-                    <p class="text-lg font-bold text-gray-900 dark:text-white">
+                        <svg
+                            class="h-8 w-8 text-gray-400 dark:text-gray-500"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="1.5"
+                                d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+                            />
+                        </svg>
+                    </div>
+                    <h3
+                        class="text-lg font-bold text-gray-900 dark:text-white"
+                    >
                         Artikel tidak ditemukan
-                    </p>
-                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                    </h3>
+                    <p
+                        class="mt-2 max-w-sm text-center text-sm text-gray-500 dark:text-gray-400"
+                    >
                         Coba gunakan kata kunci pencarian yang lain.
                     </p>
                     <button
                         v-if="search"
                         @click="search = ''"
-                        class="hover:text-primary-hover mt-6 font-medium text-primary dark:text-purple-400"
+                        class="mt-6 text-sm font-medium text-primary hover:text-primary-hover dark:text-purple-400"
                     >
                         Reset Pencarian
                     </button>
