@@ -33,9 +33,9 @@ php artisan view:cache
 php artisan event:cache
 
 echo "==> Set permission..."
-chown -R www-data:www-data $APP_DIR
-chmod -R 755 $APP_DIR/storage
-chmod -R 755 $APP_DIR/bootstrap/cache
+# chown -R www-data:www-data $APP_DIR
+chmod -R 775 $APP_DIR/storage
+chmod -R 775 $APP_DIR/bootstrap/cache
 
 echo "==> Restart queue & pulse worker..."
 supervisorctl restart difafriends-worker:*
