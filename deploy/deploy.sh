@@ -6,6 +6,10 @@
 
 set -e
 
+# Load nvm
+export NVM_DIR="/home/difafriends/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
 APP_DIR="/var/www/difafriends"
 
 echo "==> Pull kode terbaru..."
@@ -16,7 +20,7 @@ echo "==> Install PHP dependencies..."
 composer install --no-dev --optimize-autoloader --no-interaction
 
 echo "==> Install & build frontend..."
-npm ci
+npm install
 npm run build
 
 echo "==> Jalankan migrasi..."
