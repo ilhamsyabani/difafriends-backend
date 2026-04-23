@@ -106,7 +106,7 @@ async function submit() {
 
 <template>
     <AuthBase>
-        <Head title="Masuk — DifaFriends" />
+        <Head title="Masuk —" />
 
         <!-- ── Heading ────────────────────────────────────────────── -->
         <div class="mb-8">
