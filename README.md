@@ -13,7 +13,7 @@ Dokumen ini dibuat untuk membantu AI assistant memahami konteks, arsitektur, dan
 ## 1. RINGKASAN PROJECT
 
 ### Apa itu DifaFriends?
-DifaFriends adalah platform LMS (Learning Management System) marketplace berbasis web untuk pendidikan inklusif anak-anak difabel di Indonesia. Platform ini menyediakan dua produk utama:
+Difafriends adalah platform LMS (Learning Management System) marketplace berbasis web untuk pendidikan inklusif anak-anak difabel di Indonesia. Platform ini menyediakan dua produk utama:
 
 - **Produk A — Kelas Online**: Kursus video yang dibuat oleh instruktur terverifikasi, mencakup terapi wicara, terapi sensori, akademik, motorik, dan sosial-emosional.
 - **Produk B — Guru Pendamping (Companion)**: Booking sesi tatap muka atau online dengan guru pendamping profesional.

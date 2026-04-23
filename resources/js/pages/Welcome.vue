@@ -171,7 +171,7 @@ const jsonLd = JSON.stringify({
     <GuestLayout>
         <Head>
             <title>
-                DifaFriends — Platform Edukasi Anak Berkebutuhan Khusus
+                Difafriends — Platform Edukasi Anak Berkebutuhan Khusus
                 Terpercaya
             </title>
             <meta
