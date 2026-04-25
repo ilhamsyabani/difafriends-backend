@@ -759,7 +759,7 @@ const jsonLd = JSON.stringify({
             </section>
 
             <!-- ── HOW IT WORKS ─────────────────────────────────────────── -->
-            <section class="bg-primary/5 py-24 dark:bg-gray-900">
+            <!-- <section class="bg-primary/5 py-24 dark:bg-gray-900">
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div class="mb-16 text-center">
                         <span
@@ -796,7 +796,6 @@ const jsonLd = JSON.stringify({
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
                                 >
-                                    <!-- eslint-disable-next-line vue/no-v-html -->
                                     <g v-html="step.icon" />
                                 </svg>
                             </div>
@@ -819,7 +818,7 @@ const jsonLd = JSON.stringify({
                         </Link>
                     </div>
                 </div>
-            </section>
+            </section> -->
 
             <!-- ── KELAS UNGGULAN ───────────────────────────────────────── -->
             <section
@@ -972,7 +971,7 @@ const jsonLd = JSON.stringify({
             </section>
 
             <!-- ── TESTIMONIALS ─────────────────────────────────────────── -->
-            <section
+            <!-- <section
                 class="bg-gradient-to-br from-purple-600 to-purple-800 py-24"
             >
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -1030,7 +1029,7 @@ const jsonLd = JSON.stringify({
                         </article>
                     </div>
                 </div>
-            </section>
+            </section> -->
 
             <!-- ── TENTOR / COMPANION ───────────────────────────────────── -->
             <section v-if="false" class="bg-gray-50 py-24 dark:bg-gray-950">
@@ -1295,7 +1294,7 @@ const jsonLd = JSON.stringify({
             </section>
 
             <!-- ── CTA ─────────────────────────────────────────────────── -->
-            <section class="px-4 py-20">
+            <!-- <section class="px-4 py-20">
                 <div
                     class="mx-auto max-w-7xl overflow-hidden rounded-[40px] bg-gradient-to-r from-primary to-orange-500 shadow-2xl shadow-primary/20"
                 >
@@ -1374,7 +1373,7 @@ const jsonLd = JSON.stringify({
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> -->
 
             <!-- ── TIM ─────────────────────────────────────────────────── -->
             <section class="bg-gray-50 py-24 dark:bg-gray-900">
