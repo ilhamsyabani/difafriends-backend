@@ -1412,7 +1412,7 @@ const jsonLd = JSON.stringify({
                                 {
                                     name: 'Ilham Syabani',
                                     role: 'Head of Technology',
-                                    img: '/images/users/user-3.png',
+                                    img: '',
                                     bio: 'Berpengalaman mengembangkan teknologi pembelajaran inklusif',
                                 },
                             ]"
@@ -1420,9 +1420,10 @@ const jsonLd = JSON.stringify({
                             class="flex flex-col items-center text-center"
                         >
                             <div
-                                class="mb-5 h-28 w-28 overflow-hidden rounded-full shadow-lg ring-4 ring-white dark:ring-gray-800"
+                                class="mb-5 flex h-28 w-28 items-center justify-center overflow-hidden rounded-full bg-primary/10 shadow-lg ring-4 ring-white dark:bg-gray-700 dark:ring-gray-800"
                             >
                                 <img
+                                    v-if="member.img"
                                     :src="member.img"
                                     :alt="member.name"
                                     class="h-full w-full object-cover"
@@ -1430,7 +1431,21 @@ const jsonLd = JSON.stringify({
                                     height="112"
                                     loading="lazy"
                                 />
+                                <span
+                                    v-else
+                                    class="text-3xl font-bold tracking-widest text-primary dark:text-white"
+                                >
+                                    {{
+                                        member.name
+                                            .split(' ')
+                                            .slice(0, 2)
+                                            .map((n) => n[0])
+                                            .join('')
+                                            .toUpperCase()
+                                    }}
+                                </span>
                             </div>
+
                             <div
                                 class="w-full rounded-2xl bg-white p-6 shadow-sm dark:bg-gray-800"
                             >
