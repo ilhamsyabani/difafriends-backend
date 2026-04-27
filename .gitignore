@@ -31,3 +31,16 @@ yarn-error.log
 .codex
 .cursor
 storage/debugbar/
+# Databases
+/database/*.sqlite
+/database/*.sqlite3
+# Logs
+/storage/logs/*.log
+# Environment variables
+.env.*
+!.env.example
+# Frontend Caches
+.eslintcache
+/coverage/
+# OS specific files
+Thumbs.db

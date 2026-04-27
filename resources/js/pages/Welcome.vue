@@ -97,75 +97,75 @@ const partners = [
     'Komunitas ABK',
 ];
 
-const testimonials = [
-    {
-        name: 'Ibu Ratna Dewi',
-        role: 'Orang Tua Murid, Yogyakarta',
-        avatar: 'RD',
-        text: 'Anak saya yang autis kini jauh lebih percaya diri. Tentor di Difafriends benar-benar paham cara mendampingi anak berkebutuhan khusus. Terima kasih banyak!',
-        rating: 5,
-    },
-    {
-        name: 'Pak Budi Santoso',
-        role: 'Guru SD Inklusif, Semarang',
-        avatar: 'BS',
-        text: 'Pelatihan yang saya ikuti di sini mengubah cara saya mengajar. Materi sangat praktis dan instrukturnya profesional. Wajib untuk semua guru pendidikan khusus.',
-        rating: 5,
-    },
-    {
-        name: 'Ibu Sari Wulandari',
-        role: 'Orang Tua Murid, Solo',
-        avatar: 'SW',
-        text: 'Proses asesmen anak saya sangat profesional dan hasilnya membantu kami memahami kebutuhan spesifik si kecil. Rekomendasinya konkret dan mudah diterapkan.',
-        rating: 5,
-    },
-];
+// const testimonials = [
+//     {
+//         name: 'Ibu Ratna Dewi',
+//         role: 'Orang Tua Murid, Yogyakarta',
+//         avatar: 'RD',
+//         text: 'Anak saya yang autis kini jauh lebih percaya diri. Tentor di Difafriends benar-benar paham cara mendampingi anak berkebutuhan khusus. Terima kasih banyak!',
+//         rating: 5,
+//     },
+//     {
+//         name: 'Pak Budi Santoso',
+//         role: 'Guru SD Inklusif, Semarang',
+//         avatar: 'BS',
+//         text: 'Pelatihan yang saya ikuti di sini mengubah cara saya mengajar. Materi sangat praktis dan instrukturnya profesional. Wajib untuk semua guru pendidikan khusus.',
+//         rating: 5,
+//     },
+//     {
+//         name: 'Ibu Sari Wulandari',
+//         role: 'Orang Tua Murid, Solo',
+//         avatar: 'SW',
+//         text: 'Proses asesmen anak saya sangat profesional dan hasilnya membantu kami memahami kebutuhan spesifik si kecil. Rekomendasinya konkret dan mudah diterapkan.',
+//         rating: 5,
+//     },
+// ];
 
-const howItWorks = [
-    {
-        step: '01',
-        title: 'Buat Akun Gratis',
-        description:
-            'Daftar dalam 1 menit. Tidak perlu kartu kredit, langsung bisa eksplorasi semua layanan kami.',
-        icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>`,
-    },
-    {
-        step: '02',
-        title: 'Pilih Layanan',
-        description:
-            'Pilih kelas pelatihan, booking tentor pendamping, atau jadwalkan sesi asesmen anak Anda.',
-        icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>`,
-    },
-    {
-        step: '03',
-        title: 'Pantau Perkembangan',
-        description:
-            'Ikuti progress belajar anak secara real-time dan dapatkan laporan perkembangan berkala.',
-        icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>`,
-    },
-];
+// const howItWorks = [
+//     {
+//         step: '01',
+//         title: 'Buat Akun Gratis',
+//         description:
+//             'Daftar dalam 1 menit. Tidak perlu kartu kredit, langsung bisa eksplorasi semua layanan kami.',
+//         icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>`,
+//     },
+//     {
+//         step: '02',
+//         title: 'Pilih Layanan',
+//         description:
+//             'Pilih kelas pelatihan, booking tentor pendamping, atau jadwalkan sesi asesmen anak Anda.',
+//         icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>`,
+//     },
+//     {
+//         step: '03',
+//         title: 'Pantau Perkembangan',
+//         description:
+//             'Ikuti progress belajar anak secara real-time dan dapatkan laporan perkembangan berkala.',
+//         icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>`,
+//     },
+// ];
 
-const jsonLd = JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: 'DifaFriends',
-    description:
-        'Platform edukasi inklusif untuk anak berkebutuhan khusus. Tersedia pelatihan guru, pendampingan belajar, dan asesmen profesional.',
-    url: 'https://difafriends.com',
-    logo: 'https://difafriends.com/img/logo.png',
-    contactPoint: {
-        '@type': 'ContactPoint',
-        email: 'difafriends@gmail.com',
-        contactType: 'customer service',
-        availableLanguage: 'Indonesian',
-    },
-    address: {
-        '@type': 'PostalAddress',
-        addressLocality: 'Klaten',
-        addressCountry: 'ID',
-    },
-    sameAs: ['https://instagram.com/difafriends'],
-});
+// const jsonLd = JSON.stringify({
+//     '@context': 'https://schema.org',
+//     '@type': 'Organization',
+//     name: 'DifaFriends',
+//     description:
+//         'Platform edukasi inklusif untuk anak berkebutuhan khusus. Tersedia pelatihan guru, pendampingan belajar, dan asesmen profesional.',
+//     url: 'https://difafriends.com',
+//     logo: 'https://difafriends.com/img/logo.png',
+//     contactPoint: {
+//         '@type': 'ContactPoint',
+//         email: 'difafriends@gmail.com',
+//         contactType: 'customer service',
+//         availableLanguage: 'Indonesian',
+//     },
+//     address: {
+//         '@type': 'PostalAddress',
+//         addressLocality: 'Klaten',
+//         addressCountry: 'ID',
+//     },
+//     sameAs: ['https://instagram.com/difafriends'],
+// });
 
 const isVideoPlaying = ref(false);
 </script>
@@ -213,6 +213,28 @@ const isVideoPlaying = ref(false);
                                 src="/images/hero-img.png"
                                 alt="Layanan Intervensi"
                             />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="border-t border-slate-100/50 bg-slate-50/50 py-12">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12">
+                    <p class="mb-12 text-center text-sm font-semibold tracking-widest text-slate-400 uppercase">
+                        Telah Dipercaya Oleh
+                    </p>
+                    <div class="relative flex overflow-hidden">
+                        <div class="pointer-events-none absolute left-0 z-10 h-full w-20 bg-gradient-to-r from-slate-50/50 to-transparent"></div>
+                        <div class="pointer-events-none absolute right-0 z-10 h-full w-20 bg-gradient-to-l from-slate-50/50 to-transparent"></div>
+                        
+                        <div class="flex animate-[marquee_30s_linear_infinite] items-center gap-16 whitespace-nowrap">
+                            <span
+                                v-for="(partner, index) in [...partners, ...partners, ...partners]"
+                                :key="index"
+                                class="text-xl font-bold text-slate-300 transition-colors hover:text-[#0097B2]"
+                            >
+                                {{ partner }}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -522,7 +544,7 @@ const isVideoPlaying = ref(false);
                             class="flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-md transition-transform hover:-translate-y-1"
                         >
                             <img
-                                class="h-40 w-full object-cover"
+                                class="h-60 w-full object-cover"
                                 :src="
                                     companion.photo
                                         ? assetUrl(companion.photo)
@@ -712,6 +734,23 @@ const isVideoPlaying = ref(false);
 .tab-nav-item.active {
     font-weight: bold;
     color: #0097b2; /* Gunakan color primer dari tema */
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+.animate-\[marquee_30s_linear_infinite\] {
+    animation: marquee 30s linear infinite;
 }
 @keyframes fadeIn {
     from {
