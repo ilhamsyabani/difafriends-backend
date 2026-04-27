@@ -106,8 +106,8 @@
     --popover-foreground: hsl(0 0% 3.9%);
 
     /* ── Primary = brand purple ─────────────────────────────────────── */
-    --primary: hsl(27 98% 62%);
-    --primary-hover: hsl(27 98% 90%);
+    --primary: #0097B2;
+    --primary-hover: #F8DC5B;
     --primary-foreground: hsl(0 0% 98%);
 
     --secondary: hsl(0 0% 92.1%);
