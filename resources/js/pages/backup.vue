@@ -477,6 +477,7 @@ const jsonLd = JSON.stringify({
                 </div>
             </div>
         </section>
+        
         <section class="section" id="pelatihan">
             <div class="container">
                 <div class="row justify-center text-center">
@@ -510,7 +511,8 @@ const jsonLd = JSON.stringify({
                 </div>
             </div>
         </section>
-        <section class="px-5 py-20 xl:py-[120px]">
+
+        <section class="section">
             <div class="container">
                 <div
                     class="bg-gradient row justify-center rounded-[40px] px-[30px] pt-16 pb-[75px]"
@@ -542,6 +544,7 @@ const jsonLd = JSON.stringify({
                 </div>
             </div>
         </section>
+
         <section class="section">
             <div class="container">
                 <div class="row">
