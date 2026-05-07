@@ -20,7 +20,7 @@ echo "==> Install PHP dependencies..."
 composer install --no-dev --optimize-autoloader --no-interaction
 
 echo "==> Install & build frontend..."
-npm install
+npm ci
 npm run build
 
 echo "==> Jalankan migrasi..."
