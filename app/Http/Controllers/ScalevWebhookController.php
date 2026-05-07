@@ -19,11 +19,11 @@ class ScalevWebhookController extends Controller
     {
         // ── 1. Verifikasi secret ───────────────────────────────────────────────
         // Scalev mengirim secret via header X-Scalev-Secret.
-        // Sesuaikan jika mekanisme verifikasi berbeda (HMAC, Bearer, dsb).
+        // Fail-closed: kalau secret tidak diset, tolak semua request.
         $secret = config('services.scalev.webhook_secret');
 
-        if ($secret && $request->header('X-Scalev-Secret') !== $secret) {
-            Log::warning('Scalev webhook: invalid secret');
+        if (empty($secret) || ! hash_equals($secret, (string) $request->header('X-Scalev-Secret', ''))) {
+            Log::warning('Scalev webhook: invalid or missing secret');
 
             return response()->json(['message' => 'Unauthorized'], 401);
         }

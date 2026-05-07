@@ -6,6 +6,9 @@ use App\Models\Enrollment;
 use App\Models\User;
 use App\Notifications\ScalevWelcomeNotification;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Testing\TestResponse;
+
+const SCALEV_TEST_SECRET = 'test-scalev-secret';
 
 function scalevPayload(Course $course, array $customer = []): array
 {
@@ -19,7 +22,15 @@ function scalevPayload(Course $course, array $customer = []): array
     ];
 }
 
+function scalevPost($test, string $url, array $payload): TestResponse
+{
+    return $test->withHeaders(['X-Scalev-Secret' => SCALEV_TEST_SECRET])
+        ->postJson($url, $payload);
+}
+
 beforeEach(function () {
+    config(['services.scalev.webhook_secret' => SCALEV_TEST_SECRET]);
+
     $instructor = User::factory()->instructor()->create();
     $category = Category::factory()->create();
 
@@ -35,7 +46,7 @@ beforeEach(function () {
 test('scalev webhook membuat user baru dan enrollment', function () {
     Notification::fake();
 
-    $this->postJson('/webhook/scalev', scalevPayload($this->course))
+    scalevPost($this, '/webhook/scalev', scalevPayload($this->course))
         ->assertOk();
 
     $user = User::where('email', 'budi@example.com')->first();
@@ -46,7 +57,7 @@ test('scalev webhook membuat user baru dan enrollment', function () {
 test('scalev webhook mengirim email dengan password ke user baru', function () {
     Notification::fake();
 
-    $this->postJson('/webhook/scalev', scalevPayload($this->course))
+    scalevPost($this, '/webhook/scalev', scalevPayload($this->course))
         ->assertOk();
 
     $user = User::where('email', 'budi@example.com')->first();
@@ -56,7 +67,7 @@ test('scalev webhook mengirim email dengan password ke user baru', function () {
 test('scalev webhook memverifikasi email user baru secara otomatis', function () {
     Notification::fake();
 
-    $this->postJson('/webhook/scalev', scalevPayload($this->course))
+    scalevPost($this, '/webhook/scalev', scalevPayload($this->course))
         ->assertOk();
 
     $user = User::where('email', 'budi@example.com')->first();
@@ -70,7 +81,7 @@ test('scalev webhook tidak membuat user baru jika email sudah terdaftar', functi
 
     $existingUser = User::factory()->create(['email' => 'budi@example.com']);
 
-    $this->postJson('/webhook/scalev', scalevPayload($this->course))
+    scalevPost($this, '/webhook/scalev', scalevPayload($this->course))
         ->assertOk();
 
     expect(User::where('email', 'budi@example.com')->count())->toBe(1);
@@ -80,9 +91,8 @@ test('scalev webhook tidak membuat user baru jika email sudah terdaftar', functi
 test('scalev webhook idempoten — tidak buat enrollment ganda', function () {
     Notification::fake();
 
-    // Kirim dua kali
-    $this->postJson('/webhook/scalev', scalevPayload($this->course))->assertOk();
-    $this->postJson('/webhook/scalev', scalevPayload($this->course))->assertOk();
+    scalevPost($this, '/webhook/scalev', scalevPayload($this->course))->assertOk();
+    scalevPost($this, '/webhook/scalev', scalevPayload($this->course))->assertOk();
 
     $user = User::where('email', 'budi@example.com')->first();
     expect(Enrollment::where('user_id', $user->id)->where('course_id', $this->course->id)->count())->toBe(1);
@@ -93,7 +103,7 @@ test('scalev webhook idempoten — tidak buat enrollment ganda', function () {
 test('scalev webhook diabaikan jika payment_status bukan paid', function () {
     Notification::fake();
 
-    $this->postJson('/webhook/scalev', [
+    scalevPost($this, '/webhook/scalev', [
         'payment_status' => 'pending',
         'product_id' => $this->course->scalev_product_id,
         'customer' => ['name' => 'Test', 'email' => 'test@example.com'],
@@ -105,9 +115,19 @@ test('scalev webhook diabaikan jika payment_status bukan paid', function () {
 test('scalev webhook menolak jika secret tidak valid', function () {
     Notification::fake();
 
-    config(['services.scalev.webhook_secret' => 'rahasia-123']);
-
     $this->postJson('/webhook/scalev', scalevPayload($this->course), [
         'X-Scalev-Secret' => 'salah',
     ])->assertUnauthorized();
+});
+
+test('scalev webhook menolak jika secret tidak diset di server', function () {
+    Notification::fake();
+
+    config(['services.scalev.webhook_secret' => null]);
+
+    $this->postJson('/webhook/scalev', scalevPayload($this->course), [
+        'X-Scalev-Secret' => 'apapun',
+    ])->assertUnauthorized();
+
+    expect(User::where('email', 'budi@example.com')->exists())->toBeFalse();
 });
