@@ -22,10 +22,7 @@ class QuizController extends Controller
         $existingQuiz = $section->quiz;
 
         if ($existingQuiz) {
-            return redirect()->route(
-                'instructor.courses.sections.quiz.edit',
-                [$course, $section, $existingQuiz]
-            );
+            return redirect()->route('instructor.courses.sections.quiz.edit',[$course, $section, $existingQuiz]);
         }
 
         return Inertia::render('instructor/quiz/Form', [
