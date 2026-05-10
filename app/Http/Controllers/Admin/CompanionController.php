@@ -8,6 +8,7 @@ use App\Models\TutorSchedule;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class CompanionController extends Controller
 {
