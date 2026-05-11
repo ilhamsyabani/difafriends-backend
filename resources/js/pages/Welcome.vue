@@ -558,10 +558,10 @@ const services = [
             </section>
 
             <!-- Partners Marquee -->
-            <section class="border-y border-slate-100 bg-white py-16">
+            <section class="border-y border-slate-100 bg-slate-50/50 py-16">
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <p
-                        class="mb-12 text-center text-xs font-bold tracking-[0.2em] text-slate-400 uppercase"
+                        class="mb-8 text-center text-xs font-bold tracking-[0.2em] text-slate-400 uppercase"
                     >
                         Mitra Kami
                     </p>
@@ -569,15 +569,15 @@ const services = [
                     <div class="relative flex overflow-hidden">
                         <!-- Fade overlays -->
                         <div
-                            class="pointer-events-none absolute left-0 z-10 h-full w-40 bg-gradient-to-r from-white to-transparent lg:w-40"
+                            class="pointer-events-none absolute left-0 z-10 h-full w-40 bg-gradient-to-r from-slate-50 to-transparent lg:w-40"
                         ></div>
                         <div
-                            class="pointer-events-none absolute right-0 z-10 h-full w-40 bg-gradient-to-l from-white to-transparent lg:w-40"
+                            class="pointer-events-none absolute right-0 z-10 h-full w-40 bg-gradient-to-l from-slate-50 to-transparent lg:w-40"
                         ></div>
 
                         <!-- Infinite Scroll Content -->
                         <div
-                            class="animate-marquee flex items-center gap-16 py-4 whitespace-nowrap lg:gap-24"
+                            class="animate-marquee flex items-center gap-2 py-2 whitespace-nowrap lg:gap-4"
                         >
                             <div
                                 v-for="(partner, index) in [
@@ -587,7 +587,7 @@ const services = [
                                     ...partners,
                                 ]"
                                 :key="index"
-                                class="flex h-20 w-42 items-center justify-center opacity-40 grayscale transition-all hover:opacity-100 hover:grayscale-0 lg:h-20 lg:w-48"
+                                class="flex h-28 w-56 items-center justify-center opacity-50 grayscale transition-all hover:opacity-100 hover:grayscale-0 lg:h-28 lg:w-60"
                             >
                                 <img
                                     :src="partner.logo"
