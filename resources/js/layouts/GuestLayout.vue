@@ -40,7 +40,7 @@ import { login, register } from '@/routes';
                             href="/courses"
                             class="text-gray-600 transition-colors hover:text-primary dark:text-gray-400"
                         >
-                            Kelas
+                            Kelas Parenting
                         </Link>
                         <p class="text-gray-400 dark:text-gray-600">
                             Intervensi

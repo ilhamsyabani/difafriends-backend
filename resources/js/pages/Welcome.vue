@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
+import { HandHeart, Presentation, Rocket } from 'lucide-vue-next';
+import { Image as ImageIcon, ArrowRight } from 'lucide-vue-next';
 import { ref } from 'vue';
-import { onMounted } from 'vue';
 import { useFormatters } from '@/composables/useFormatters';
 import GuestLayout from '@/layouts/GuestLayout.vue';
 import { register } from '@/routes';
-const { assetUrl } = useFormatters();
+
+const { assetUrl, formatDate, formatPrice } = useFormatters();
 
 defineProps<{
     canRegister?: boolean;
@@ -46,23 +48,6 @@ defineProps<{
     }>;
 }>();
 
-const activeServiceTab = ref(0);
-
-function formatPrice(price: number): string {
-    return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        minimumFractionDigits: 0,
-    }).format(price);
-}
-
-function formatDuration(minutes: number): string {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-
-    return hours > 0 ? `${hours}j ${mins}m` : `${mins}m`;
-}
-
 function getInitials(firstName: string, lastName: string): string {
     return (
         (firstName?.charAt(0) ?? '') + (lastName?.charAt(0) ?? '')
@@ -70,17 +55,12 @@ function getInitials(firstName: string, lastName: string): string {
 }
 
 function stripHtml(html: string): string {
-    if (!html) {
-        return '';
-    }
-
+    if (!html) return '';
     const tmp = document.createElement('DIV');
     tmp.innerHTML = html;
-
     return tmp.textContent || tmp.innerText || '';
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- used in template
 const stats = [
     { value: '100+', label: 'Anak Terbantu' },
     { value: '10+', label: 'Tentor Bersertifikat' },
@@ -89,438 +69,396 @@ const stats = [
 ] as const;
 
 const partners = [
-    'Kemendikbud',
-    'Yayasan Peduli',
-    'INKLUSI',
-    'Sekolah Luar Biasa',
-    'Terapis Indonesia',
-    'Komunitas ABK',
+    { name: 'LPDP', logo: '/partners/lpdp.png' },
+    { name: 'BRIN', logo: '/partners/brin.png' },
+    { name: 'AB', logo: '/partners/ab.png' },
+    { name: 'TP', logo: '/partners/tp.png' },
 ];
 
-// const testimonials = [
-//     {
-//         name: 'Ibu Ratna Dewi',
-//         role: 'Orang Tua Murid, Yogyakarta',
-//         avatar: 'RD',
-//         text: 'Anak saya yang autis kini jauh lebih percaya diri. Tentor di Difafriends benar-benar paham cara mendampingi anak berkebutuhan khusus. Terima kasih banyak!',
-//         rating: 5,
-//     },
-//     {
-//         name: 'Pak Budi Santoso',
-//         role: 'Guru SD Inklusif, Semarang',
-//         avatar: 'BS',
-//         text: 'Pelatihan yang saya ikuti di sini mengubah cara saya mengajar. Materi sangat praktis dan instrukturnya profesional. Wajib untuk semua guru pendidikan khusus.',
-//         rating: 5,
-//     },
-//     {
-//         name: 'Ibu Sari Wulandari',
-//         role: 'Orang Tua Murid, Solo',
-//         avatar: 'SW',
-//         text: 'Proses asesmen anak saya sangat profesional dan hasilnya membantu kami memahami kebutuhan spesifik si kecil. Rekomendasinya konkret dan mudah diterapkan.',
-//         rating: 5,
-//     },
-// ];
-
-// const howItWorks = [
-//     {
-//         step: '01',
-//         title: 'Buat Akun Gratis',
-//         description:
-//             'Daftar dalam 1 menit. Tidak perlu kartu kredit, langsung bisa eksplorasi semua layanan kami.',
-//         icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>`,
-//     },
-//     {
-//         step: '02',
-//         title: 'Pilih Layanan',
-//         description:
-//             'Pilih kelas pelatihan, booking tentor pendamping, atau jadwalkan sesi asesmen anak Anda.',
-//         icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>`,
-//     },
-//     {
-//         step: '03',
-//         title: 'Pantau Perkembangan',
-//         description:
-//             'Ikuti progress belajar anak secara real-time dan dapatkan laporan perkembangan berkala.',
-//         icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>`,
-//     },
-// ];
-
-// const jsonLd = JSON.stringify({
-//     '@context': 'https://schema.org',
-//     '@type': 'Organization',
-//     name: 'DifaFriends',
-//     description:
-//         'Platform edukasi inklusif untuk anak berkebutuhan khusus. Tersedia pelatihan guru, pendampingan belajar, dan asesmen profesional.',
-//     url: 'https://difafriends.com',
-//     logo: 'https://difafriends.com/img/logo.png',
-//     contactPoint: {
-//         '@type': 'ContactPoint',
-//         email: 'difafriends@gmail.com',
-//         contactType: 'customer service',
-//         availableLanguage: 'Indonesian',
-//     },
-//     address: {
-//         '@type': 'PostalAddress',
-//         addressLocality: 'Klaten',
-//         addressCountry: 'ID',
-//     },
-//     sameAs: ['https://instagram.com/difafriends'],
-// });
-
-const isVideoPlaying = ref(false);
+const services = [
+    {
+        title: 'Kelas Parenting',
+        description:
+            'Membangun koneksi lebih dalam antara orang tua dan anak dengan metode pengasuhan terkini.',
+        icon: HandHeart,
+        color: 'from-pink-500 to-rose-500',
+        shadow: 'shadow-rose-100',
+    },
+    {
+        title: 'Pelatihan Guru',
+        description:
+            'Transformasi metode mengajar yang lebih interaktif untuk menciptakan kelas yang hidup.',
+        icon: Presentation,
+        color: 'from-cyan-500 to-primary',
+        shadow: 'shadow-cyan-100',
+    },
+    {
+        title: 'Pendampingan Belajar',
+        description:
+            'Melejitkan potensi akademik dan karakter anak melalui pendekatan personal yang menyenangkan.',
+        icon: Rocket,
+        color: 'from-amber-400 to-orange-500',
+        shadow: 'shadow-amber-100',
+    },
+];
 </script>
 
 <template>
     <GuestLayout>
-        <div class="min-h-screen bg-white font-sans text-slate-800">
+        <div class="min-h-screen bg-slate-50/30 font-sans text-slate-800">
             <Head>
                 <title>
-                    Difafriends — Platform Edukasi Anak Berkebutuhan Khusus
-                    Terpercaya
+                    Difafriends - Pendidikan Inklusif & Pendampingan ABK
                 </title>
                 <meta
                     name="description"
-                    content="Platform edukasi inklusif terpercaya..."
+                    content="Platform edukasi inklusif terpercaya untuk membantu orangtua dan guru dalam mengoptimalkan perkembangan anak berkebutuhan khusus."
                 />
             </Head>
 
-            <section class="relative py-20 lg:py-32">
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <!-- Hero Section -->
+            <section
+                class="relative overflow-hidden bg-white pt-20 pb-12 lg:pt-32 lg:pb-16"
+            >
+                <div
+                    class="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-primary/5 blur-3xl"
+                ></div>
+                <div
+                    class="absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-secondary/5 blur-3xl"
+                ></div>
+
+                <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div
-                        class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2"
+                        class="grid grid-cols-1 items-center gap-16 lg:grid-cols-2"
                     >
-                        <div>
+                        <div class="text-center lg:text-left">
+                            <div
+                                class="mb-6 inline-flex items-center rounded-full bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary"
+                            >
+                                <span
+                                    class="mr-2 flex h-2 w-2 animate-pulse rounded-full bg-primary"
+                                ></span>
+                                <span>Setiap Anak dapat bekembang optimal</span>
+                            </div>
                             <h1
-                                class="text-4xl leading-tight font-extrabold text-slate-900 lg:text-5xl"
+                                class="text-4xl leading-tight font-extrabold tracking-tight text-primary sm:text-5xl lg:text-6xl"
                             >
-                                Layanan Intervensi Anak Berkebutuhan Khusus
+                                Difa<span class="text-orange-400">friends</span>
                             </h1>
-                            <p class="mt-6 text-lg text-slate-600">
-                                Difafriends adalah platform yang dirancang untuk
-                                membantu orangtua dan guru dalam mengoptimalkan
-                                intervensi bagi anak berkebutuhan khusus.
-                            </p>
-                            <Link
-                                :href="register()"
-                                class="mt-8 inline-flex items-center justify-center rounded-xl bg-[#0097B2] px-8 py-4 font-semibold text-white transition-all hover:bg-[#007b91] hover:shadow-lg"
+                            <p
+                                class="mt-8 text-xl leading-relaxed text-slate-600"
                             >
-                                Coba Layanan
-                            </Link>
+                                Difafriends hadir sebagai sahabat bagi orangtua
+                                dan guru untuk mendukung perkembangan optimal
+                                anak berkebutuhan khusus melalui pendekatan
+                                personal dan profesional.
+                            </p>
+                            <div
+                                class="mt-10 flex flex-col items-center gap-4 sm:flex-row lg:justify-start"
+                            >
+                                <Link
+                                    :href="register()"
+                                    class="w-full rounded-2xl bg-primary px-10 py-5 text-center font-bold text-white shadow-xl shadow-primary/20 transition-all hover:translate-y-px hover:bg-primary/90 sm:w-auto"
+                                >
+                                    Mulai Sekarang
+                                </Link>
+                                <a
+                                    href="#layanan"
+                                    class="w-full rounded-2xl border-2 border-slate-200 bg-white px-10 py-5 text-center font-bold text-slate-700 transition-all hover:bg-slate-50 sm:w-auto"
+                                >
+                                    Pelajari Layanan
+                                </a>
+                            </div>
                         </div>
-                        <div>
+                        <div class="relative">
+                            <div
+                                class="absolute -inset-4 rounded-[2rem] bg-gradient-to-tr from-primary/10 to-transparent blur-2xl"
+                            ></div>
                             <img
-                                class="w-full object-contain"
+                                class="relative w-full drop-shadow-2xl"
                                 src="/images/hero-img.png"
-                                alt="Layanan Intervensi"
+                                alt="DifaFriends Hero"
                             />
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section class="border-t border-slate-100/50 bg-slate-50/50 py-12">
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12">
-                    <p class="mb-12 text-center text-sm font-semibold tracking-widest text-slate-400 uppercase">
-                        Telah Dipercaya Oleh
-                    </p>
-                    <div class="relative flex overflow-hidden">
-                        <div class="pointer-events-none absolute left-0 z-10 h-full w-20 bg-gradient-to-r from-slate-50/50 to-transparent"></div>
-                        <div class="pointer-events-none absolute right-0 z-10 h-full w-20 bg-gradient-to-l from-slate-50/50 to-transparent"></div>
-                        
-                        <div class="flex animate-[marquee_30s_linear_infinite] items-center gap-16 whitespace-nowrap">
-                            <span
-                                v-for="(partner, index) in [...partners, ...partners, ...partners]"
-                                :key="index"
-                                class="text-xl font-bold text-slate-300 transition-colors hover:text-[#0097B2]"
-                            >
-                                {{ partner }}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <!-- Stats Section -->
 
-            <section class="bg-slate-50 py-24" id="service">
+            <!-- Services Section -->
+            <section class="py-16 lg:py-18" id="layanan">
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div class="mx-auto mb-16 text-center lg:w-1/2">
+                    <div class="mb-16 text-center">
                         <h2
-                            class="text-3xl font-bold text-slate-900 lg:text-4xl"
+                            class="text-base font-bold tracking-widest text-primary uppercase"
                         >
                             Layanan Kami
                         </h2>
+                        <p
+                            class="mt-4 text-3xl font-extrabold text-slate-900 lg:text-4xl"
+                        >
+                            Dukungan Menyeluruh untuk Buah Hati
+                        </p>
+                        <div
+                            class="mx-auto mt-6 h-1.5 w-24 rounded-full bg-primary/20"
+                        >
+                            <div
+                                class="h-full w-12 rounded-full bg-primary"
+                            ></div>
+                        </div>
                     </div>
 
-                    <div
-                        class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2"
-                    >
-                        <div class="order-2 lg:order-2">
+                    <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+                        <div
+                            v-for="(service, index) in services"
+                            :key="index"
+                            class="group relative h-full overflow-hidden rounded-3xl border border-slate-100 bg-white p-10 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/5"
+                        >
                             <div
-                                v-show="activeServiceTab === 0"
-                                class="animate-[fadeIn_0.5s_ease-in-out]"
+                                :class="[
+                                    'mb-10 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-3',
+                                    service.color,
+                                    service.shadow,
+                                ]"
                             >
-                                <img
-                                    class="w-full rounded-[40px] object-contain shadow-lg"
-                                    src="/images/image-1.png"
-                                    alt="Asesmen Anak"
+                                <component
+                                    :is="service.icon"
+                                    class="h-10 w-10 text-white"
+                                    stroke-width="2.5"
                                 />
-                                <p class="mt-6 text-slate-600">
-                                    Lakukan booking asesmen anak melalui website
-                                    kami untuk mendapatkan pemahaman mendalam
-                                    tentang kebutuhan dan potensi anak Anda.
-                                </p>
                             </div>
-                            <div
-                                v-show="activeServiceTab === 1"
-                                class="animate-[fadeIn_0.5s_ease-in-out]"
-                            >
-                                <img
-                                    class="w-full rounded-[40px] object-contain shadow-lg"
-                                    src="/images/image-1.png"
-                                    alt="Pendampingan Belajar"
-                                />
-                                <p class="mt-6 text-slate-600">
-                                    Pesan guru bimbel terbaik melalui website
-                                    kami dan pilih dari profil guru yang
-                                    tersedia untuk membantu anak Anda belajar
-                                    lebih efektif.
-                                </p>
-                            </div>
-                        </div>
 
-                        <div class="order-1 lg:order-1">
-                            <h2
-                                class="text-3xl font-bold text-slate-900 lg:text-4xl"
+                            <h3
+                                class="mb-4 text-2xl font-bold text-slate-900 transition-colors group-hover:text-primary"
                             >
-                                Intervensi
-                            </h2>
-                            <p class="mt-4 text-slate-600">
-                                Kami membantu Anda dalam mengembangkan potensi
-                                anak Anda melalui intervensi belajar yang
-                                berkualitas. Serta melakukan pendampingan dalam
-                                belajar.
+                                {{ service.title }}
+                            </h3>
+                            <p class="mb-8 leading-relaxed text-slate-600">
+                                {{ service.description }}
                             </p>
-                            <ul class="mt-8 space-y-4">
-                                <li
-                                    class="flex cursor-pointer items-center rounded-xl p-4 transition-all"
-                                    :class="
-                                        activeServiceTab === 0
-                                            ? 'bg-[#0097B2]/10 font-bold text-[#0097B2]'
-                                            : 'text-slate-700 hover:bg-slate-100'
-                                    "
-                                    @click="activeServiceTab = 0"
+
+                            <div
+                                class="flex items-center text-sm font-bold tracking-widest text-primary uppercase"
+                            >
+                                Selengkapnya
+                                <svg
+                                    class="ml-2 h-4 w-4 transition-transform group-hover:translate-x-2"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
                                 >
-                                    <img
-                                        class="mr-4 h-6 w-6"
-                                        src="/images/icons/drop.svg"
-                                        alt="Icon"
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="3"
+                                        d="M17 8l4 4m0 0l-4 4m4-4H3"
                                     />
-                                    Asesmen Anak
-                                </li>
-                                <li
-                                    class="flex cursor-pointer items-center rounded-xl p-4 transition-all"
-                                    :class="
-                                        activeServiceTab === 1
-                                            ? 'bg-[#0097B2]/10 font-bold text-[#0097B2]'
-                                            : 'text-slate-700 hover:bg-slate-100'
-                                    "
-                                    @click="activeServiceTab = 1"
-                                >
-                                    <img
-                                        class="mr-4 h-6 w-6"
-                                        src="/images/icons/brain.svg"
-                                        alt="Icon"
-                                    />
-                                    Pendampingan Belajar Anak
-                                </li>
-                            </ul>
+                                </svg>
+                            </div>
                         </div>
                     </div>
+                </div>
+            </section>
 
+            <!-- Workshop Gallery -->
+            <section class="bg-slate-100 py-24 lg:py-32" id="pelatihan">
+                <div class="mx-auto max-w-7xl px-6 lg:px-8">
+                    <!-- Header Section -->
                     <div
-                        class="mt-24 grid grid-cols-1 items-center gap-12 lg:grid-cols-2"
+                        class="mb-16 flex flex-col items-center justify-between gap-6 lg:flex-row lg:items-end"
                     >
-                        <div class="order-2 lg:order-1">
-                            <img
-                                class="w-full rounded-[40px] object-contain shadow-lg"
-                                src="/images/service-1.jpg"
-                                alt="Pelatihan"
+                        <div class="text-center lg:text-left">
+                            <!-- Accent Label -->
+                            <div
+                                class="mb-4 flex items-center justify-center gap-2 lg:justify-start"
+                            >
+                                <span class="h-px w-8 bg-[#0097B2]"></span>
+                                <span
+                                    class="text-sm font-bold tracking-[0.2em] text-[#0097B2] uppercase"
+                                    >Dokumentasi</span
+                                >
+                            </div>
+                            <h2
+                                class="text-3xl font-extrabold text-slate-900 lg:text-4xl"
+                            >
+                                Gallery
+                                <span class="text-[#0097B2]">Workshop</span>
+                            </h2>
+                        </div>
+
+                        <!-- Button with Theme Color
+                        <Link
+                            href="/gallery"
+                          class="group flex items-center gap-2 rounded-full border-2 border-[#0097B2] px-8 py-3 text-sm font-bold text-[#0097B2] shadow-lg shadow-cyan-100 transition-all hover:bg-[#0097B2] hover:text-white"
+                        >
+                            Lihat Semua Foto
+                            <ArrowRight
+                                class="h-4 w-4 transition-transform group-hover:translate-x-1"
                             />
-                        </div>
-                        <div class="order-1 lg:order-2">
-                            <h2
-                                class="text-3xl font-bold text-slate-900 lg:text-4xl"
-                            >
-                                Pelatihan
-                            </h2>
-                            <p class="mt-4 text-slate-600">
-                                Difafriends membantu Anda dalam mengembangkan
-                                keterampilan untuk menjadi fasilitator yang baik
-                                bagi Warga difabel dengan melatih dan memberikan
-                                keterampilan yang dibutuhkan.
-                            </p>
-                            <ul
-                                class="mt-6 space-y-3 font-semibold text-slate-800"
-                            >
-                                <li class="flex items-center">
-                                    <img
-                                        class="mr-3 h-5 w-5"
-                                        src="/images/icons/checkmark-circle.svg"
-                                        alt="Check"
-                                    />
-                                    <Link
-                                        href="/courses"
-                                        class="hover:text-[#0097B2]"
-                                        >Pelatihan Guru</Link
-                                    >
-                                </li>
-                                <li class="flex items-center">
-                                    <img
-                                        class="mr-3 h-5 w-5"
-                                        src="/images/icons/checkmark-circle.svg"
-                                        alt="Check"
-                                    />
-                                    <Link
-                                        href="/courses"
-                                        class="hover:text-[#0097B2]"
-                                        >Pelatihan Orang Tua</Link
-                                    >
-                                </li>
-                            </ul>
-                        </div>
+                        </Link>
+                         -->
                     </div>
-                    <div
-                        class="mt-24 grid grid-cols-1 items-center gap-12 lg:grid-cols-12"
-                    >
-                        <div class="order-1 lg:order-2 lg:col-span-7">
-                            <div class="relative pr-8 pb-6 lg:pr-10">
-                                <div
-                                    class="absolute right-0 bottom-0 h-[90%] w-[90%] rounded-3xl bg-slate-200"
-                                ></div>
 
+                    <!-- Gallery Grid -->
+                    <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+                        <!-- Card 1 -->
+                        <div
+                            class="group relative aspect-[4/3] overflow-hidden rounded-[2rem] bg-slate-100 shadow-xl shadow-slate-200/50"
+                        >
+                            <img
+                                class="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                src="/images/workshop/workshop-1.png"
+                                alt="Pelatihan Guru Inklusif"
+                            />
+                            <!-- Gradient Overlay using Theme Color -->
+                            <div
+                                class="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent p-8 opacity-0 transition-all duration-500 group-hover:opacity-100"
+                            >
                                 <div
-                                    class="relative z-10 aspect-video overflow-hidden rounded-2xl bg-slate-100 shadow-xl"
+                                    class="translate-y-4 transition-transform duration-500 group-hover:translate-y-0"
                                 >
-                                    <div
-                                        v-if="!isVideoPlaying"
-                                        class="group relative h-full w-full cursor-pointer"
-                                        @click="isVideoPlaying = true"
+                                    <span
+                                        class="mb-3 inline-block rounded-md bg-[#0097B2] px-3 py-1 text-[10px] font-bold tracking-widest text-white uppercase"
+                                        >Parenting</span
                                     >
-                                        <img
-                                            class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                            src="/images/intro-thumbnail.png"
-                                            alt="Video Intro Difafriends"
-                                        />
-                                        <div
-                                            class="absolute inset-0 flex items-center justify-center bg-slate-900/20 transition-all duration-300 group-hover:bg-slate-900/40"
+                                    <p class="text-xl font-bold text-white">
+                                        Kemandirian Anak
+                                    </p>
+                                    <div
+                                        class="mt-2 flex items-center text-sm text-slate-300"
+                                    >
+                                        <span class="mr-2"
+                                            >📍 Yogyakarta, 2024</span
                                         >
-                                            <button
-                                                class="flex h-20 w-20 items-center justify-center rounded-full bg-white/95 text-[#0097B2] shadow-2xl backdrop-blur transition-transform duration-300 group-hover:scale-110 focus:ring-4 focus:ring-[#0097B2]/50 focus:outline-none"
-                                            >
-                                                <svg
-                                                    class="ml-1.5 h-8 w-8"
-                                                    fill="currentColor"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path d="M8 5v14l11-7z" />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div v-else class="h-full w-full">
-                                        <iframe
-                                            class="h-full w-full"
-                                            allowfullscreen
-                                            allow="autoplay"
-                                            src="https://www.youtube.com/embed/g3-VxLQO7do?autoplay=1"
-                                        ></iframe>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="order-2 lg:order-1 lg:col-span-5">
-                            <div class="text-container">
-                                <h2
-                                    class="text-3xl leading-tight font-bold text-slate-900 lg:text-4xl"
+                        <!-- Card 2 -->
+                        <div
+                            class="group relative aspect-[4/3] overflow-hidden rounded-[2rem] bg-slate-100 shadow-xl shadow-slate-200/50"
+                        >
+                            <img
+                                class="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                src="/images/workshop/workshop-2.png"
+                                alt="Seminar Parenting ABK"
+                            />
+                            <!-- Gradient Overlay -->
+                            <div
+                                class="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent p-8 opacity-0 transition-all duration-500 group-hover:opacity-100"
+                            >
+                                <div
+                                    class="translate-y-4 transition-transform duration-500 group-hover:translate-y-0"
                                 >
-                                    Langganan Akun Premium
-                                </h2>
-                                <p
-                                    class="mt-6 text-lg leading-relaxed text-slate-600"
-                                >
-                                    Nikmati fasilitas eksklusif dengan akun
-                                    premium, termasuk akses ke artikel premium,
-                                    modul pembelajaran, dan layanan konsultasi
-                                    ahli. Daftar sekarang untuk mendukung
-                                    perjalanan belajar anak Anda, termasuk
-                                    dukungan khusus untuk siswa disabilitas!
-                                </p>
-                                <a
-                                    href="https://difapreneur.com/register"
-                                    class="mt-8 inline-flex items-center justify-center rounded-xl bg-slate-900 px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:-translate-y-1 hover:bg-slate-800 hover:shadow-xl focus:ring-4 focus:ring-slate-300 focus:outline-none"
-                                >
-                                    Mulai Langganan
-                                </a>
+                                    <span
+                                        class="mb-3 inline-block rounded-md bg-[#0097B2] px-3 py-1 text-[10px] font-bold tracking-widest text-white uppercase"
+                                        >Pendidikan</span
+                                    >
+                                    <p class="text-xl font-bold text-white">
+                                        Pembelajaran
+                                    </p>
+                                    <div
+                                        class="mt-2 flex items-center text-sm text-slate-300"
+                                    >
+                                        <span class="mr-2">📍 Solo, 2024</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section class="py-24" id="article">
+            <!-- Articles -->
+            <section class="py-24 lg:py-32" id="article">
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <h2 class="mb-10 text-3xl font-bold text-slate-900">
-                        Artikel Terbaru
-                    </h2>
+                    <div class="mb-16 flex items-end justify-between">
+                        <div>
+                            <h2
+                                class="text-3xl font-extrabold text-slate-900 lg:text-4xl"
+                            >
+                                Artikel & Wawasan
+                            </h2>
+                            <p class="mt-4 text-lg text-slate-600">
+                                Informasi terkini seputar dunia pendidikan anak
+                                berkebutuhan khusus.
+                            </p>
+                        </div>
+                        <Link
+                            href="/articles"
+                            class="hidden text-sm font-bold text-primary hover:underline md:block"
+                        >
+                            Lihat Blog
+                        </Link>
+                    </div>
+
                     <div
                         class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
                     >
                         <div
                             v-for="article in articles.slice(0, 3)"
                             :key="article.id"
-                            class="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-transform hover:-translate-y-1 hover:shadow-lg"
+                            class="group flex flex-col overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm transition-all hover:shadow-xl hover:shadow-primary/5"
                         >
-                            <img
-                                class="h-52 w-full object-cover"
-                                :src="
-                                    article.thumbnail
-                                        ? assetUrl(article.thumbnail)
-                                        : 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80'
-                                "
-                                :alt="article.title"
-                            />
-                            <div class="flex flex-1 flex-col p-6">
+                            <div class="relative aspect-video overflow-hidden">
+                                <img
+                                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    :src="
+                                        article.thumbnail
+                                            ? assetUrl(article.thumbnail)
+                                            : '/images/placeholder-image.jpg'
+                                    "
+                                    :alt="article.title"
+                                />
+                            </div>
+                            <div class="flex flex-1 flex-col p-8">
                                 <span
-                                    class="mb-3 text-xs font-bold tracking-wider text-[#0097B2] uppercase"
-                                    >Pendidikan</span
+                                    class="mb-3 text-xs font-bold tracking-widest text-primary uppercase"
+                                    >Wawasan</span
                                 >
                                 <h3
-                                    class="mb-3 text-xl leading-snug font-bold text-slate-900"
+                                    class="mb-4 text-xl leading-snug font-bold text-slate-900"
                                 >
                                     <Link
                                         :href="`/articles/${article.slug}`"
-                                        class="hover:underline"
-                                        >{{ article.title }}</Link
+                                        class="line-clamp-2 transition-colors hover:text-primary"
                                     >
+                                        {{ article.title }}
+                                    </Link>
                                 </h3>
                                 <p
-                                    class="mb-6 line-clamp-3 flex-1 text-sm text-slate-500"
+                                    class="mb-8 line-clamp-3 text-sm leading-relaxed text-slate-500"
                                 >
                                     {{ stripHtml(article.content) }}
                                 </p>
                                 <div
-                                    class="mt-auto border-t border-slate-100 pt-4 text-xs text-slate-400"
+                                    class="mt-auto flex items-center justify-between border-t border-slate-50 pt-6"
                                 >
-                                    {{
-                                        new Date(
-                                            article.created_at,
-                                        ).toLocaleDateString('id-ID', {
-                                            day: 'numeric',
-                                            month: 'short',
-                                            year: 'numeric',
-                                        })
-                                    }}
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary"
+                                        >
+                                            {{
+                                                getInitials(
+                                                    article.author.first_name,
+                                                    article.author.last_name,
+                                                )
+                                            }}
+                                        </div>
+                                        <span
+                                            class="text-xs font-medium text-slate-700"
+                                            >{{
+                                                article.author.first_name
+                                            }}</span
+                                        >
+                                    </div>
+                                    <span
+                                        class="text-[10px] font-bold tracking-tighter text-slate-400 uppercase"
+                                    >
+                                        {{ formatDate(article.created_at) }}
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -528,192 +466,187 @@ const isVideoPlaying = ref(false);
                 </div>
             </section>
 
-            <section class="bg-slate-100 py-24">
+            <!-- Companions -->
+            <section class="bg-slate-50 py-24 lg:py-32">
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <h2
-                        class="mb-12 text-center text-3xl font-bold text-slate-900 lg:text-4xl"
-                    >
-                        Pemesanan Tentor
-                    </h2>
+                    <div class="mb-16 text-center">
+                        <h2
+                            class="text-3xl font-extrabold text-slate-900 lg:text-4xl"
+                        >
+                            Booking Tentor Pendamping
+                        </h2>
+                        <p class="mt-4 text-lg text-slate-600">
+                            Pilih pendamping terbaik yang berpengalaman dan
+                            bersertifikasi.
+                        </p>
+                    </div>
+
                     <div
                         class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
                     >
                         <div
                             v-for="companion in companions.slice(0, 3)"
                             :key="companion.id"
-                            class="flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-md transition-transform hover:-translate-y-1"
+                            class="group relative overflow-hidden rounded-3xl bg-white p-4 shadow-sm transition-all hover:shadow-xl"
                         >
-                            <img
-                                class="h-60 w-full object-cover"
-                                :src="
-                                    companion.photo
-                                        ? assetUrl(companion.photo)
-                                        : '/images/tentor/tentor-1.png'
-                                "
-                                :alt="companion.first_name"
-                            />
-                            <div class="flex flex-1 flex-col p-6">
+                            <div
+                                class="relative aspect-square overflow-hidden rounded-2xl"
+                            >
+                                <img
+                                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    :src="
+                                        companion.photo
+                                            ? assetUrl(companion.photo)
+                                            : '/images/tentor/tentor-1.png'
+                                    "
+                                    :alt="companion.first_name"
+                                />
                                 <div
-                                    class="mb-3 flex items-center justify-between"
+                                    class="absolute top-4 right-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-slate-900 backdrop-blur-sm"
                                 >
-                                    <div
-                                        class="flex items-center text-yellow-400"
-                                    >
-                                        <svg
-                                            v-for="n in 5"
-                                            :key="n"
-                                            class="h-5 w-5 fill-current"
-                                            viewBox="0 0 20 20"
-                                        >
-                                            <path
-                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                                            ></path>
-                                        </svg>
-                                        <span
-                                            class="ml-2 text-xs font-bold text-slate-800"
-                                            >5.0</span
-                                        >
-                                    </div>
+                                    ⭐ 5.0
                                 </div>
-                                <h3
-                                    class="mb-2 text-xl font-bold text-slate-900"
-                                >
-                                    <Link :href="`/companions/${companion.id}`"
-                                        >{{ companion.first_name }}
-                                        {{ companion.last_name }}</Link
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-xl font-bold text-slate-900">
+                                    <Link
+                                        :href="`/companions/${companion.id}`"
+                                        class="transition-colors hover:text-primary"
                                     >
+                                        {{ companion.first_name }}
+                                        {{ companion.last_name }}
+                                    </Link>
                                 </h3>
                                 <p
-                                    class="mb-6 line-clamp-2 flex-1 text-sm text-slate-500"
+                                    class="mt-2 line-clamp-2 text-sm text-slate-500"
                                 >
                                     {{ companion.bio }}
                                 </p>
                                 <div
-                                    class="mb-6 text-lg font-bold text-slate-900"
+                                    class="mt-6 flex items-center justify-between"
                                 >
-                                    {{ formatPrice(companion.starting_price)
-                                    }}<span
-                                        class="text-sm font-normal text-slate-500"
-                                        >/Jam</span
+                                    <div>
+                                        <p
+                                            class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                                        >
+                                            Mulai Dari
+                                        </p>
+                                        <p
+                                            class="text-lg font-bold text-primary"
+                                        >
+                                            {{
+                                                formatPrice(
+                                                    companion.starting_price,
+                                                )
+                                            }}<span
+                                                class="text-xs font-normal text-slate-400"
+                                                >/jam</span
+                                            >
+                                        </p>
+                                    </div>
+                                    <Link
+                                        :href="`/companions/${companion.id}`"
+                                        class="rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white transition-all hover:bg-primary"
                                     >
+                                        Booking
+                                    </Link>
                                 </div>
-                                <Link
-                                    :href="`/companions/${companion.id}`"
-                                    class="mt-auto block w-full rounded-xl bg-slate-900 py-3 text-center font-semibold text-white transition-colors hover:bg-slate-800"
-                                >
-                                    Dapatkan 1 Sesi Gratis
-                                </Link>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section class="py-24" id="pelatihan">
+            <!-- Partners Marquee -->
+            <section class="border-y border-slate-100 bg-white py-16">
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div class="mx-auto mb-12 max-w-2xl text-center">
-                        <h2
-                            class="text-3xl font-bold text-slate-900 lg:text-4xl"
-                        >
-                            Gallery Workshop
-                        </h2>
-                    </div>
-
-                    <div
-                        class="grid grid-cols-1 items-start gap-8 md:grid-cols-2"
+                    <p
+                        class="mb-12 text-center text-xs font-bold tracking-[0.2em] text-slate-400 uppercase"
                     >
+                        Mitra Kami
+                    </p>
+
+                    <div class="relative flex overflow-hidden">
+                        <!-- Fade overlays -->
                         <div
-                            class="relative overflow-hidden rounded-2xl shadow-lg transition-transform hover:-translate-y-1"
-                        >
-                            <img
-                                class="w-full object-cover"
-                                width="480"
-                                height="328"
-                                src="/images/workshop/workshop-1.png"
-                                alt="Dokumentasi Workshop 1"
-                            />
-                        </div>
+                            class="pointer-events-none absolute left-0 z-10 h-full w-40 bg-gradient-to-r from-white to-transparent lg:w-40"
+                        ></div>
                         <div
-                            class="relative overflow-hidden rounded-2xl shadow-lg transition-transform hover:-translate-y-1"
+                            class="pointer-events-none absolute right-0 z-10 h-full w-40 bg-gradient-to-l from-white to-transparent lg:w-40"
+                        ></div>
+
+                        <!-- Infinite Scroll Content -->
+                        <div
+                            class="animate-marquee flex items-center gap-16 py-4 whitespace-nowrap lg:gap-24"
                         >
-                            <img
-                                class="w-full object-cover"
-                                width="480"
-                                height="540"
-                                src="/images/workshop/workshop-2.png"
-                                alt="Dokumentasi Workshop 2"
-                            />
+                            <div
+                                v-for="(partner, index) in [
+                                    ...partners,
+                                    ...partners,
+                                    ...partners,
+                                    ...partners,
+                                ]"
+                                :key="index"
+                                class="flex h-20 w-42 items-center justify-center opacity-40 grayscale transition-all hover:opacity-100 hover:grayscale-0 lg:h-20 lg:w-48"
+                            >
+                                <img
+                                    :src="partner.logo"
+                                    :alt="partner.name"
+                                    class="h-full w-full object-contain"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section class="py-24">
+            <!-- CTA Section -->
+            <section class="bg-white py-16">
+                <!-- Padding luar dikurangi -->
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div class="mx-auto mb-16 max-w-2xl text-center">
-                        <h2
-                            class="text-3xl font-bold text-slate-900 lg:text-4xl"
-                        >
-                            Kenali Kami Lebih Dekat
-                        </h2>
-                        <p class="mt-4 text-lg text-slate-600">
-                            Kami adalah tim yang berdedikasi untuk memberikan
-                            yang terbaik.
-                        </p>
-                    </div>
-                    <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-                        <div class="flex flex-col items-center text-center">
-                            <img
-                                class="mb-6 h-32 w-32 rounded-full object-cover shadow-lg"
-                                src="/images/users/avatar-1.png"
-                                alt="Danang Pradana"
-                            />
-                            <h5 class="text-lg font-bold text-slate-900">
-                                Danang Pradana (CAND) M.B.A
-                            </h5>
-                            <p class="font-semibold text-[#0097B2]">
-                                Co-founder & COO
-                            </p>
-                            <p class="mt-3 text-sm text-slate-500">
-                                6 tahun berpengalaman di bidang manajemen
-                                kewirausahaan dan keuangan
-                            </p>
-                        </div>
-                        <div class="flex flex-col items-center text-center">
-                            <img
-                                class="mb-6 h-32 w-32 rounded-full object-cover shadow-lg"
-                                src="/images/users/avatar-2.png"
-                                alt="Annis Na'immatun"
-                            />
-                            <h5 class="text-lg font-bold text-slate-900">
-                                Annis Na'immatun S.P.d
-                            </h5>
-                            <p class="font-semibold text-[#0097B2]">
-                                Founder & CEO
-                            </p>
-                            <p class="mt-3 text-sm text-slate-500">
-                                3 tahun berpengalaman di bidang pengelolaan
-                                kelas dan pendidikan khusus
-                            </p>
-                        </div>
-                        <div class="flex flex-col items-center text-center">
-                            <div
-                                class="mb-6 flex h-32 w-32 items-center justify-center rounded-full bg-slate-200 shadow-lg"
+                    <div
+                        class="relative overflow-hidden rounded-[2.5rem] bg-[#0097B2] px-8 py-12 text-center shadow-2xl shadow-cyan-200 lg:px-16 lg:py-16"
+                    >
+                        <!-- Decorative Elements - Dibuat lebih lembut -->
+                        <div
+                            class="absolute top-0 right-0 -mt-16 -mr-16 h-48 w-48 rounded-full bg-white/10 blur-3xl"
+                        ></div>
+                        <div
+                            class="absolute bottom-0 left-0 -mb-16 -ml-16 h-48 w-48 rounded-full bg-black/5 blur-3xl"
+                        ></div>
+
+                        <div class="relative z-10 mx-auto max-w-2xl">
+                            <h2
+                                class="text-2xl font-bold text-white lg:text-3xl"
                             >
-                                <span class="text-3xl font-bold text-slate-400"
-                                    >IS</span
+                                Siap Memberikan yang Terbaik untuk Si Kecil?
+                            </h2>
+                            <p
+                                class="mt-4 text-base leading-relaxed text-cyan-50/90 lg:text-md"
+                            >
+                                Bergabunglah dengan ratusan orang tua lainnya
+                                dan mulai perjalanan transformatif bersama
+                                Difafriends.
+                            </p>
+
+                            <div
+                                class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
+                            >
+                                <!-- Tombol Utama: Putih, Teks Cyan -->
+                                <Link
+                                    :href="register()"
+                                    class="w-full rounded-xl bg-white px-8 py-3.5 text-sm font-bold text-[#0097B2] shadow-lg transition-all hover:bg-cyan-50 hover:shadow-xl active:scale-95 sm:w-auto"
                                 >
+                                    Daftar Sekarang
+                                </Link>
+
+                                <!-- Tombol Sekunder: Outline Putih -->
+                                <button
+                                    class="w-full rounded-xl border-2 border-white/30 px-8 py-3.5 text-sm font-bold text-white transition-all hover:bg-white/10 active:scale-95 sm:w-auto"
+                                >
+                                    Konsultasi Gratis
+                                </button>
                             </div>
-                            <h5 class="text-lg font-bold text-slate-900">
-                                Ilham Syabani
-                            </h5>
-                            <p class="font-semibold text-[#0097B2]">
-                                Head of Technology
-                            </p>
-                            <p class="mt-3 text-sm text-slate-500">
-                                Berpengalaman pengembangan teknologi
-                                pembelajaran
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -723,43 +656,27 @@ const isVideoPlaying = ref(false);
 </template>
 
 <style scoped>
-/* Anda bisa menaruh custom css spesifik seperti efek tab services di sini */
-.tab-content-panel {
-    display: none;
-    animation: fadeIn 0.5s;
-}
-.tab-content-panel.active {
-    display: block;
-}
-.tab-nav-item.active {
-    font-weight: bold;
-    color: #0097b2; /* Gunakan color primer dari tema */
-}
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 @keyframes marquee {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-}
-.animate-\[marquee_30s_linear_infinite\] {
-    animation: marquee 30s linear infinite;
-}
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
+    0% {
+        transform: translateX(0);
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    100% {
+        transform: translateX(-50%);
     }
+}
+
+.animate-marquee {
+    animation: marquee 40s linear infinite;
+}
+
+.animate-marquee:hover {
+    animation-play-state: paused;
+}
+
+/* Custom transitions */
+.transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
 }
 </style>
