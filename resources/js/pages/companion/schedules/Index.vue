@@ -223,7 +223,7 @@ function destroy(id: number) {
                                         Durasi: {{ schedule.session_duration }}m
                                         <span
                                             v-if="schedule.break_time > 0"
-                                            class="text-orange-400"
+                                            class="text-orange-400 dark:text-[#0097B2]"
                                         >
                                             • Jeda {{ schedule.break_time }}m
                                         </span>

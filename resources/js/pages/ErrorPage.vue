@@ -92,9 +92,9 @@ const accentClasses = computed(() => {
     > = {
         orange: {
             bg: 'from-orange-500/10 via-amber-500/5 to-transparent',
-            text: 'text-orange-500 dark:text-orange-400',
-            ring: 'ring-orange-200 dark:ring-orange-900',
-            badge: 'bg-orange-50 text-orange-600 dark:bg-orange-950/50 dark:text-orange-400',
+            text: 'text-orange-500 dark:text-[#0097B2]',
+            ring: 'ring-orange-200 dark:ring-[#0097B2]/40',
+            badge: 'bg-orange-50 text-orange-600 dark:bg-[#0097B2]/15 dark:text-[#0097B2]',
             gradient: 'from-orange-500 to-amber-500',
         },
         red: {

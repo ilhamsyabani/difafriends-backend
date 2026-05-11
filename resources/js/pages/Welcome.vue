@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import { HandHeart, Presentation, Rocket } from 'lucide-vue-next';
-import { Image as ImageIcon, ArrowRight } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { ArrowRight, HandHeart, Presentation, Rocket } from 'lucide-vue-next';
 import { useFormatters } from '@/composables/useFormatters';
 import GuestLayout from '@/layouts/GuestLayout.vue';
 import { register } from '@/routes';
@@ -10,7 +8,6 @@ import { register } from '@/routes';
 const { assetUrl, formatDate, formatPrice } = useFormatters();
 
 defineProps<{
-    canRegister?: boolean;
     categories: Array<{
         id: number;
         name: string;
@@ -54,25 +51,24 @@ function getInitials(firstName: string, lastName: string): string {
     ).toUpperCase();
 }
 
+// SSR-safe: hindari document.createElement (gagal saat Inertia render server-side)
 function stripHtml(html: string): string {
-    if (!html) return '';
-    const tmp = document.createElement('DIV');
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || '';
+    if (!html) {
+        return '';
+    }
+
+    return html
+        .replace(/<[^>]*>/g, ' ')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
 }
 
-const stats = [
-    { value: '100+', label: 'Anak Terbantu' },
-    { value: '10+', label: 'Tentor Bersertifikat' },
-    { value: '4', label: 'Kelas Tersedia' },
-    { value: '4.9', label: 'Rating Rata-rata' },
-] as const;
-
 const partners = [
-    { name: 'LPDP', logo: '/partners/lpdp.png' },
-    { name: 'BRIN', logo: '/partners/brin.png' },
-    { name: 'AB', logo: '/partners/ab.png' },
-    { name: 'TP', logo: '/partners/tp.png' },
+    { name: 'Lembaga Pengelola Dana Pendidikan', logo: '/partners/lpdp.png' },
+    { name: 'Badan Riset dan Inovasi Nasional', logo: '/partners/brin.png' },
+    { name: 'Ayah Bunda Istimewa', logo: '/partners/ab.png' },
+    { name: 'Tumbuh Pertama', logo: '/partners/tp.png' },
 ];
 
 const services = [
@@ -101,29 +97,38 @@ const services = [
         shadow: 'shadow-amber-100',
     },
 ];
+
+const pageTitle =
+    'Difafriends — Pendidikan Inklusif & Pendampingan Anak Berkebutuhan Khusus';
+const pageDescription =
+    'Platform edukasi inklusif terpercaya untuk membantu orangtua dan guru dalam mengoptimalkan perkembangan anak berkebutuhan khusus melalui pendampingan personal & profesional.';
 </script>
 
 <template>
     <GuestLayout>
-        <div class="min-h-screen bg-slate-50/30 font-sans text-slate-800">
-            <Head>
-                <title>
-                    Difafriends - Pendidikan Inklusif & Pendampingan ABK
-                </title>
-                <meta
-                    name="description"
-                    content="Platform edukasi inklusif terpercaya untuk membantu orangtua dan guru dalam mengoptimalkan perkembangan anak berkebutuhan khusus."
-                />
-            </Head>
+        <Head>
+            <title>{{ pageTitle }}</title>
+            <meta name="description" :content="pageDescription" />
+            <meta property="og:type" content="website" />
+            <meta property="og:title" :content="pageTitle" />
+            <meta property="og:description" :content="pageDescription" />
+            <meta property="og:locale" content="id_ID" />
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" :content="pageTitle" />
+            <meta name="twitter:description" :content="pageDescription" />
+        </Head>
 
+        <div class="min-h-screen bg-white font-sans text-slate-800">
             <!-- Hero Section -->
             <section
                 class="relative overflow-hidden bg-white pt-20 pb-12 lg:pt-32 lg:pb-16"
             >
                 <div
+                    aria-hidden="true"
                     class="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-primary/5 blur-3xl"
                 ></div>
                 <div
+                    aria-hidden="true"
                     class="absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-secondary/5 blur-3xl"
                 ></div>
 
@@ -132,18 +137,21 @@ const services = [
                         class="grid grid-cols-1 items-center gap-16 lg:grid-cols-2"
                     >
                         <div class="text-center lg:text-left">
-                            <div
+                            <p
                                 class="mb-6 inline-flex items-center rounded-full bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary"
                             >
                                 <span
-                                    class="mr-2 flex h-2 w-2 animate-pulse rounded-full bg-primary"
+                                    aria-hidden="true"
+                                    class="mr-2 flex h-2 w-2 rounded-full bg-primary motion-safe:animate-pulse"
                                 ></span>
-                                <span>Setiap Anak dapat bekembang optimal</span>
-                            </div>
+                                <span
+                                    >Setiap anak dapat berkembang optimal</span
+                                >
+                            </p>
                             <h1
-                                class="text-4xl leading-tight font-extrabold tracking-tight text-primary sm:text-5xl lg:text-6xl"
+                                class="text-4xl font-black leading-tight tracking-tight text-slate-900 sm:text-5xl lg:text-6xl"
                             >
-                                Difa<span class="text-orange-400">friends</span>
+                                Difafriends
                             </h1>
                             <p
                                 class="mt-8 text-xl leading-relaxed text-slate-600"
@@ -158,13 +166,13 @@ const services = [
                             >
                                 <Link
                                     :href="register()"
-                                    class="w-full rounded-2xl bg-primary px-10 py-5 text-center font-bold text-white shadow-xl shadow-primary/20 transition-all hover:translate-y-px hover:bg-primary/90 sm:w-auto"
+                                    class="w-full rounded-2xl bg-primary px-10 py-5 text-center font-bold text-white shadow-xl shadow-primary/20 transition-all hover:translate-y-px hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none sm:w-auto"
                                 >
                                     Mulai Sekarang
                                 </Link>
                                 <a
                                     href="#layanan"
-                                    class="w-full rounded-2xl border-2 border-slate-200 bg-white px-10 py-5 text-center font-bold text-slate-700 transition-all hover:bg-slate-50 sm:w-auto"
+                                    class="w-full rounded-2xl border-2 border-slate-200 bg-white px-10 py-5 text-center font-bold text-slate-700 transition-all hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none sm:w-auto"
                                 >
                                     Pelajari Layanan
                                 </a>
@@ -172,35 +180,37 @@ const services = [
                         </div>
                         <div class="relative">
                             <div
+                                aria-hidden="true"
                                 class="absolute -inset-4 rounded-[2rem] bg-gradient-to-tr from-primary/10 to-transparent blur-2xl"
                             ></div>
                             <img
                                 class="relative w-full drop-shadow-2xl"
                                 src="/images/hero-img.png"
-                                alt="DifaFriends Hero"
+                                alt="Ilustrasi anak belajar bersama pendamping di lingkungan inklusif Difafriends"
+                                fetchpriority="high"
+                                decoding="async"
                             />
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Stats Section -->
-
             <!-- Services Section -->
-            <section class="py-16 lg:py-18" id="layanan">
+            <section id="layanan" class="bg-slate-50 py-16 lg:py-18">
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div class="mb-16 text-center">
-                        <h2
+                        <p
                             class="text-base font-bold tracking-widest text-primary uppercase"
                         >
                             Layanan Kami
-                        </h2>
-                        <p
+                        </p>
+                        <h2
                             class="mt-4 text-3xl font-extrabold text-slate-900 lg:text-4xl"
                         >
                             Dukungan Menyeluruh untuk Buah Hati
-                        </p>
+                        </h2>
                         <div
+                            aria-hidden="true"
                             class="mx-auto mt-6 h-1.5 w-24 rounded-full bg-primary/20"
                         >
                             <div
@@ -209,13 +219,14 @@ const services = [
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-                        <div
+                    <ul class="grid grid-cols-1 gap-8 md:grid-cols-3">
+                        <li
                             v-for="(service, index) in services"
                             :key="index"
                             class="group relative h-full overflow-hidden rounded-3xl border border-slate-100 bg-white p-10 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/5"
                         >
                             <div
+                                aria-hidden="true"
                                 :class="[
                                     'mb-10 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-3',
                                     service.color,
@@ -234,149 +245,233 @@ const services = [
                             >
                                 {{ service.title }}
                             </h3>
-                            <p class="mb-8 leading-relaxed text-slate-600">
+                            <p class="leading-relaxed text-slate-600">
                                 {{ service.description }}
                             </p>
-
-                            <div
-                                class="flex items-center text-sm font-bold tracking-widest text-primary uppercase"
-                            >
-                                Selengkapnya
-                                <svg
-                                    class="ml-2 h-4 w-4 transition-transform group-hover:translate-x-2"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="3"
-                                        d="M17 8l4 4m0 0l-4 4m4-4H3"
-                                    />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
+                        </li>
+                    </ul>
                 </div>
             </section>
 
+            <!-- Categories — hanya tampil kalau ada data -->
+            <!-- <section
+                v-if="categories.length > 0"
+                id="kategori"
+                class="bg-white py-16 lg:py-20"
+                aria-labelledby="kategori-title"
+            >
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div class="mb-12 text-center">
+                        <h2
+                            id="kategori-title"
+                            class="text-3xl font-extrabold text-slate-900 lg:text-4xl"
+                        >
+                            Jelajahi Kategori
+                        </h2>
+                        <p class="mt-4 text-lg text-slate-600">
+                            Pilih bidang yang paling sesuai dengan kebutuhan
+                            anak.
+                        </p>
+                    </div>
+                    <ul class="flex flex-wrap justify-center gap-3">
+                        <li v-for="category in categories" :key="category.id">
+                            <Link
+                                :href="`/courses?category=${category.id}`"
+                                class="inline-block rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:border-primary hover:bg-primary hover:text-white focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none"
+                            >
+                                {{ category.name }}
+                            </Link>
+                        </li>
+                    </ul>
+                </div>
+            </section> -->
+
+            <!-- Featured Courses — hanya tampil kalau ada data -->
+            <!-- <section
+                v-if="featuredCourses.length > 0"
+                id="kelas"
+                class="bg-slate-50 py-24 lg:py-32"
+                aria-labelledby="kelas-title"
+            >
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div class="mb-16 flex items-end justify-between">
+                        <div>
+                            <h2
+                                id="kelas-title"
+                                class="text-3xl font-extrabold text-slate-900 lg:text-4xl"
+                            >
+                                Kelas Pilihan
+                            </h2>
+                            <p class="mt-4 text-lg text-slate-600">
+                                Kelas pilihan kami untuk mendukung tumbuh
+                                kembang anak.
+                            </p>
+                        </div>
+                        <Link
+                            href="/courses"
+                            class="hidden text-sm font-bold text-primary hover:underline focus-visible:underline md:block"
+                        >
+                            Lihat Semua
+                        </Link>
+                    </div>
+
+                    <ul
+                        class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
+                    >
+                        <li
+                            v-for="course in featuredCourses"
+                            :key="course.id"
+                            class="group flex flex-col overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm transition-all hover:shadow-xl hover:shadow-primary/5"
+                        >
+                            <div
+                                class="relative aspect-video overflow-hidden bg-slate-100"
+                            >
+                                <img
+                                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    :src="
+                                        course.thumbnail
+                                            ? assetUrl(course.thumbnail)
+                                            : '/images/placeholder-image.jpg'
+                                    "
+                                    :alt="`Thumbnail kelas: ${course.title}`"
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                            </div>
+                            <div class="flex flex-1 flex-col p-6">
+                                <span
+                                    class="mb-3 self-start rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary"
+                                >
+                                    {{ course.category.name }}
+                                </span>
+                                <h3
+                                    class="mb-2 text-lg leading-snug font-bold text-slate-900"
+                                >
+                                    <Link
+                                        :href="`/courses/${course.slug}`"
+                                        class="line-clamp-2 transition-colors hover:text-primary focus-visible:text-primary focus-visible:outline-none"
+                                    >
+                                        {{ course.title }}
+                                    </Link>
+                                </h3>
+                                <p class="mb-4 text-sm text-slate-500">
+                                    oleh {{ course.instructor.first_name }}
+                                    {{ course.instructor.last_name }}
+                                </p>
+                                <div
+                                    class="mt-auto flex items-center justify-between border-t border-slate-100 pt-4"
+                                >
+                                    <p class="text-lg font-bold text-primary">
+                                        {{
+                                            formatPrice(
+                                                course.discount_price ??
+                                                    course.price,
+                                            )
+                                        }}
+                                    </p>
+                                    <Link
+                                        :href="`/courses/${course.slug}`"
+                                        class="text-sm font-bold text-primary hover:underline focus-visible:underline focus-visible:outline-none"
+                                    >
+                                        Detail
+                                        <span class="sr-only"
+                                            >kelas {{ course.title }}</span
+                                        >
+                                    </Link>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section> -->
+
             <!-- Workshop Gallery -->
-            <section class="bg-slate-100 py-24 lg:py-32" id="pelatihan">
+            <section
+                id="pelatihan"
+                class="bg-slate-100 py-24 lg:py-32"
+                aria-labelledby="galeri-title"
+            >
                 <div class="mx-auto max-w-7xl px-6 lg:px-8">
-                    <!-- Header Section -->
                     <div
                         class="mb-16 flex flex-col items-center justify-between gap-6 lg:flex-row lg:items-end"
                     >
                         <div class="text-center lg:text-left">
-                            <!-- Accent Label -->
                             <div
                                 class="mb-4 flex items-center justify-center gap-2 lg:justify-start"
                             >
-                                <span class="h-px w-8 bg-[#0097B2]"></span>
                                 <span
-                                    class="text-sm font-bold tracking-[0.2em] text-[#0097B2] uppercase"
-                                    >Dokumentasi</span
+                                    aria-hidden="true"
+                                    class="h-px w-8 bg-primary"
+                                ></span>
+                                <span
+                                    class="text-sm font-bold tracking-[0.2em] text-primary uppercase"
                                 >
+                                    Dokumentasi
+                                </span>
                             </div>
                             <h2
+                                id="galeri-title"
                                 class="text-3xl font-extrabold text-slate-900 lg:text-4xl"
                             >
-                                Gallery
-                                <span class="text-[#0097B2]">Workshop</span>
+                                Galeri
+                                <span class="text-primary">Workshop</span>
                             </h2>
                         </div>
-
-                        <!-- Button with Theme Color
-                        <Link
-                            href="/gallery"
-                          class="group flex items-center gap-2 rounded-full border-2 border-[#0097B2] px-8 py-3 text-sm font-bold text-[#0097B2] shadow-lg shadow-cyan-100 transition-all hover:bg-[#0097B2] hover:text-white"
-                        >
-                            Lihat Semua Foto
-                            <ArrowRight
-                                class="h-4 w-4 transition-transform group-hover:translate-x-1"
-                            />
-                        </Link>
-                         -->
                     </div>
 
-                    <!-- Gallery Grid -->
-                    <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-                        <!-- Card 1 -->
-                        <div
+                    <ul class="grid grid-cols-1 gap-8 md:grid-cols-2">
+                        <li
                             class="group relative aspect-[4/3] overflow-hidden rounded-[2rem] bg-slate-100 shadow-xl shadow-slate-200/50"
                         >
                             <img
                                 class="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                 src="/images/workshop/workshop-1.png"
-                                alt="Pelatihan Guru Inklusif"
+                                alt="Pelatihan Guru Inklusif Difafriends"
+                                loading="lazy"
+                                decoding="async"
                             />
-                            <!-- Gradient Overlay using Theme Color -->
-                            <div
-                                class="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent p-8 opacity-0 transition-all duration-500 group-hover:opacity-100"
+                            <figcaption
+                                class="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-slate-900/90 to-transparent p-6"
                             >
-                                <div
-                                    class="translate-y-4 transition-transform duration-500 group-hover:translate-y-0"
-                                >
-                                    <span
-                                        class="mb-3 inline-block rounded-md bg-[#0097B2] px-3 py-1 text-[10px] font-bold tracking-widest text-white uppercase"
-                                        >Parenting</span
-                                    >
-                                    <p class="text-xl font-bold text-white">
-                                        Kemandirian Anak
-                                    </p>
-                                    <div
-                                        class="mt-2 flex items-center text-sm text-slate-300"
-                                    >
-                                        <span class="mr-2"
-                                            >📍 Yogyakarta, 2024</span
-                                        >
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card 2 -->
-                        <div
+                                <p class="text-lg font-bold text-white">
+                                    Pelatihan Guru Inklusif
+                                </p>
+                            </figcaption>
+                        </li>
+                        <li
                             class="group relative aspect-[4/3] overflow-hidden rounded-[2rem] bg-slate-100 shadow-xl shadow-slate-200/50"
                         >
                             <img
                                 class="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                 src="/images/workshop/workshop-2.png"
-                                alt="Seminar Parenting ABK"
+                                alt="Seminar Parenting ABK Difafriends"
+                                loading="lazy"
+                                decoding="async"
                             />
-                            <!-- Gradient Overlay -->
-                            <div
-                                class="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent p-8 opacity-0 transition-all duration-500 group-hover:opacity-100"
+                            <figcaption
+                                class="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-slate-900/90 to-transparent p-6"
                             >
-                                <div
-                                    class="translate-y-4 transition-transform duration-500 group-hover:translate-y-0"
-                                >
-                                    <span
-                                        class="mb-3 inline-block rounded-md bg-[#0097B2] px-3 py-1 text-[10px] font-bold tracking-widest text-white uppercase"
-                                        >Pendidikan</span
-                                    >
-                                    <p class="text-xl font-bold text-white">
-                                        Pembelajaran
-                                    </p>
-                                    <div
-                                        class="mt-2 flex items-center text-sm text-slate-300"
-                                    >
-                                        <span class="mr-2">📍 Solo, 2024</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                <p class="text-lg font-bold text-white">
+                                    Seminar Parenting ABK
+                                </p>
+                            </figcaption>
+                        </li>
+                    </ul>
                 </div>
             </section>
 
             <!-- Articles -->
-            <section class="py-24 lg:py-32" id="article">
+            <section
+                v-if="articles.length > 0"
+                id="article"
+                class="bg-white py-24 lg:py-32"
+                aria-labelledby="artikel-title"
+            >
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div class="mb-16 flex items-end justify-between">
                         <div>
                             <h2
+                                id="artikel-title"
                                 class="text-3xl font-extrabold text-slate-900 lg:text-4xl"
                             >
                                 Artikel & Wawasan
@@ -388,21 +483,23 @@ const services = [
                         </div>
                         <Link
                             href="/articles"
-                            class="hidden text-sm font-bold text-primary hover:underline md:block"
+                            class="hidden text-sm font-bold text-primary hover:underline focus-visible:underline md:block"
                         >
                             Lihat Blog
                         </Link>
                     </div>
 
-                    <div
+                    <ul
                         class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
                     >
-                        <div
-                            v-for="article in articles.slice(0, 3)"
+                        <li
+                            v-for="article in articles"
                             :key="article.id"
                             class="group flex flex-col overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm transition-all hover:shadow-xl hover:shadow-primary/5"
                         >
-                            <div class="relative aspect-video overflow-hidden">
+                            <div
+                                class="relative aspect-video overflow-hidden bg-slate-100"
+                            >
                                 <img
                                     class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                     :src="
@@ -410,20 +507,23 @@ const services = [
                                             ? assetUrl(article.thumbnail)
                                             : '/images/placeholder-image.jpg'
                                     "
-                                    :alt="article.title"
+                                    :alt="`Ilustrasi artikel: ${article.title}`"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                             </div>
                             <div class="flex flex-1 flex-col p-8">
                                 <span
                                     class="mb-3 text-xs font-bold tracking-widest text-primary uppercase"
-                                    >Wawasan</span
                                 >
+                                    Wawasan
+                                </span>
                                 <h3
                                     class="mb-4 text-xl leading-snug font-bold text-slate-900"
                                 >
                                     <Link
                                         :href="`/articles/${article.slug}`"
-                                        class="line-clamp-2 transition-colors hover:text-primary"
+                                        class="line-clamp-2 transition-colors hover:text-primary focus-visible:text-primary focus-visible:outline-none"
                                     >
                                         {{ article.title }}
                                     </Link>
@@ -438,6 +538,7 @@ const services = [
                                 >
                                     <div class="flex items-center gap-3">
                                         <div
+                                            aria-hidden="true"
                                             class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary"
                                         >
                                             {{
@@ -449,28 +550,33 @@ const services = [
                                         </div>
                                         <span
                                             class="text-xs font-medium text-slate-700"
-                                            >{{
-                                                article.author.first_name
-                                            }}</span
                                         >
+                                            {{ article.author.first_name }}
+                                        </span>
                                     </div>
-                                    <span
+                                    <time
+                                        :datetime="article.created_at"
                                         class="text-[10px] font-bold tracking-tighter text-slate-400 uppercase"
                                     >
                                         {{ formatDate(article.created_at) }}
-                                    </span>
+                                    </time>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </li>
+                    </ul>
                 </div>
             </section>
 
             <!-- Companions -->
-            <section class="bg-slate-50 py-24 lg:py-32">
+            <section
+                v-if="companions.length > 0"
+                class="bg-slate-50 py-24 lg:py-32"
+                aria-labelledby="pendamping-title"
+            >
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div class="mb-16 text-center">
                         <h2
+                            id="pendamping-title"
                             class="text-3xl font-extrabold text-slate-900 lg:text-4xl"
                         >
                             Booking Tentor Pendamping
@@ -481,16 +587,16 @@ const services = [
                         </p>
                     </div>
 
-                    <div
+                    <ul
                         class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
                     >
-                        <div
-                            v-for="companion in companions.slice(0, 3)"
+                        <li
+                            v-for="companion in companions"
                             :key="companion.id"
                             class="group relative overflow-hidden rounded-3xl bg-white p-4 shadow-sm transition-all hover:shadow-xl"
                         >
                             <div
-                                class="relative aspect-square overflow-hidden rounded-2xl"
+                                class="relative aspect-square overflow-hidden rounded-2xl bg-slate-100"
                             >
                                 <img
                                     class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -499,24 +605,27 @@ const services = [
                                             ? assetUrl(companion.photo)
                                             : '/images/tentor/tentor-1.png'
                                     "
-                                    :alt="companion.first_name"
+                                    :alt="`Foto pendamping ${companion.first_name} ${companion.last_name}`"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
-                                <div
-                                    class="absolute top-4 right-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-slate-900 backdrop-blur-sm"
-                                >
-                                    ⭐ 5.0
-                                </div>
                             </div>
                             <div class="p-6">
                                 <h3 class="text-xl font-bold text-slate-900">
                                     <Link
                                         :href="`/companions/${companion.id}`"
-                                        class="transition-colors hover:text-primary"
+                                        class="transition-colors hover:text-primary focus-visible:text-primary focus-visible:outline-none"
                                     >
                                         {{ companion.first_name }}
                                         {{ companion.last_name }}
                                     </Link>
                                 </h3>
+                                <p
+                                    v-if="companion.city"
+                                    class="mt-1 text-sm text-slate-500"
+                                >
+                                    {{ companion.city }}
+                                </p>
                                 <p
                                     class="mt-2 line-clamp-2 text-sm text-slate-500"
                                 >
@@ -546,40 +655,48 @@ const services = [
                                     </div>
                                     <Link
                                         :href="`/companions/${companion.id}`"
-                                        class="rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white transition-all hover:bg-primary"
+                                        class="rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white transition-all hover:bg-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none"
                                     >
                                         Booking
+                                        <span class="sr-only">
+                                            pendamping
+                                            {{ companion.first_name }}
+                                        </span>
                                     </Link>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </li>
+                    </ul>
                 </div>
             </section>
 
             <!-- Partners Marquee -->
-            <section class="border-y border-slate-100 bg-slate-50/50 py-16">
+            <section
+                class="border-y border-slate-100 bg-white py-16"
+                aria-labelledby="mitra-title"
+            >
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <p
+                    <h2
+                        id="mitra-title"
                         class="mb-8 text-center text-xs font-bold tracking-[0.2em] text-slate-400 uppercase"
                     >
                         Mitra Kami
-                    </p>
+                    </h2>
 
                     <div class="relative flex overflow-hidden">
-                        <!-- Fade overlays -->
                         <div
-                            class="pointer-events-none absolute left-0 z-10 h-full w-40 bg-gradient-to-r from-slate-50 to-transparent lg:w-40"
+                            aria-hidden="true"
+                            class="pointer-events-none absolute left-0 z-10 h-full w-24 bg-gradient-to-r from-white to-transparent lg:w-40"
                         ></div>
                         <div
-                            class="pointer-events-none absolute right-0 z-10 h-full w-40 bg-gradient-to-l from-slate-50 to-transparent lg:w-40"
+                            aria-hidden="true"
+                            class="pointer-events-none absolute right-0 z-10 h-full w-24 bg-gradient-to-l from-white to-transparent lg:w-40"
                         ></div>
 
-                        <!-- Infinite Scroll Content -->
-                        <div
-                            class="animate-marquee flex items-center gap-2 py-2 whitespace-nowrap lg:gap-4"
+                        <ul
+                            class="motion-safe:animate-marquee flex items-center gap-8 py-2 whitespace-nowrap lg:gap-12"
                         >
-                            <div
+                            <li
                                 v-for="(partner, index) in [
                                     ...partners,
                                     ...partners,
@@ -587,31 +704,34 @@ const services = [
                                     ...partners,
                                 ]"
                                 :key="index"
-                                class="flex h-28 w-56 items-center justify-center opacity-50 grayscale transition-all hover:opacity-100 hover:grayscale-0 lg:h-28 lg:w-60"
+                                class="flex h-24 w-48 items-center justify-center opacity-50 grayscale transition-all hover:opacity-100 hover:grayscale-0 lg:h-28 lg:w-60"
                             >
                                 <img
                                     :src="partner.logo"
-                                    :alt="partner.name"
+                                    :alt="`Logo ${partner.name}`"
+                                    :title="partner.name"
                                     class="h-full w-full object-contain"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
-                            </div>
-                        </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </section>
 
             <!-- CTA Section -->
-            <section class="bg-white py-16">
-                <!-- Padding luar dikurangi -->
+            <section class="bg-slate-50 py-16">
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div
-                        class="relative overflow-hidden rounded-[2.5rem] bg-[#0097B2] px-8 py-12 text-center shadow-2xl shadow-cyan-200 lg:px-16 lg:py-16"
+                        class="relative overflow-hidden rounded-[2.5rem] bg-primary px-8 py-12 text-center shadow-2xl shadow-cyan-200 lg:px-16 lg:py-16"
                     >
-                        <!-- Decorative Elements - Dibuat lebih lembut -->
                         <div
+                            aria-hidden="true"
                             class="absolute top-0 right-0 -mt-16 -mr-16 h-48 w-48 rounded-full bg-white/10 blur-3xl"
                         ></div>
                         <div
+                            aria-hidden="true"
                             class="absolute bottom-0 left-0 -mb-16 -ml-16 h-48 w-48 rounded-full bg-black/5 blur-3xl"
                         ></div>
 
@@ -622,7 +742,7 @@ const services = [
                                 Siap Memberikan yang Terbaik untuk Si Kecil?
                             </h2>
                             <p
-                                class="mt-4 text-base leading-relaxed text-cyan-50/90 lg:text-md"
+                                class="lg:text-md mt-4 text-base leading-relaxed text-white"
                             >
                                 Bergabunglah dengan ratusan orang tua lainnya
                                 dan mulai perjalanan transformatif bersama
@@ -632,20 +752,22 @@ const services = [
                             <div
                                 class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
                             >
-                                <!-- Tombol Utama: Putih, Teks Cyan -->
                                 <Link
                                     :href="register()"
-                                    class="w-full rounded-xl bg-white px-8 py-3.5 text-sm font-bold text-[#0097B2] shadow-lg transition-all hover:bg-cyan-50 hover:shadow-xl active:scale-95 sm:w-auto"
+                                    class="w-full rounded-xl bg-white px-8 py-3.5 text-sm font-bold text-primary shadow-lg transition-all hover:bg-cyan-50 hover:shadow-xl focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary focus-visible:outline-none active:scale-95 sm:w-auto"
                                 >
                                     Daftar Sekarang
                                 </Link>
-
-                                <!-- Tombol Sekunder: Outline Putih -->
-                                <button
-                                    class="w-full rounded-xl border-2 border-white/30 px-8 py-3.5 text-sm font-bold text-white transition-all hover:bg-white/10 active:scale-95 sm:w-auto"
+                                <a
+                                    href="#layanan"
+                                    class="group inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-white/30 px-8 py-3.5 text-sm font-bold text-white transition-all hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary focus-visible:outline-none active:scale-95 sm:w-auto"
                                 >
-                                    Konsultasi Gratis
-                                </button>
+                                    Lihat Layanan
+                                    <ArrowRight
+                                        aria-hidden="true"
+                                        class="h-4 w-4 transition-transform group-hover:translate-x-1"
+                                    />
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -673,10 +795,9 @@ const services = [
     animation-play-state: paused;
 }
 
-/* Custom transitions */
-.transition-all {
-    transition-property: all;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 300ms;
+@media (prefers-reduced-motion: reduce) {
+    .animate-marquee {
+        animation: none;
+    }
 }
 </style>

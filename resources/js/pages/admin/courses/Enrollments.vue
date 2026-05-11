@@ -258,7 +258,7 @@ function statusLabel(status: string) {
                                     'rounded-full px-2.5 py-1 text-xs font-medium',
                                     enrollment.order_id
                                         ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                                        : 'bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
+                                        : 'bg-orange-50 text-orange-700 dark:bg-[#0097B2]/20 dark:text-[#0097B2]',
                                 ]"
                             >
                                 {{
