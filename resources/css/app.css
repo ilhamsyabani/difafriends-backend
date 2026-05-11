@@ -105,23 +105,23 @@
     --popover: hsl(0 0% 100%);
     --popover-foreground: hsl(0 0% 3.9%);
 
-    /* ── Primary = brand purple ─────────────────────────────────────── */
-    --primary: #0097B2;
-    --primary-hover: #F8DC5B;
+    /* ── Primary brand: teal #0097B2 ───────────────────────────────── */
+    --primary: hsl(188 100% 32%);
+    --primary-hover: hsl(188 100% 40%);
     --primary-foreground: hsl(0 0% 98%);
 
     --secondary: hsl(0 0% 92.1%);
     --secondary-foreground: hsl(0 0% 9%);
     --muted: hsl(0 0% 96.1%);
     --muted-foreground: hsl(0 0% 45.1%);
-    --accent: hsl(262 100% 97%);
-    --accent-foreground: hsl(27 98% 68%);
+    --accent: hsl(188 100% 96%);
+    --accent-foreground: hsl(188 100% 30%);
     --destructive: hsl(0 84.2% 60.2%);
     --destructive-foreground: hsl(0 0% 98%);
     --border: hsl(0 0% 92.8%);
     --input: hsl(0 0% 89.8%);
-    --ring: hsl(27 93% 88%);
-    --chart-1: hsl(262 83% 58%);
+    --ring: hsl(188 100% 75%);
+    --chart-1: hsl(188 100% 35%);
     --chart-2: hsl(173 58% 39%);
     --chart-3: hsl(197 37% 24%);
     --chart-4: hsl(43 74% 66%);
@@ -129,12 +129,12 @@
     --radius: 0.625rem;
     --sidebar-background: hsl(0 0% 99%);
     --sidebar-foreground: hsl(215 16% 35%);
-    --sidebar-primary: hsl(27 98% 62%);
+    --sidebar-primary: hsl(188 100% 35%);
     --sidebar-primary-foreground: hsl(0 0% 98%);
     --sidebar-accent: hsl(0 0% 96%);
     --sidebar-accent-foreground: hsl(0 0% 10%);
     --sidebar-border: hsl(0 0% 92%);
-    --sidebar-ring: hsl(27 98% 70%);
+    --sidebar-ring: hsl(188 100% 50%);
     --sidebar: hsl(0 0% 99%);
 
     /* ── Brand tokens — semua purple usage di-alias ke sini ─────────── */
@@ -162,33 +162,35 @@
     --card-foreground: hsl(0 0% 98%);
     --popover: hsl(0 0% 10%);
     --popover-foreground: hsl(0 0% 98%);
-    --primary: hsl(27 98% 65%);
-    --primary-hover: hsl(27 98% 55%);
+
+    /* ── Primary brand: teal #0097B2 (lebih cerah utk dark mode) ───── */
+    --primary: hsl(188 100% 32%);
+    --primary-hover: hsl(188 100% 40%);
     --primary-foreground: hsl(0 0% 98%);
     --secondary: hsl(0 0% 14.9%);
     --secondary-foreground: hsl(0 0% 98%);
     --muted: hsl(0 0% 16.08%);
     --muted-foreground: hsl(0 0% 63.9%);
-    --accent: hsl(27 30% 15%);
-    --accent-foreground: hsl(27 98% 75%);
+    --accent: hsl(188 50% 15%);
+    --accent-foreground: hsl(188 80% 70%);
     --destructive: hsl(0 84% 60%);
     --destructive-foreground: hsl(0 0% 98%);
     --border: hsl(0 0% 14.9%);
     --input: hsl(0 0% 14.9%);
-    --ring: hsl(27 93% 60%);
-    --chart-1: hsl(27 98% 65%);
+    --ring: hsl(188 80% 50%);
+    --chart-1: hsl(188 80% 55%);
     --chart-2: hsl(160 60% 45%);
     --chart-3: hsl(30 80% 55%);
     --chart-4: hsl(280 65% 60%);
     --chart-5: hsl(340 75% 55%);
     --sidebar-background: hsl(222 50% 8%);
     --sidebar-foreground: hsl(215 20% 60%);
-    --sidebar-primary: hsl(27 98% 65%);
+    --sidebar-primary: hsl(188 80% 50%);
     --sidebar-primary-foreground: hsl(0 0% 100%);
     --sidebar-accent: hsl(222 45% 14%);
     --sidebar-accent-foreground: hsl(0 0% 95%);
     --sidebar-border: hsl(222 40% 15%);
-    --sidebar-ring: hsl(27 98% 65%);
+    --sidebar-ring: hsl(188 80% 50%);
     --sidebar: hsl(222 50% 8%);
 
     --brand: hsl(262 83% 68%);

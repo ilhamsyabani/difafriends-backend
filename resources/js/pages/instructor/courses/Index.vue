@@ -491,7 +491,7 @@ function destroy(id: number) {
 
                                         <span
                                             v-if="course.is_featured"
-                                            class="items-top inline-flex gap-1 text-xs font-semibold text-orange-500"
+                                            class="items-top inline-flex gap-1 text-xs font-semibold text-orange-500 dark:text-[#0097B2]"
                                         >
                                             <Flame class="h-3 w-3" />
                                             Unggulan
