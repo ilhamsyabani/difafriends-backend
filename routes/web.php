@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\ScheduleController as AdminScheduleController;
 // ── Controllers ──────────────────────────────────────
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\Companion\BookingController as CompanionBookingController;
@@ -62,7 +63,7 @@ Route::get('/', function () {
             ->inRandomOrder()
             ->take(3)
             ->get()
-            ->map(fn ($c) => [
+            ->map(fn($c) => [
                 'id' => $c->id,
                 'first_name' => $c->first_name,
                 'last_name' => $c->last_name,
@@ -100,7 +101,7 @@ Route::post('/webhook/scalev', [ScalevWebhookController::class, 'handle'])
 // ── Authenticated Routes ──────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
+    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
 
     // Orders
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
@@ -116,14 +117,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('reviews.store');
 
     // Quiz
-    Route::get('/learn/{course:slug}/quiz/{quiz}',
-        [QuizController::class, 'show'])->name('quiz.show');
-    Route::post('/learn/{course:slug}/quiz/{quiz}/start',
-        [QuizController::class, 'start'])->name('quiz.start');
-    Route::post('/learn/{course:slug}/quiz/{quiz}/submit',
-        [QuizController::class, 'submit'])->name('quiz.submit');
-    Route::get('/learn/{course:slug}/quiz/{quiz}/result',
-        [QuizController::class, 'result'])->name('quiz.result');
+    Route::get(
+        '/learn/{course:slug}/quiz/{quiz}',
+        [QuizController::class, 'show']
+    )->name('quiz.show');
+    Route::post(
+        '/learn/{course:slug}/quiz/{quiz}/start',
+        [QuizController::class, 'start']
+    )->name('quiz.start');
+    Route::post(
+        '/learn/{course:slug}/quiz/{quiz}/submit',
+        [QuizController::class, 'submit']
+    )->name('quiz.submit');
+    Route::get(
+        '/learn/{course:slug}/quiz/{quiz}/result',
+        [QuizController::class, 'result']
+    )->name('quiz.result');
 
     // Bookings
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
@@ -137,6 +146,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/certificates', [CertificateController::class, 'index'])->name('certificates.index');
     Route::get('/certificates/{number}/download', [CertificateController::class, 'download'])->name('certificates.download');
 
+    //Assessments
+    Route::prefix('assessments')->middleware('auth')->group(function () {
+        Route::get('/',                        [AssessmentController::class, 'index'])->name('assessment.index');
+        Route::get('/kesiapan',                [AssessmentController::class, 'kesiapan'])->name('assessment.kesiapan');
+        Route::get('/pemilihan',               [AssessmentController::class, 'pemilihan'])->name('assessment.pemilihan');
+        Route::post('/results',                [AssessmentController::class, 'store'])->name('assessment.results');
+        Route::delete('/results/{type}',       [AssessmentController::class, 'destroy'])->name('assessment.destroy');
+    });
+
     // Notifications
     // Endpoint ringan — hanya COUNT, dipakai polling 30 detik
     Route::get('/notifications/count', function (Request $request) {
@@ -148,7 +166,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/notifications', function (Request $request) {
         return response()->json([
             'notifications' => $request->user()->notifications()->limit(10)->get()
-                ->map(fn ($n) => [
+                ->map(fn($n) => [
                     'id' => $n->id,
                     // Whitelist field — jangan expose seluruh data object
                     'title' => $n->data['title'] ?? '',
@@ -210,18 +228,30 @@ Route::middleware(['auth', 'verified', 'role:admin'])
 
         // Courses Admin
         Route::resource('courses', AdminCourseController::class)->except(['show']);
-        Route::get('/courses/{course}/manage',
-            [AdminCourseController::class, 'manage'])->name('courses.manage');
-        Route::patch('/courses/{course}/approve',
-            [AdminCourseController::class, 'approve'])->name('courses.approve');
-        Route::patch('/courses/{course}/reject',
-            [AdminCourseController::class, 'reject'])->name('courses.reject');
-        Route::get('/courses/{course}/enrollments',
-            [AdminCourseEnrollmentController::class, 'index'])->name('courses.enrollments.index');
-        Route::post('/courses/{course}/enrollments',
-            [AdminCourseEnrollmentController::class, 'store'])->name('courses.enrollments.store');
-        Route::delete('/courses/{course}/enrollments/{enrollment}',
-            [AdminCourseEnrollmentController::class, 'destroy'])->name('courses.enrollments.destroy');
+        Route::get(
+            '/courses/{course}/manage',
+            [AdminCourseController::class, 'manage']
+        )->name('courses.manage');
+        Route::patch(
+            '/courses/{course}/approve',
+            [AdminCourseController::class, 'approve']
+        )->name('courses.approve');
+        Route::patch(
+            '/courses/{course}/reject',
+            [AdminCourseController::class, 'reject']
+        )->name('courses.reject');
+        Route::get(
+            '/courses/{course}/enrollments',
+            [AdminCourseEnrollmentController::class, 'index']
+        )->name('courses.enrollments.index');
+        Route::post(
+            '/courses/{course}/enrollments',
+            [AdminCourseEnrollmentController::class, 'store']
+        )->name('courses.enrollments.store');
+        Route::delete(
+            '/courses/{course}/enrollments/{enrollment}',
+            [AdminCourseEnrollmentController::class, 'destroy']
+        )->name('courses.enrollments.destroy');
 
         // Schedules Admin
         Route::resource('schedules', AdminScheduleController::class)->except(['show']);
@@ -250,11 +280,13 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         Route::resource('articles', App\Http\Controllers\Admin\ArticleController::class);
 
         // Quiz Grading
-        Route::get('/courses/{course}/quizzes/{quiz}/grade',
+        Route::get(
+            '/courses/{course}/quizzes/{quiz}/grade',
             [AdminQuizGradeController::class, 'index']
         )->name('courses.quiz.grade');
 
-        Route::post('/quiz-answers/{answer}/grade',
+        Route::post(
+            '/quiz-answers/{answer}/grade',
             [AdminQuizGradeController::class, 'grade']
         )->name('quiz.answer.grade');
     });
@@ -291,8 +323,8 @@ Route::middleware(['auth', 'verified', 'role:instructor'])
 
         Route::get('/courses/{course}/manage', function (Course $course) {
             $course->load([
-                'sections' => fn ($q) => $q->orderBy('sort_order'),
-                'sections.lectures' => fn ($q) => $q->orderBy('sort_order'),
+                'sections' => fn($q) => $q->orderBy('sort_order'),
+                'sections.lectures' => fn($q) => $q->orderBy('sort_order'),
                 'sections.quiz',
             ]);
 
@@ -300,19 +332,23 @@ Route::middleware(['auth', 'verified', 'role:instructor'])
         })->name('courses.manage');
 
         // Quiz
-        Route::resource('courses.sections.quiz',
+        Route::resource(
+            'courses.sections.quiz',
             App\Http\Controllers\Instructor\QuizController::class
         )->except(['index', 'show']);
 
-        Route::resource('courses.sections.quiz.questions',
+        Route::resource(
+            'courses.sections.quiz.questions',
             QuizQuestionController::class
         )->except(['index', 'show']);
 
-        Route::get('courses/{course}/quizzes/{quiz}/grade',
+        Route::get(
+            'courses/{course}/quizzes/{quiz}/grade',
             [QuizGradeController::class, 'index']
         )->name('quiz.grade');
 
-        Route::post('quiz-answers/{answer}/grade',
+        Route::post(
+            'quiz-answers/{answer}/grade',
             [QuizGradeController::class, 'grade']
         )->name('quiz.answer.grade');
     });
@@ -334,8 +370,11 @@ Route::middleware(['auth', 'verified', 'role:companion'])
                         ->whereIn('status', ['confirmed', 'pending'])
                         ->count(),
                     'totalRevenue' => Order::where('status', 'paid')
-                        ->whereHasMorph('orderable', [Booking::class],
-                            fn ($q) => $q->where('tutor_id', $user->id))
+                        ->whereHasMorph(
+                            'orderable',
+                            [Booking::class],
+                            fn($q) => $q->where('tutor_id', $user->id)
+                        )
                         ->sum('final_amount'),
                     'recentBookings' => Booking::where('tutor_id', $user->id)
                         ->with(['student', 'schedule'])->latest()->limit(10)->get(),
@@ -344,14 +383,15 @@ Route::middleware(['auth', 'verified', 'role:companion'])
         })->name('dashboard');
 
         Route::resource('schedules', CompanionScheduleController::class);
-        Route::put('/schedules/{schedule}/toggle-status',
+        Route::put(
+            '/schedules/{schedule}/toggle-status',
             [CompanionScheduleController::class, 'toggleStatus']
         )->name('schedules.toggle-status');
 
         Route::get('/bookings', [CompanionBookingController::class, 'index'])->name('bookings.index');
     });
 
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';
 
 // ── Error page preview (dev only) ────────────────────────────────────────────
 if (app()->environment('local')) {
