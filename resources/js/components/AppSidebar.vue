@@ -60,6 +60,7 @@ const companionNav: NavItem[] = [
 const userNav: NavItem[] = [
     { title: 'Dashboard', href: '/dashboard', icon: LayoutGrid },
     { title: 'Kelas Saya', href: '/user/enrollments', icon: BookOpen },
+    { title: 'Assessment', href: '/assessments', icon: BookOpen },
     { title: 'Riwayat Order', href: '/user/orders', icon: ShoppingCart },
 ];
 
