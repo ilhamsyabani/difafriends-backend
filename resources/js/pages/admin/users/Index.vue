@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { FilePenLine, Trash2, Plus, Search } from 'lucide-vue-next';
+import {
+    FilePenLine,
+    Trash2,
+    Plus,
+    Search,
+    Upload,
+    Download,
+} from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 import SortIcon from '@/components/SortIcon.vue';
 import { Input } from '@/components/ui/input';
@@ -40,6 +47,39 @@ const flash = computed(
 
 // State untuk input pencarian
 const search = ref(props.filters.search ?? '');
+
+// ── Import Excel ──────────────────────────────────────
+const fileInput = ref<HTMLInputElement | null>(null);
+const importing = ref(false);
+
+function triggerImport() {
+    fileInput.value?.click();
+}
+
+function handleImportFile(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+
+    if (!file) {
+        return;
+    }
+
+    importing.value = true;
+    router.post(
+        '/admin/users/import',
+        { file },
+        {
+            forceFormData: true,
+            preserveScroll: true,
+            onFinish: () => {
+                importing.value = false;
+                if (fileInput.value) {
+                    fileInput.value.value = '';
+                }
+            },
+        },
+    );
+}
 
 // Watcher dengan Debounce untuk pencarian
 let searchTimeout: ReturnType<typeof setTimeout>;
@@ -141,6 +181,33 @@ function getInitials(firstName: string, lastName: string) {
                             class="rounded-xl pl-9 shadow-sm"
                         />
                     </div>
+
+                    <!-- Unduh template Excel -->
+                    <a
+                        href="/admin/users/template"
+                        class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-600 shadow-sm transition-all hover:border-gray-300 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:text-white"
+                    >
+                        <Download class="h-4 w-4" />
+                        Template
+                    </a>
+
+                    <!-- Import dari Excel -->
+                    <button
+                        type="button"
+                        :disabled="importing"
+                        @click="triggerImport"
+                        class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-600 shadow-sm transition-all hover:border-gray-300 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:text-white"
+                    >
+                        <Upload class="h-4 w-4" />
+                        {{ importing ? 'Mengimpor...' : 'Import' }}
+                    </button>
+                    <input
+                        ref="fileInput"
+                        type="file"
+                        accept=".xlsx,.xls,.csv"
+                        class="hidden"
+                        @change="handleImportFile"
+                    />
 
                     <Link
                         href="/admin/users/create"

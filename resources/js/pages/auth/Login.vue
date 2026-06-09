@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 import axios from 'axios';
 import { computed, ref } from 'vue';
 import { Spinner } from '@/components/ui/spinner';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { register } from '@/routes';
+import { redirect as googleRedirect } from '@/routes/google';
 import { store } from '@/routes/login';
 import { request } from '@/routes/password';
 
@@ -14,6 +15,14 @@ defineProps<{
     canRegister: boolean;
 }>();
 
+// Error yang di-flash dari server (mis. callback Google gagal) dibagikan
+// Inertia lewat prop `errors`. Tampilkan langsung di banner.
+const page = usePage();
+const sharedError = computed<string>(() => {
+    const errs = (page.props.errors ?? {}) as Record<string, string>;
+    return errs.email || errs.password || '';
+});
+
 // ── State ────────────────────────────────────────────────────────
 const email = ref('');
 const password = ref('');
@@ -21,6 +30,9 @@ const remember = ref(false);
 const showPass = ref(false);
 const loading = ref(false);
 const serverErr = ref('');
+
+// Gabungan: error dari submit (axios) ATAU error yang di-flash server (Google).
+const displayError = computed(() => serverErr.value || sharedError.value);
 
 const emailFocus = ref(false);
 const passwordFocus = ref(false);
@@ -148,7 +160,7 @@ async function submit() {
 
         <!-- Server error -->
         <div
-            v-if="serverErr"
+            v-if="displayError"
             class="mb-5 flex items-start gap-2.5 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600 ring-1 ring-red-200 dark:bg-red-900/20 dark:text-red-400 dark:ring-red-800/40"
         >
             <svg
@@ -164,7 +176,7 @@ async function submit() {
                     d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
                 />
             </svg>
-            {{ serverErr }}
+            {{ displayError }}
         </div>
 
         <form @submit.prevent="submit" novalidate class="flex flex-col gap-3">
@@ -449,8 +461,8 @@ async function submit() {
 
             <!-- ── Social ─────────────────────────────────────────── -->
             <div class="grid grid-cols-2 gap-2.5">
-                <button
-                    type="button"
+                <a
+                    :href="googleRedirect.url()"
                     class="flex h-10 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white text-xs font-semibold text-gray-600 transition-all hover:border-gray-300 hover:shadow-sm active:scale-[0.98] dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-700"
                 >
                     <svg class="h-4 w-4" viewBox="0 0 24 24">
@@ -472,10 +484,12 @@ async function submit() {
                         />
                     </svg>
                     Google
-                </button>
+                </a>
                 <button
                     type="button"
-                    class="flex h-10 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white text-xs font-semibold text-gray-600 transition-all hover:border-gray-300 hover:shadow-sm active:scale-[0.98] dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-700"
+                    disabled
+                    title="Login Facebook belum tersedia"
+                    class="flex h-10 cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white text-xs font-semibold text-gray-400 opacity-60 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-500"
                 >
                     <svg class="h-4 w-4 fill-[#1877F2]" viewBox="0 0 24 24">
                         <path

@@ -3,13 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\Roles;
+use App\Exports\UsersTemplateExport;
 use App\Http\Controllers\Controller;
+use App\Imports\UsersImport;
 use App\Models\User;
+use App\Notifications\AccountCredentialsNotification;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class UserController extends Controller
 {
@@ -32,6 +38,50 @@ class UserController extends Controller
             'users' => $users,
             'filters' => $request->only(['search', 'sort', 'direction']),
         ]);
+    }
+
+    /**
+     * Unduh template Excel kosong untuk impor pengguna.
+     */
+    public function template(): BinaryFileResponse
+    {
+        return Excel::download(new UsersTemplateExport, 'template-import-pengguna.xlsx');
+    }
+
+    /**
+     * Impor pengguna dari file Excel, lalu kirim email kredensial ke tiap akun baru.
+     */
+    public function import(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:xlsx,xls,csv', 'max:5120'],
+        ]);
+
+        $import = new UsersImport;
+        Excel::import($import, $request->file('file'));
+
+        // Kirim kredensial ke setiap user yang berhasil dibuat (notifikasi di-queue).
+        foreach ($import->created as $row) {
+            $row['user']->notify(new AccountCredentialsNotification($row['password']));
+        }
+
+        $createdCount = count($import->created);
+
+        if ($createdCount === 0 && empty($import->errors)) {
+            return back()->with('error', 'Tidak ada data pengguna yang ditemukan pada file.');
+        }
+
+        $redirect = back();
+
+        if ($createdCount > 0) {
+            $redirect->with('success', "{$createdCount} pengguna berhasil diimpor dan email kredensial telah dikirim.");
+        }
+
+        if (! empty($import->errors)) {
+            $redirect->with('error', count($import->errors).' baris dilewati: '.implode(' | ', $import->errors));
+        }
+
+        return $redirect;
     }
 
     /**
