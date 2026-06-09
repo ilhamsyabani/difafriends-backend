@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\ScheduleController as AdminScheduleController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AssessmentController;
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\Companion\BookingController as CompanionBookingController;
@@ -63,7 +64,7 @@ Route::get('/', function () {
             ->inRandomOrder()
             ->take(3)
             ->get()
-            ->map(fn($c) => [
+            ->map(fn ($c) => [
                 'id' => $c->id,
                 'first_name' => $c->first_name,
                 'last_name' => $c->last_name,
@@ -88,6 +89,12 @@ Route::get('/articles', [ArticleController::class, 'index'])->name('articles.ind
 Route::get('/articles/{slug}', [ArticleController::class, 'show'])->name('articles.show');
 Route::get('/verify/{number}', [CertificateController::class, 'verify'])->name('certificates.verify');
 
+// ── Google OAuth (Socialite) ──────────────────────────
+Route::middleware('guest')->group(function () {
+    Route::get('/auth/google/redirect', [GoogleController::class, 'redirect'])->name('google.redirect');
+    Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('google.callback');
+});
+
 // Webhook Midtrans — no auth, no CSRF
 Route::post('/webhook/midtrans', [OrderController::class, 'webhook'])
     ->name('webhook.midtrans')
@@ -101,7 +108,7 @@ Route::post('/webhook/scalev', [ScalevWebhookController::class, 'handle'])
 // ── Authenticated Routes ──────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
+    Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
 
     // Orders
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
@@ -146,13 +153,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/certificates', [CertificateController::class, 'index'])->name('certificates.index');
     Route::get('/certificates/{number}/download', [CertificateController::class, 'download'])->name('certificates.download');
 
-    //Assessments
+    // Assessments
     Route::prefix('assessments')->middleware('auth')->group(function () {
-        Route::get('/',                        [AssessmentController::class, 'index'])->name('assessment.index');
-        Route::get('/kesiapan',                [AssessmentController::class, 'kesiapan'])->name('assessment.kesiapan');
-        Route::get('/pemilihan',               [AssessmentController::class, 'pemilihan'])->name('assessment.pemilihan');
-        Route::post('/results',                [AssessmentController::class, 'store'])->name('assessment.results');
-        Route::delete('/results/{type}',       [AssessmentController::class, 'destroy'])->name('assessment.destroy');
+        Route::get('/', [AssessmentController::class, 'index'])->name('assessment.index');
+        Route::get('/kesiapan', [AssessmentController::class, 'kesiapan'])->name('assessment.kesiapan');
+        Route::get('/pemilihan', [AssessmentController::class, 'pemilihan'])->name('assessment.pemilihan');
+        Route::post('/results', [AssessmentController::class, 'store'])->name('assessment.results');
+        Route::delete('/results/{type}', [AssessmentController::class, 'destroy'])->name('assessment.destroy');
     });
 
     // Notifications
@@ -166,7 +173,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/notifications', function (Request $request) {
         return response()->json([
             'notifications' => $request->user()->notifications()->limit(10)->get()
-                ->map(fn($n) => [
+                ->map(fn ($n) => [
                     'id' => $n->id,
                     // Whitelist field — jangan expose seluruh data object
                     'title' => $n->data['title'] ?? '',
@@ -220,7 +227,10 @@ Route::middleware(['auth', 'verified', 'role:admin'])
             ]);
         })->name('dashboard');
 
-        // Users
+        // Users — import/template harus didefinisikan sebelum resource
+        // agar tidak tertangkap oleh route show (/users/{user}).
+        Route::get('/users/template', [AdminUserController::class, 'template'])->name('users.template');
+        Route::post('/users/import', [AdminUserController::class, 'import'])->name('users.import');
         Route::resource('users', AdminUserController::class);
 
         // Categories
@@ -323,8 +333,8 @@ Route::middleware(['auth', 'verified', 'role:instructor'])
 
         Route::get('/courses/{course}/manage', function (Course $course) {
             $course->load([
-                'sections' => fn($q) => $q->orderBy('sort_order'),
-                'sections.lectures' => fn($q) => $q->orderBy('sort_order'),
+                'sections' => fn ($q) => $q->orderBy('sort_order'),
+                'sections.lectures' => fn ($q) => $q->orderBy('sort_order'),
                 'sections.quiz',
             ]);
 
@@ -373,7 +383,7 @@ Route::middleware(['auth', 'verified', 'role:companion'])
                         ->whereHasMorph(
                             'orderable',
                             [Booking::class],
-                            fn($q) => $q->where('tutor_id', $user->id)
+                            fn ($q) => $q->where('tutor_id', $user->id)
                         )
                         ->sum('final_amount'),
                     'recentBookings' => Booking::where('tutor_id', $user->id)
@@ -391,7 +401,7 @@ Route::middleware(['auth', 'verified', 'role:companion'])
         Route::get('/bookings', [CompanionBookingController::class, 'index'])->name('bookings.index');
     });
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';
 
 // ── Error page preview (dev only) ────────────────────────────────────────────
 if (app()->environment('local')) {
