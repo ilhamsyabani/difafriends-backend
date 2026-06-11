@@ -460,7 +460,7 @@ async function submit() {
             </div>
 
             <!-- ── Social ─────────────────────────────────────────── -->
-            <div class="grid grid-cols-2 gap-2.5">
+            <div class="grid gap-2.5">
                 <a
                     :href="googleRedirect.url()"
                     class="flex h-10 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white text-xs font-semibold text-gray-600 transition-all hover:border-gray-300 hover:shadow-sm active:scale-[0.98] dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-700"
@@ -485,7 +485,7 @@ async function submit() {
                     </svg>
                     Google
                 </a>
-                <button
+                <!-- <button
                     type="button"
                     disabled
                     title="Login Facebook belum tersedia"
@@ -497,7 +497,7 @@ async function submit() {
                         />
                     </svg>
                     Facebook
-                </button>
+                </button> -->
             </div>
 
             <!-- ── Register ───────────────────────────────────────── -->
