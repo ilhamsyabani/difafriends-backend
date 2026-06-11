@@ -1,13 +1,13 @@
 <!-- resources/js/Pages/Instruments/Index.vue -->
 
 <template>
-    <AppLayout title="Instrumen">
+    <AppLayout title="Assessment">
         <div class="mx-auto max-w-6xl px-4 py-10">
             <!-- Header -->
             <div class="mb-8">
-                <h1 class="text-2xl font-semibold text-gray-800">Instrumen</h1>
+                <h1 class="text-2xl font-semibold text-gray-800">Assessment</h1>
                 <p class="mt-1 text-sm text-gray-500">
-                    Pilih instrumen yang ingin Anda isi untuk anak Anda.
+                    Pilih assessment yang ingin Anda isi untuk anak Anda.
                 </p>
             </div>
 
