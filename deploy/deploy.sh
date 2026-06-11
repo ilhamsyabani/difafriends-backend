@@ -41,8 +41,11 @@ php artisan event:cache
 
 echo "==> Set permission..."
 # chown -R www-data:www-data $APP_DIR
-chmod -R 775 $APP_DIR/storage
-chmod -R 775 $APP_DIR/bootstrap/cache
+# chmod -R 775 $APP_DIR/storage
+# chmod -R 775 $APP_DIR/bootstrap/cache
+# echo "==> Set permission..."
+find $APP_DIR/storage -user $(whoami) -exec chmod 775 {} \; 2>/dev/null || true
+find $APP_DIR/bootstrap/cache -user $(whoami) -exec chmod 775 {} \; 2>/dev/null || true
 
 echo "==> Restart queue & pulse worker..."
 supervisorctl restart difafriends-worker:*
