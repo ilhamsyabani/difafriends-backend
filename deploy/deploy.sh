@@ -19,6 +19,9 @@ git pull origin main
 echo "==> Install PHP dependencies..."
 composer install --no-dev --optimize-autoloader --no-interaction
 
+echo "==> Generate Wayfinder files..."
+php artisan wayfinder:generate
+
 echo "==> Install & build frontend..."
 npm ci
 npm run build
