@@ -7,6 +7,7 @@ import {
     Search,
     Upload,
     Download,
+    Mail,
 } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 import SortIcon from '@/components/SortIcon.vue';
@@ -128,6 +129,14 @@ function sortBy(field: string) {
 function destroy(id: number) {
     if (confirm('Yakin ingin menghapus pengguna ini?')) {
         router.delete(`/admin/users/${id}`);
+    }
+}
+
+function resendCredentials(id: number, email: string) {
+    if (confirm(`Kirim ulang email kredensial ke ${email}? Password baru akan dikirim.`)) {
+        router.post(`/admin/users/${id}/resend-credentials`, {}, {
+            preserveScroll: true,
+        });
     }
 }
 
@@ -396,6 +405,14 @@ function getInitials(firstName: string, lastName: string) {
                                     <div
                                         class="flex items-center justify-end gap-3"
                                     >
+                                        <button
+                                            @click="resendCredentials(user.id, user.email)"
+                                            class="text-gray-400 transition-colors hover:text-blue-500 dark:hover:text-blue-400"
+                                            title="Kirim Ulang Email Kredensial"
+                                        >
+                                            <span class="sr-only">Kirim Ulang</span>
+                                            <Mail class="h-4 w-4" />
+                                        </button>
                                         <Link
                                             :href="`/admin/users/${user.id}/edit`"
                                             class="text-gray-400 transition-colors hover:text-primary dark:hover:text-primary"

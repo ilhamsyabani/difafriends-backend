@@ -29,7 +29,7 @@ blockquote {
 }
 
 a {
-    color: #7b2d8b;
+    color: hsl(188 100% 32%);
 }
 
 a img {
@@ -104,7 +104,7 @@ img {
 }
 
 .header a {
-    color: #7b2d8b;
+    color: hsl(188 100% 32%);
     font-size: 19px;
     font-weight: bold;
     text-decoration: none;
@@ -242,11 +242,11 @@ img {
 
 .button-blue,
 .button-primary {
-    background-color: #7b2d8b;
-    border-bottom: 8px solid #7b2d8b;
-    border-left: 18px solid #7b2d8b;
-    border-right: 18px solid #7b2d8b;
-    border-top: 8px solid #7b2d8b;
+    background-color: hsl(188 100% 32%);
+    border-bottom: 8px solid hsl(188 100% 32%);
+    border-left: 18px solid hsl(188 100% 32%);
+    border-right: 18px solid hsl(188 100% 32%);
+    border-top: 8px solid hsl(188 100% 32%);
 }
 
 .button-green,

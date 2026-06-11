@@ -71,7 +71,14 @@ class ScalevWebhookController extends Controller
 
         if (! $user) {
             $isNewUser = true;
-            $plainPassword = Str::password(12);
+            // Gunakan hanya alphanumeric untuk password agar tidak ada masalah
+            // saat disalin dari email (hindari special characters yang bisa corrupt)
+            $plainPassword = Str::password(
+                length: 12,
+                letters: true,
+                numbers: true,
+                symbols: false,
+            );
             $nameParts = explode(' ', $name, 2);
 
             $user = new User([

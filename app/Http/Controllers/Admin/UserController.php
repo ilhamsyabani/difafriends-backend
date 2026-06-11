@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use Maatwebsite\Excel\Facades\Excel;
@@ -175,9 +176,28 @@ class UserController extends Controller
     }
 
     /**
+     * Kirim ulang email kredensial ke pengguna yang dipilih.
+     */
+    public function resendCredentials(User $user): RedirectResponse
+    {
+        $plainPassword = Str::password(
+            length: 10,
+            letters: true,
+            numbers: true,
+            symbols: false,
+        );
+
+        $user->forceFill(['password' => Hash::make($plainPassword)])->save();
+
+        $user->notify(new AccountCredentialsNotification($plainPassword));
+
+        return back()->with('success', "Email kredensial berhasil dikirim ulang ke {$user->email}.");
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(User $user): RedirectResponse
     {
         $user->delete();
 

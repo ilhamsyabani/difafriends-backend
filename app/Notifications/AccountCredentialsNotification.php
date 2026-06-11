@@ -30,7 +30,10 @@ class AccountCredentialsNotification extends Notification implements ShouldQueue
             ->greeting("Halo, {$notifiable->first_name}!")
             ->line('Sebuah akun telah dibuatkan untuk Anda di platform DifaFriends. Berikut kredensial untuk masuk:')
             ->line("**Email:** {$notifiable->email}")
-            ->line("**Password sementara:** `{$this->plainPassword}`")
+            ->line('**Password sementara:**')
+            ->line("`{$this->plainPassword}`")
+            ->line('')
+            ->line('Silakan salin password di atas dan tempel saat login.')
             ->action('Masuk Sekarang', route('login'))
             ->line('Demi keamanan, segera ganti password Anda setelah login pertama kali.')
             ->salutation('Salam, Tim DifaFriends');

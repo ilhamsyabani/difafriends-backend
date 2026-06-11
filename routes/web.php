@@ -231,6 +231,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         // agar tidak tertangkap oleh route show (/users/{user}).
         Route::get('/users/template', [AdminUserController::class, 'template'])->name('users.template');
         Route::post('/users/import', [AdminUserController::class, 'import'])->name('users.import');
+        Route::post('/users/{user}/resend-credentials', [AdminUserController::class, 'resendCredentials'])
+            ->name('users.resend-credentials');
         Route::resource('users', AdminUserController::class);
 
         // Categories
