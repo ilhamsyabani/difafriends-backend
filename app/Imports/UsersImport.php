@@ -80,7 +80,14 @@ class UsersImport implements ToCollection, WithHeadingRow
      */
     private function createUser(array $data): void
     {
-        $plainPassword = Str::password(10);
+        // Gunakan hanya alphanumeric untuk password agar tidak ada masalah
+        // saat disalin dari email (hindari special characters yang bisa corrupt)
+        $plainPassword = Str::password(
+            length: 10,
+            letters: true,
+            numbers: true,
+            symbols: false,
+        );
 
         $role = Roles::from($data['role']);
         unset($data['role']);
