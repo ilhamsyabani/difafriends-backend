@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { ArrowRight, HandHeart, Presentation, Rocket } from 'lucide-vue-next';
+import { ref, computed } from 'vue';
+import GalleryModal from '@/components/GalleryModal.vue';
 import { useFormatters } from '@/composables/useFormatters';
 import GuestLayout from '@/layouts/GuestLayout.vue';
 import { register } from '@/routes';
-import { computed } from 'vue';
+
 
 const { assetUrl, formatDate, formatPrice } = useFormatters();
 
@@ -53,7 +55,26 @@ defineProps<{
 }>();
 
 const page = usePage();
-const isAdmin = computed(() => (page.props.auth as any)?.user?.role === 'admin');
+const isAdmin = computed(
+    () => (page.props.auth as any)?.user?.role === 'admin',
+);
+
+// Gallery preview state
+const showGalleryPreview = ref(false)
+const galleryPreviewIndex = ref(0)
+
+function openGalleryPreview(index: number) {
+    galleryPreviewIndex.value = index
+    showGalleryPreview.value = true
+}
+
+function closeGalleryPreview() {
+    showGalleryPreview.value = false
+}
+
+function navigateGalleryPreview(index: number) {
+    galleryPreviewIndex.value = index
+}
 
 function getInitials(firstName: string, lastName: string): string {
     return (
@@ -108,6 +129,7 @@ const services = [
     },
 ];
 
+// State
 const pageTitle =
     'Difafriends — Pendidikan Inklusif & Pendampingan Anak Berkebutuhan Khusus';
 const pageDescription =
@@ -159,7 +181,7 @@ const pageDescription =
                                 >
                             </p>
                             <h1
-                                class="text-4xl font-black leading-tight tracking-tight text-slate-900 sm:text-5xl lg:text-6xl"
+                                class="text-4xl leading-tight font-black tracking-tight text-slate-900 sm:text-5xl lg:text-6xl"
                             >
                                 Difafriends
                             </h1>
@@ -439,71 +461,91 @@ const pageDescription =
                     <!-- Real Data from Gallery -->
                     <ul
                         v-if="galleries && galleries.length > 0"
-                        class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
+                        class="grid grid-cols-2 gap-4 md:grid-cols-4"
                     >
                         <li
-                            v-for="gallery in galleries"
+                            v-for="(gallery, index) in galleries"
                             :key="gallery.id"
-                            class="group relative aspect-[4/3] overflow-hidden rounded-[2rem] bg-slate-100 shadow-xl shadow-slate-200/50"
+                            class="group relative aspect-square cursor-pointer overflow-hidden rounded-2xl bg-slate-100 shadow-lg transition-all duration-300 hover:shadow-xl"
+                            @click="openGalleryPreview(index)"
                         >
                             <img
-                                class="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 :src="assetUrl(gallery.path)"
                                 :alt="gallery.alt"
                                 loading="lazy"
                                 decoding="async"
                             />
-                            <figcaption
-                                class="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-slate-900/90 to-transparent p-6 translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100"
+                            <div
+                                class="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors duration-300 group-hover:bg-black/40"
                             >
-                                <p class="text-lg font-bold text-white">
-                                    {{ gallery.alt }}
-                                </p>
-                            </figcaption>
+                                <span
+                                    class="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-slate-700 opacity-0 shadow-lg transition-opacity duration-300 group-hover:opacity-100"
+                                >
+                                    <svg
+                                        class="h-5 w-5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                                        />
+                                    </svg>
+                                </span>
+                            </div>
                         </li>
                     </ul>
 
                     <!-- Fallback placeholder if no galleries yet -->
-                    <ul v-else class="grid grid-cols-1 gap-8 md:grid-cols-2">
+                    <ul v-else class="grid grid-cols-2 gap-4 md:grid-cols-4">
                         <li
-                            class="group relative aspect-[4/3] overflow-hidden rounded-[2rem] bg-slate-100 shadow-xl shadow-slate-200/50"
+                            class="group relative aspect-square overflow-hidden rounded-2xl bg-slate-100 shadow-lg transition-all duration-300 hover:shadow-xl"
                         >
-                            <img
-                                class="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                                src="/images/workshop/workshop-1.png"
-                                alt="Pelatihan Guru Inklusif Difafriends"
-                                loading="lazy"
-                                decoding="async"
-                            />
-                            <figcaption
-                                class="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-slate-900/90 to-transparent p-6"
-                            >
-                                <p class="text-lg font-bold text-white">
-                                    Pelatihan Guru Inklusif
-                                </p>
-                            </figcaption>
+                            <figure class="h-full w-full">
+                                <img
+                                    class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    src="/images/workshop/workshop-1.png"
+                                    alt="Pelatihan Guru Inklusif Difafriends"
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                                <figcaption
+                                    class="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-slate-900/90 to-transparent p-4"
+                                >
+                                    <p class="text-sm font-bold text-white">
+                                        Pelatihan Guru Inklusif
+                                    </p>
+                                </figcaption>
+                            </figure>
                         </li>
                         <li
-                            class="group relative aspect-[4/3] overflow-hidden rounded-[2rem] bg-slate-100 shadow-xl shadow-slate-200/50"
+                            class="group relative aspect-square overflow-hidden rounded-2xl bg-slate-100 shadow-lg transition-all duration-300 hover:shadow-xl"
                         >
-                            <img
-                                class="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                                src="/images/workshop/workshop-2.png"
-                                alt="Seminar Parenting ABK Difafriends"
-                                loading="lazy"
-                                decoding="async"
-                            />
-                            <figcaption
-                                class="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-slate-900/90 to-transparent p-6"
-                            >
-                                <p class="text-lg font-bold text-white">
-                                    Seminar Parenting ABK
-                                </p>
-                            </figcaption>
+                            <figure class="h-full w-full">
+                                <img
+                                    class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    src="/images/workshop/workshop-2.png"
+                                    alt="Seminar Parenting ABK Difafriends"
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                                <figcaption
+                                    class="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-slate-900/90 to-transparent p-4"
+                                >
+                                    <p class="text-sm font-bold text-white">
+                                        Seminar Parenting ABK
+                                    </p>
+                                </figcaption>
+                            </figure>
                         </li>
                     </ul>
                 </div>
             </section>
+
 
             <!-- Articles -->
             <section
@@ -819,6 +861,15 @@ const pageDescription =
                 </div>
             </section>
         </div>
+
+        <!-- Gallery Preview Modal -->
+        <GalleryModal
+            v-if="showGalleryPreview"
+            :galleries="galleries"
+            :current-index="galleryPreviewIndex"
+            @close="closeGalleryPreview"
+            @navigate="navigateGalleryPreview"
+        />
     </GuestLayout>
 </template>
 
