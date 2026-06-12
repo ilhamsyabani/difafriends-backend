@@ -5,6 +5,9 @@ import { computed, ref, watch } from 'vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { useConfirm } from '@/composables/useConfirm';
+
+const confirm = useConfirm();
 
 const props = defineProps<{
     course: { id: number; title: string };
@@ -35,9 +38,6 @@ const props = defineProps<{
 }>();
 
 const page = usePage();
-const flash = computed(
-    () => page.props.flash as { success?: string; error?: string },
-);
 
 const search = ref(props.filters.search ?? '');
 let searchTimeout: ReturnType<typeof setTimeout>;
@@ -65,13 +65,14 @@ function assign(userId: number) {
     });
 }
 
-function remove(enrollmentId: number) {
-    if (confirm('Hapus akses user ini dari kelas?')) {
-        router.delete(
-            `/admin/courses/${props.course.id}/enrollments/${enrollmentId}`,
-            { preserveScroll: true },
-        );
-    }
+async function remove(enrollmentId: number) {
+    const ok = await confirm('Hapus Akses', 'Hapus akses user ini dari kelas?');
+    if (!ok) return;
+
+    router.delete(
+        `/admin/courses/${props.course.id}/enrollments/${enrollmentId}`,
+        { preserveScroll: true },
+    );
 }
 
 function statusClass(status: string) {

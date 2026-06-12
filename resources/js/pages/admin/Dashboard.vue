@@ -41,7 +41,7 @@ const { formatPrice, formatDate } = useFormatters();
     <AppLayout :breadcrumbs="breadcrumbs">
         <Head title="Dashboard Admin" />
 
-        <div class="max-w-7xl space-y-6 p-6">
+        <div class="mx-auto max-w-7xl space-y-6 p-6">
             <div>
                 <h1 class="text-2xl font-bold">Dashboard Admin</h1>
                 <p class="mt-1 text-sm text-muted-foreground">

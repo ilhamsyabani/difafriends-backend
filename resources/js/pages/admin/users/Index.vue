@@ -12,7 +12,11 @@ import {
 import { computed, ref, watch } from 'vue';
 import SortIcon from '@/components/SortIcon.vue';
 import { Input } from '@/components/ui/input';
+import { useConfirm } from '@/composables/useConfirm';
 import AppLayout from '@/layouts/AppLayout.vue';
+
+
+const confirm = useConfirm();
 
 const props = defineProps<{
     users: {
@@ -126,18 +130,18 @@ function sortBy(field: string) {
     );
 }
 
-function destroy(id: number) {
-    if (confirm('Yakin ingin menghapus pengguna ini?')) {
-        router.delete(`/admin/users/${id}`);
-    }
+async function destroy(id: number) {
+    const ok = await confirm('Hapus Pengguna', 'Yakin ingin menghapus pengguna ini?');
+    if (!ok) return;
+    router.delete(`/admin/users/${id}`);
 }
 
-function resendCredentials(id: number, email: string) {
-    if (confirm(`Kirim ulang email kredensial ke ${email}? Password baru akan dikirim.`)) {
-        router.post(`/admin/users/${id}/resend-credentials`, {}, {
-            preserveScroll: true,
-        });
-    }
+async function resendCredentials(id: number, email: string) {
+    const ok = await confirm('Kirim Ulang Kredensial', `Kirim ulang email kredensial ke ${email}? Password baru akan dikirim.`);
+    if (!ok) return;
+    router.post(`/admin/users/${id}/resend-credentials`, {}, {
+        preserveScroll: true,
+    });
 }
 
 // Helper untuk menampilkan inisial jika foto tidak ada
@@ -156,7 +160,7 @@ function getInitials(firstName: string, lastName: string) {
     <AppLayout>
         <Head title="Kelola Pengguna" />
 
-        <div class="max-w-7xl p-6 sm:p-10">
+        <div class="mx-auto max-w-7xl p-6 sm:p-10">
             <!-- Header & Action -->
             <div
                 class="mb-8 flex flex-col gap-6 md:flex-row md:items-center md:justify-between"
@@ -328,14 +332,14 @@ function getInitials(firstName: string, lastName: string) {
                                         <!-- Avatar -->
                                         <img
                                             v-if="user.photo"
-                                            :src="user.photo"
+                                            :src="user.photo.startsWith('http') ? user.photo : `/storage/${user.photo}`"
                                             alt="Avatar"
                                             class="h-10 w-10 shrink-0 rounded-full border border-gray-200 object-cover dark:border-gray-700"
                                         />
                                         <!-- Fallback Inisial Jika Tidak Ada Foto -->
                                         <div
                                             v-else
-                                            class="text-primary-hover flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-purple-100 text-sm font-bold dark:bg-purple-900/50 dark:text-purple-400"
+                                            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary dark:bg-primary/20"
                                         >
                                             {{
                                                 getInitials(
