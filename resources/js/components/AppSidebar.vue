@@ -11,6 +11,7 @@ import {
     ClipboardList,
     BarChart2,
     Activity,
+    FileImage,
 } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
@@ -41,6 +42,7 @@ const adminNav: NavItem[] = [
     { title: 'Kelas', href: '/admin/courses', icon: BookOpen },
     { title: 'Jadwal Sesi', href: '/admin/schedules', icon: Calendar },
     { title: 'Artikel', href: '/admin/articles', icon: Newspaper },
+    { title: 'Galeri', href: '/admin/gallery', icon: FileImage },
     { title: 'Transaksi', href: '/admin/orders', icon: ShoppingCart },
     { title: 'Laporan', href: '/admin/reports', icon: BarChart2 },
     { title: 'Log Aktivitas', href: '/admin/activity-log', icon: Activity },
