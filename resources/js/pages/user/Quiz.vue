@@ -2,6 +2,11 @@
 import { Head, Link, router } from '@inertiajs/vue3';
 import axios from 'axios';
 import { ref, computed } from 'vue';
+import { useToast } from '@/composables/useToast';
+import { useConfirm } from '@/composables/useConfirm';
+
+const toast = useToast();
+const confirm = useConfirm();
 
 const props = defineProps<{
     course: { id: number; title: string; slug: string };
@@ -86,7 +91,7 @@ async function startQuiz() {
         isStarted.value = true;
         initAnswers();
     } catch {
-        alert('Gagal memulai kuis. Coba lagi.');
+        toast.error('Gagal memulai kuis. Coba lagi.');
     } finally {
         isLoading.value = false;
     }
@@ -94,13 +99,8 @@ async function startQuiz() {
 
 // Submit kuis
 async function submitQuiz() {
-    if (
-        !confirm(
-            'Yakin ingin submit kuis? Jawaban tidak bisa diubah setelah submit.',
-        )
-    ) {
-        return;
-    }
+    const ok = await confirm('Submit Kuis', 'Yakin ingin submit kuis? Jawaban tidak bisa diubah setelah submit.');
+    if (!ok) return;
 
     isLoading.value = true;
 
@@ -123,7 +123,7 @@ async function submitQuiz() {
             );
         }
     } catch {
-        alert('Gagal submit kuis. Coba lagi.');
+        toast.error('Gagal submit kuis. Coba lagi.');
     } finally {
         isLoading.value = false;
     }

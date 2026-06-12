@@ -23,6 +23,9 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { useConfirm } from '@/composables/useConfirm';
+
+const confirm = useConfirm();
 
 const props = defineProps<{
     course: {
@@ -80,12 +83,12 @@ function submitSection() {
     }
 }
 
-function deleteSection(sectionId: number) {
-    if (confirm('Yakin ingin menghapus bagian ini beserta semua materinya?')) {
-        router.delete(
-            `/instructor/courses/${props.course.id}/sections/${sectionId}`,
-        );
-    }
+async function deleteSection(sectionId: number) {
+    const ok = await confirm('Hapus Bagian', 'Yakin ingin menghapus bagian ini beserta semua materinya?');
+    if (!ok) return;
+    router.delete(
+        `/instructor/courses/${props.course.id}/sections/${sectionId}`,
+    );
 }
 
 const showLectureForm = ref(false);
@@ -134,12 +137,12 @@ function submitLecture() {
     }
 }
 
-function deleteLecture(sectionId: number, lectureId: number) {
-    if (confirm('Yakin ingin menghapus materi ini?')) {
-        router.delete(
-            `/instructor/courses/${props.course.id}/sections/${sectionId}/lectures/${lectureId}`,
-        );
-    }
+async function deleteLecture(sectionId: number, lectureId: number) {
+    const ok = await confirm('Hapus Materi', 'Yakin ingin menghapus materi ini?');
+    if (!ok) return;
+    router.delete(
+        `/instructor/courses/${props.course.id}/sections/${sectionId}/lectures/${lectureId}`,
+    );
 }
 
 function formatDuration(seconds: number): string {
@@ -154,7 +157,7 @@ function formatDuration(seconds: number): string {
     <AppLayout>
         <Head :title="`Kurikulum: ${course.title}`" />
 
-        <div class="max-w-7xl p-6 sm:p-10">
+        <div class="mx-auto max-w-7xl p-6 sm:p-10">
             <!-- Header halaman -->
             <div
                 class="mb-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"

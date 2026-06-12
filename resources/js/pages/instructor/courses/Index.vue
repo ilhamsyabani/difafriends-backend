@@ -16,6 +16,9 @@ import { computed, ref, watch } from 'vue';
 import SortIcon from '@/components/SortIcon.vue';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { useConfirm } from '@/composables/useConfirm';
+
+const confirm = useConfirm();
 
 const props = defineProps<{
     categories: Array<{ id: number; name: string }>;
@@ -120,10 +123,10 @@ function sortBy(field: string) {
     );
 }
 
-function destroy(id: number) {
-    if (confirm('Yakin hapus Kelas ini?')) {
-        router.delete(`/instructor/courses/${id}`);
-    }
+async function destroy(id: number) {
+    const ok = await confirm('Hapus Kelas', 'Yakin hapus Kelas ini?');
+    if (!ok) return;
+    router.delete(`/instructor/courses/${id}`);
 }
 </script>
 
@@ -131,7 +134,7 @@ function destroy(id: number) {
     <AppLayout>
         <Head title="Kelola Kelas" />
 
-        <div class="max-w-7xl p-6 sm:p-10">
+        <div class="mx-auto max-w-7xl p-6 sm:p-10">
             <!-- Header & Action -->
             <div
                 class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"

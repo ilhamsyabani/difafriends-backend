@@ -25,6 +25,9 @@ import {
 } from '@/components/ui/select';
 
 import GuestLayout from '@/layouts/GuestLayout.vue';
+import { useToast } from '@/composables/useToast';
+
+const toast = useToast();
 
 defineProps<{
     companion: {
@@ -171,11 +174,9 @@ async function submitBooking() {
             (window as any).snap.pay(res.data.snap_token, {
                 onSuccess: () => router.visit('/user/orders'),
                 onPending: () => router.visit('/user/orders'),
-                onError: () => alert('Pembayaran gagal. Coba lagi.'),
+                onError: () => toast.error('Pembayaran gagal. Coba lagi.'),
                 onClose: () =>
-                    alert(
-                        'Anda menutup popup pembayaran sebelum menyelesaikannya.',
-                    ),
+                    toast.info('Anda menutup popup pembayaran sebelum menyelesaikannya.'),
             });
         };
     } catch (err: any) {
