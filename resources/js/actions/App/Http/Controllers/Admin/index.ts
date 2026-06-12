@@ -9,6 +9,7 @@ import BookingController from './BookingController'
 import ReportController from './ReportController'
 import ActivityLogController from './ActivityLogController'
 import ArticleController from './ArticleController'
+import GalleryController from './GalleryController'
 import QuizGradeController from './QuizGradeController'
 
 const Admin = {
@@ -23,6 +24,7 @@ const Admin = {
     ReportController: Object.assign(ReportController, ReportController),
     ActivityLogController: Object.assign(ActivityLogController, ActivityLogController),
     ArticleController: Object.assign(ArticleController, ArticleController),
+    GalleryController: Object.assign(GalleryController, GalleryController),
     QuizGradeController: Object.assign(QuizGradeController, QuizGradeController),
 }
 
