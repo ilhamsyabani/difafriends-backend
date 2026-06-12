@@ -74,7 +74,7 @@ function submit() {
     <AppLayout>
         <Head :title="isEdit ? 'Edit Jadwal' : 'Buat Jadwal Baru'" />
 
-        <div class="max-w-7xl p-6 sm:p-10">
+        <div class="mx-auto max-w-7xl p-6 sm:p-10">
             <!-- Header -->
             <div class="mb-10 flex items-center gap-4">
                 <Link

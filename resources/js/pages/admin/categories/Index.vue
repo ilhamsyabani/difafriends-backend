@@ -4,7 +4,11 @@ import { FilePenLine, Trash2, Plus, Search } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 import SortIcon from '@/components/SortIcon.vue';
 import { Input } from '@/components/ui/input';
+import { useConfirm } from '@/composables/useConfirm';
 import AppLayout from '@/layouts/AppLayout.vue';
+
+
+const confirm = useConfirm();
 
 const props = defineProps<{
     categories: {
@@ -80,10 +84,11 @@ function sortBy(field: string) {
     );
 }
 
-function destroy(id: number) {
-    if (confirm('Yakin hapus kategori ini?')) {
-        router.delete(`/admin/categories/${id}`);
-    }
+async function destroy(id: number) {
+    const ok = await confirm('Hapus Kategori', 'Yakin hapus kategori ini?');
+    if (!ok) return;
+
+    router.delete(`/admin/categories/${id}`);
 }
 </script>
 
@@ -91,7 +96,7 @@ function destroy(id: number) {
     <AppLayout>
         <Head title="Kelola Kategori" />
 
-        <div class="max-w-7xl p-6 sm:p-10">
+        <div class="mx-auto max-w-7xl p-6 sm:p-10">
             <!-- Header & Action -->
             <div
                 class="mb-8 flex flex-col gap-6 md:flex-row md:items-center md:justify-between"

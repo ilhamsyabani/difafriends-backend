@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { ModalsContainer } from 'vue-final-modal';
 import { login, register } from '@/routes';
 </script>
 
@@ -45,15 +46,6 @@ import { login, register } from '@/routes';
                         <p class="text-gray-400 dark:text-gray-600">
                             Intervensi
                         </p>
-                        <!-- Companion/Intervensi disabled
-                        <Link
-                            href="/companions"
-                            class="text-gray-600 transition-colors hover:text-primary dark:text-gray-400"
-                            :disabled="true"
-                        >
-                            Intervensi
-                        </Link>
-                        -->
                     </nav>
 
                     <!-- Auth -->
@@ -89,6 +81,9 @@ import { login, register } from '@/routes';
         <main>
             <slot />
         </main>
+
+        <!-- Dynamic Modals -->
+        <ModalsContainer />
 
         <!-- Footer -->
         <footer

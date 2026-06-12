@@ -60,7 +60,7 @@ function submit() {
     <AppLayout>
         <Head :title="isEdit ? 'Edit Jadwal' : 'Tambah Jadwal'" />
 
-        <div class="max-w-7xl p-6">
+        <div class="mx-auto max-w-7xl p-6">
             <div class="mb-6 flex items-center gap-3">
                 <Link
                     href="/companion/schedules"

@@ -12,6 +12,9 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { useToast } from '@/composables/useToast';
+
+const toast = useToast();
 
 const props = defineProps<{
     course: {
@@ -75,14 +78,14 @@ function onFileInput(e: Event) {
 function handleFile(file: File) {
     // Validasi tipe
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-        alert('Format file harus JPG, PNG, atau WebP.');
+        toast.error('Format file harus JPG, PNG, atau WebP.');
 
         return;
     }
 
     // Validasi ukuran (max 2MB)
     if (file.size > 2 * 1024 * 1024) {
-        alert('Ukuran file maksimal 2MB.');
+        toast.error('Ukuran file maksimal 2MB.');
 
         return;
     }
@@ -113,7 +116,7 @@ function submit() {
     <AppLayout>
         <Head :title="isEdit ? 'Edit Kelas' : 'Buat Kelas Baru'" />
 
-        <div class="max-w-7xl p-6 sm:p-10">
+        <div class="mx-auto max-w-7xl p-6 sm:p-10">
             <!-- Header -->
             <div class="mb-10 flex items-center gap-4">
                 <Link

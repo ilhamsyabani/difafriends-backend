@@ -18,6 +18,9 @@ import { computed, ref, watch } from 'vue';
 import SortIcon from '@/components/SortIcon.vue';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { useConfirm } from '@/composables/useConfirm';
+
+const confirm = useConfirm();
 
 const props = defineProps<{
     categories: Array<{ id: number; name: string }>;
@@ -96,25 +99,26 @@ watch(
     },
 );
 
-function approve(id: number) {
-    if (confirm('Setujui dan publikasikan Kelas ini?')) {
-        // Gunakan post/patch/put sesuai dengan route di web.php kamu
-        router.patch(
-            `/admin/courses/${id}/approve`,
-            {},
-            { preserveScroll: true },
-        );
-    }
+async function approve(id: number) {
+    const ok = await confirm('Publikasi Kelas', 'Setujui dan publikasikan Kelas ini?');
+    if (!ok) return;
+
+    router.patch(
+        `/admin/courses/${id}/approve`,
+        {},
+        { preserveScroll: true },
+    );
 }
 
-function reject(id: number) {
-    if (confirm('Kembalikan Kelas ini ke status Draft?')) {
-        router.patch(
-            `/admin/courses/${id}/reject`,
-            {},
-            { preserveScroll: true },
-        );
-    }
+async function reject(id: number) {
+    const ok = await confirm('Kembalikan ke Draft', 'Kembalikan Kelas ini ke status Draft?');
+    if (!ok) return;
+
+    router.patch(
+        `/admin/courses/${id}/reject`,
+        {},
+        { preserveScroll: true },
+    );
 }
 
 // Fungsi untuk menangani klik pada header tabel
@@ -143,10 +147,11 @@ function sortBy(field: string) {
     );
 }
 
-function destroy(id: number) {
-    if (confirm('Yakin hapus Kelas ini?')) {
-        router.delete(`/admin/courses/${id}`);
-    }
+async function destroy(id: number) {
+    const ok = await confirm('Hapus Kelas', 'Yakin hapus Kelas ini?');
+    if (!ok) return;
+
+    router.delete(`/admin/courses/${id}`);
 }
 </script>
 
@@ -154,7 +159,7 @@ function destroy(id: number) {
     <AppLayout>
         <Head title="Kelola Kelas" />
 
-        <div class="max-w-7xl p-6 sm:p-10">
+        <div class="mx-auto max-w-7xl p-6 sm:p-10">
             <!-- Header & Action -->
             <div
                 class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"

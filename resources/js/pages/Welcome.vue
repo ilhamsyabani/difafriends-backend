@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 import { ArrowRight, HandHeart, Presentation, Rocket } from 'lucide-vue-next';
 import { useFormatters } from '@/composables/useFormatters';
 import GuestLayout from '@/layouts/GuestLayout.vue';
 import { register } from '@/routes';
+import { computed } from 'vue';
 
 const { assetUrl, formatDate, formatPrice } = useFormatters();
 
@@ -43,7 +44,16 @@ defineProps<{
         content: string;
         created_at: string;
     }>;
+    galleries: Array<{
+        id: number;
+        filename: string;
+        alt: string;
+        path: string;
+    }>;
 }>();
+
+const page = usePage();
+const isAdmin = computed(() => (page.props.auth as any)?.user?.role === 'admin');
 
 function getInitials(firstName: string, lastName: string): string {
     return (
@@ -417,9 +427,44 @@ const pageDescription =
                                 <span class="text-primary">Workshop</span>
                             </h2>
                         </div>
+                        <Link
+                            v-if="isAdmin"
+                            href="/admin/gallery"
+                            class="text-sm font-medium text-primary hover:underline"
+                        >
+                            Kelola Galeri →
+                        </Link>
                     </div>
 
-                    <ul class="grid grid-cols-1 gap-8 md:grid-cols-2">
+                    <!-- Real Data from Gallery -->
+                    <ul
+                        v-if="galleries && galleries.length > 0"
+                        class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
+                    >
+                        <li
+                            v-for="gallery in galleries"
+                            :key="gallery.id"
+                            class="group relative aspect-[4/3] overflow-hidden rounded-[2rem] bg-slate-100 shadow-xl shadow-slate-200/50"
+                        >
+                            <img
+                                class="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                :src="assetUrl(gallery.path)"
+                                :alt="gallery.alt"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                            <figcaption
+                                class="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-slate-900/90 to-transparent p-6 translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100"
+                            >
+                                <p class="text-lg font-bold text-white">
+                                    {{ gallery.alt }}
+                                </p>
+                            </figcaption>
+                        </li>
+                    </ul>
+
+                    <!-- Fallback placeholder if no galleries yet -->
+                    <ul v-else class="grid grid-cols-1 gap-8 md:grid-cols-2">
                         <li
                             class="group relative aspect-[4/3] overflow-hidden rounded-[2rem] bg-slate-100 shadow-xl shadow-slate-200/50"
                         >

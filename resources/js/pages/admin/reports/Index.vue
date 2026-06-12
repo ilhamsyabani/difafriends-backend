@@ -88,7 +88,7 @@ const topRevenueMax = computed(() =>
     <AppLayout>
         <Head title="Laporan & Analitik" />
 
-        <div class="max-w-7xl p-6 sm:p-10">
+        <div class="mx-auto max-w-7xl p-6 sm:p-10">
             <div
                 class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
             >

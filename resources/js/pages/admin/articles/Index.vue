@@ -19,6 +19,9 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { useConfirm } from '@/composables/useConfirm';
+
+const confirm = useConfirm();
 
 const props = defineProps<{
     articles: {
@@ -62,10 +65,10 @@ watch([search, status], ([newSearch, newStatus]) => {
     }, 300);
 });
 
-function destroy(id: number) {
-    if (confirm('Yakin ingin menghapus artikel ini secara permanen?')) {
-        router.delete(`/admin/articles/${id}`);
-    }
+async function destroy(id: number) {
+    const ok = await confirm('Hapus Artikel', 'Yakin ingin menghapus artikel ini secara permanen?');
+    if (!ok) return;
+    router.delete(`/admin/articles/${id}`);
 }
 </script>
 
@@ -73,7 +76,7 @@ function destroy(id: number) {
     <AppLayout>
         <Head title="Manajemen Artikel" />
 
-        <div class="max-w-7xl p-6 sm:p-10">
+        <div class="mx-auto max-w-7xl p-6 sm:p-10">
             <!-- Header & Action -->
             <div
                 class="mb-8 flex flex-col gap-6 md:flex-row md:items-center md:justify-between"

@@ -11,6 +11,9 @@ import {
 } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { useConfirm } from '@/composables/useConfirm';
+
+const confirm = useConfirm();
 
 interface Schedule {
     id: number;
@@ -92,16 +95,12 @@ function toggleStatus(schedule: Schedule) {
     );
 }
 
-function destroy(id: number) {
-    if (
-        confirm(
-            'Yakin ingin menghapus slot jadwal ini? Pastikan tidak ada booking yang aktif.',
-        )
-    ) {
-        router.delete(`/companion/schedules/${id}`, {
-            preserveScroll: true,
-        });
-    }
+async function destroy(id: number) {
+    const ok = await confirm('Hapus Jadwal', 'Yakin ingin menghapus slot jadwal ini? Pastikan tidak ada booking yang aktif.');
+    if (!ok) return;
+    router.delete(`/companion/schedules/${id}`, {
+        preserveScroll: true,
+    });
 }
 </script>
 
@@ -109,7 +108,7 @@ function destroy(id: number) {
     <AppLayout>
         <Head title="Kelola Jadwal" />
 
-        <div class="max-w-7xl p-6 sm:p-10">
+        <div class="mx-auto max-w-7xl p-6 sm:p-10">
             <!-- Header -->
             <div
                 class="mb-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"

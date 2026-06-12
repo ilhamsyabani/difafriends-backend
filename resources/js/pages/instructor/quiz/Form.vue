@@ -9,6 +9,9 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { useConfirm } from '@/composables/useConfirm';
+
+const confirm = useConfirm();
 
 const props = defineProps<{
     course: { id: number; title: string };
@@ -136,10 +139,9 @@ function submitQuestion() {
     }
 }
 
-function deleteQuestion(qId: number) {
-    if (!confirm('Hapus soal ini?')) {
-        return;
-    }
+async function deleteQuestion(qId: number) {
+    const ok = await confirm('Hapus Soal', 'Hapus soal ini?');
+    if (!ok) return;
 
     const base = `/instructor/courses/${props.course.id}/sections/${props.section.id}/quiz/${props.quiz!.id}/questions`;
     router.delete(`${base}/${qId}`);

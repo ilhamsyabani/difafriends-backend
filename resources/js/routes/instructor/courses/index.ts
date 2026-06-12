@@ -628,7 +628,7 @@ destroyForm.delete = (args: { course: number | { id: number } } | [course: numbe
 destroy.form = destroyForm
 
 /**
-* @see routes/web.php:334
+* @see routes/web.php:347
 * @route '/instructor/courses/{course}/manage'
 */
 export const manage = (args: { course: number | { id: number } } | [course: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -642,7 +642,7 @@ manage.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:334
+* @see routes/web.php:347
 * @route '/instructor/courses/{course}/manage'
 */
 manage.url = (args: { course: number | { id: number } } | [course: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -674,7 +674,7 @@ manage.url = (args: { course: number | { id: number } } | [course: number | { id
 }
 
 /**
-* @see routes/web.php:334
+* @see routes/web.php:347
 * @route '/instructor/courses/{course}/manage'
 */
 manage.get = (args: { course: number | { id: number } } | [course: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -683,7 +683,7 @@ manage.get = (args: { course: number | { id: number } } | [course: number | { id
 })
 
 /**
-* @see routes/web.php:334
+* @see routes/web.php:347
 * @route '/instructor/courses/{course}/manage'
 */
 manage.head = (args: { course: number | { id: number } } | [course: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -692,7 +692,7 @@ manage.head = (args: { course: number | { id: number } } | [course: number | { i
 })
 
 /**
-* @see routes/web.php:334
+* @see routes/web.php:347
 * @route '/instructor/courses/{course}/manage'
 */
 const manageForm = (args: { course: number | { id: number } } | [course: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -701,7 +701,7 @@ const manageForm = (args: { course: number | { id: number } } | [course: number 
 })
 
 /**
-* @see routes/web.php:334
+* @see routes/web.php:347
 * @route '/instructor/courses/{course}/manage'
 */
 manageForm.get = (args: { course: number | { id: number } } | [course: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -710,7 +710,7 @@ manageForm.get = (args: { course: number | { id: number } } | [course: number | 
 })
 
 /**
-* @see routes/web.php:334
+* @see routes/web.php:347
 * @route '/instructor/courses/{course}/manage'
 */
 manageForm.head = (args: { course: number | { id: number } } | [course: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

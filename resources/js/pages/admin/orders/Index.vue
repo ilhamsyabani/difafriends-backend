@@ -109,7 +109,7 @@ const statusColor = (val: string) => {
     <AppLayout>
         <Head title="Manajemen Transaksi" />
 
-        <div class="max-w-7xl p-6 sm:p-10">
+        <div class="mx-auto max-w-7xl p-6 sm:p-10">
             <!-- Header & Action -->
             <div
                 class="mb-8 flex flex-col gap-6 md:flex-row md:items-center md:justify-between"

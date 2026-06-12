@@ -1,6 +1,6 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
-* @see routes/web.php:167
+* @see routes/web.php:170
 * @route '/notifications/count'
 */
 export const count = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -14,7 +14,7 @@ count.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:167
+* @see routes/web.php:170
 * @route '/notifications/count'
 */
 count.url = (options?: RouteQueryOptions) => {
@@ -22,7 +22,7 @@ count.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see routes/web.php:167
+* @see routes/web.php:170
 * @route '/notifications/count'
 */
 count.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -31,7 +31,7 @@ count.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:167
+* @see routes/web.php:170
 * @route '/notifications/count'
 */
 count.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -40,7 +40,7 @@ count.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see routes/web.php:167
+* @see routes/web.php:170
 * @route '/notifications/count'
 */
 const countForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -49,7 +49,7 @@ const countForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 })
 
 /**
-* @see routes/web.php:167
+* @see routes/web.php:170
 * @route '/notifications/count'
 */
 countForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -58,7 +58,7 @@ countForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:167
+* @see routes/web.php:170
 * @route '/notifications/count'
 */
 countForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -74,7 +74,7 @@ countForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 count.form = countForm
 
 /**
-* @see routes/web.php:173
+* @see routes/web.php:176
 * @route '/notifications'
 */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -88,7 +88,7 @@ index.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:173
+* @see routes/web.php:176
 * @route '/notifications'
 */
 index.url = (options?: RouteQueryOptions) => {
@@ -96,7 +96,7 @@ index.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see routes/web.php:173
+* @see routes/web.php:176
 * @route '/notifications'
 */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -105,7 +105,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:173
+* @see routes/web.php:176
 * @route '/notifications'
 */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -114,7 +114,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see routes/web.php:173
+* @see routes/web.php:176
 * @route '/notifications'
 */
 const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -123,7 +123,7 @@ const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 })
 
 /**
-* @see routes/web.php:173
+* @see routes/web.php:176
 * @route '/notifications'
 */
 indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -132,7 +132,7 @@ indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:173
+* @see routes/web.php:176
 * @route '/notifications'
 */
 indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -148,7 +148,7 @@ indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 index.form = indexForm
 
 /**
-* @see routes/web.php:190
+* @see routes/web.php:193
 * @route '/notifications/{id}/read'
 */
 export const read = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -162,7 +162,7 @@ read.definition = {
 } satisfies RouteDefinition<["post"]>
 
 /**
-* @see routes/web.php:190
+* @see routes/web.php:193
 * @route '/notifications/{id}/read'
 */
 read.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -188,7 +188,7 @@ read.url = (args: { id: string | number } | [id: string | number ] | string | nu
 }
 
 /**
-* @see routes/web.php:190
+* @see routes/web.php:193
 * @route '/notifications/{id}/read'
 */
 read.post = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -197,7 +197,7 @@ read.post = (args: { id: string | number } | [id: string | number ] | string | n
 })
 
 /**
-* @see routes/web.php:190
+* @see routes/web.php:193
 * @route '/notifications/{id}/read'
 */
 const readForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -206,7 +206,7 @@ const readForm = (args: { id: string | number } | [id: string | number ] | strin
 })
 
 /**
-* @see routes/web.php:190
+* @see routes/web.php:193
 * @route '/notifications/{id}/read'
 */
 readForm.post = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -217,7 +217,7 @@ readForm.post = (args: { id: string | number } | [id: string | number ] | string
 read.form = readForm
 
 /**
-* @see routes/web.php:196
+* @see routes/web.php:199
 * @route '/notifications/read-all'
 */
 export const readAll = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -231,7 +231,7 @@ readAll.definition = {
 } satisfies RouteDefinition<["post"]>
 
 /**
-* @see routes/web.php:196
+* @see routes/web.php:199
 * @route '/notifications/read-all'
 */
 readAll.url = (options?: RouteQueryOptions) => {
@@ -239,7 +239,7 @@ readAll.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see routes/web.php:196
+* @see routes/web.php:199
 * @route '/notifications/read-all'
 */
 readAll.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -248,7 +248,7 @@ readAll.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 })
 
 /**
-* @see routes/web.php:196
+* @see routes/web.php:199
 * @route '/notifications/read-all'
 */
 const readAllForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -257,7 +257,7 @@ const readAllForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> =
 })
 
 /**
-* @see routes/web.php:196
+* @see routes/web.php:199
 * @route '/notifications/read-all'
 */
 readAllForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

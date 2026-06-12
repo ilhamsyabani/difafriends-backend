@@ -9,9 +9,10 @@ import bookings from './bookings'
 import reports from './reports'
 import activityLog from './activity-log'
 import articles from './articles'
+import gallery from './gallery'
 import quiz from './quiz'
 /**
-* @see routes/web.php:209
+* @see routes/web.php:212
 * @route '/admin/dashboard'
 */
 export const dashboard = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -25,7 +26,7 @@ dashboard.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:209
+* @see routes/web.php:212
 * @route '/admin/dashboard'
 */
 dashboard.url = (options?: RouteQueryOptions) => {
@@ -33,7 +34,7 @@ dashboard.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see routes/web.php:209
+* @see routes/web.php:212
 * @route '/admin/dashboard'
 */
 dashboard.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -42,7 +43,7 @@ dashboard.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:209
+* @see routes/web.php:212
 * @route '/admin/dashboard'
 */
 dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -51,7 +52,7 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see routes/web.php:209
+* @see routes/web.php:212
 * @route '/admin/dashboard'
 */
 const dashboardForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -60,7 +61,7 @@ const dashboardForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> 
 })
 
 /**
-* @see routes/web.php:209
+* @see routes/web.php:212
 * @route '/admin/dashboard'
 */
 dashboardForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -69,7 +70,7 @@ dashboardForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 })
 
 /**
-* @see routes/web.php:209
+* @see routes/web.php:212
 * @route '/admin/dashboard'
 */
 dashboardForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -96,6 +97,7 @@ const admin = {
     reports: Object.assign(reports, reports),
     activityLog: Object.assign(activityLog, activityLog),
     articles: Object.assign(articles, articles),
+    gallery: Object.assign(gallery, gallery),
     quiz: Object.assign(quiz, quiz),
 }
 

@@ -4,8 +4,10 @@ import axios from 'axios';
 import { ref } from 'vue';
 import { useFormatters } from '@/composables/useFormatters';
 import GuestLayout from '@/layouts/GuestLayout.vue';
+import { useToast } from '@/composables/useToast';
 
 const { assetUrl } = useFormatters();
+const toast = useToast();
 
 const props = defineProps<{
     course: {
@@ -152,7 +154,7 @@ async function handleBuy() {
                     router.visit('/orders');
                 },
                 onError: () => {
-                    alert('Pembayaran gagal. Silakan coba lagi.');
+                    toast.error('Pembayaran gagal. Silakan coba lagi.');
                 },
                 onClose: () => {
                     console.log('Popup ditutup');
@@ -160,7 +162,7 @@ async function handleBuy() {
             });
         };
     } catch (err: any) {
-        alert(err.response?.data?.message ?? 'Terjadi kesalahan.');
+        toast.error(err.response?.data?.message ?? 'Terjadi kesalahan.');
     } finally {
         isLoading.value = false;
     }

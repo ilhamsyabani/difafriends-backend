@@ -4,6 +4,9 @@ import { usePage } from '@inertiajs/vue3';
 import { Plus, Edit2, Trash2 } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { useConfirm } from '@/composables/useConfirm';
+
+const confirm = useConfirm();
 
 defineProps<{
     schedules: {
@@ -47,10 +50,10 @@ function formatTime(time: string): string {
     return time.slice(0, 5);
 }
 
-function destroy(id: number) {
-    if (confirm('Yakin hapus jadwal ini?')) {
-        router.delete(`/admin/schedules/${id}`);
-    }
+async function destroy(id: number) {
+    const ok = await confirm('Hapus Jadwal', 'Yakin hapus jadwal ini?');
+    if (!ok) return;
+    router.delete(`/admin/schedules/${id}`);
 }
 </script>
 
@@ -58,7 +61,7 @@ function destroy(id: number) {
     <AppLayout>
         <Head title="Kelola Jadwal Sesi" />
 
-        <div class="max-w-7xl p-6 sm:p-10">
+        <div class="mx-auto max-w-7xl p-6 sm:p-10">
             <!-- Header -->
             <div
                 class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"
