@@ -8,11 +8,12 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\CompanionController as AdminCompanionController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
 use App\Http\Controllers\Admin\CourseEnrollmentController as AdminCourseEnrollmentController;
+use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\QuizGradeController as AdminQuizGradeController;
 use App\Http\Controllers\Admin\ReportController;
-use App\Http\Controllers\Admin\ScheduleController as AdminScheduleController;
 // ── Controllers ──────────────────────────────────────
+use App\Http\Controllers\Admin\ScheduleController as AdminScheduleController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AssessmentController;
@@ -38,6 +39,7 @@ use App\Models\Article;
 use App\Models\Booking;
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\Gallery;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -64,7 +66,7 @@ Route::get('/', function () {
             ->inRandomOrder()
             ->take(3)
             ->get()
-            ->map(fn ($c) => [
+            ->map(fn($c) => [
                 'id' => $c->id,
                 'first_name' => $c->first_name,
                 'last_name' => $c->last_name,
@@ -78,6 +80,7 @@ Route::get('/', function () {
             ->latest()
             ->limit(3)
             ->get(),
+        'galleries' => Gallery::orderBy('order')->limit(6)->get(),
     ]);
 })->name('home');
 
@@ -108,7 +111,7 @@ Route::post('/webhook/scalev', [ScalevWebhookController::class, 'handle'])
 // ── Authenticated Routes ──────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
+    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
 
     // Orders
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
@@ -173,7 +176,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/notifications', function (Request $request) {
         return response()->json([
             'notifications' => $request->user()->notifications()->limit(10)->get()
-                ->map(fn ($n) => [
+                ->map(fn($n) => [
                     'id' => $n->id,
                     // Whitelist field — jangan expose seluruh data object
                     'title' => $n->data['title'] ?? '',
@@ -217,11 +220,11 @@ Route::middleware(['auth', 'verified', 'role:admin'])
                 ];
             });
 
-            $dashboardStats['recentOrders'] = Order::with('user')
-                ->latest()
-                ->limit(10)
-                ->get();
 
+            $dashboardStats['recentOrders'] = Order::with(['user' => function ($query) {
+                $query->withTrashed();
+            }])->latest()->take(10)->get();
+            
             return Inertia::render('admin/Dashboard', [
                 'stats' => $dashboardStats,
             ]);
@@ -291,6 +294,14 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         // Articles
         Route::resource('articles', App\Http\Controllers\Admin\ArticleController::class);
 
+        // Gallery
+        Route::get('/gallery', [GalleryController::class, 'index'])
+            ->name('gallery.index');
+        Route::post('/gallery', [GalleryController::class, 'store'])
+            ->name('gallery.store');
+        Route::delete('/gallery/{gallery}', [GalleryController::class, 'destroy'])
+            ->name('gallery.destroy');
+
         // Quiz Grading
         Route::get(
             '/courses/{course}/quizzes/{quiz}/grade',
@@ -335,8 +346,8 @@ Route::middleware(['auth', 'verified', 'role:instructor'])
 
         Route::get('/courses/{course}/manage', function (Course $course) {
             $course->load([
-                'sections' => fn ($q) => $q->orderBy('sort_order'),
-                'sections.lectures' => fn ($q) => $q->orderBy('sort_order'),
+                'sections' => fn($q) => $q->orderBy('sort_order'),
+                'sections.lectures' => fn($q) => $q->orderBy('sort_order'),
                 'sections.quiz',
             ]);
 
@@ -385,7 +396,7 @@ Route::middleware(['auth', 'verified', 'role:companion'])
                         ->whereHasMorph(
                             'orderable',
                             [Booking::class],
-                            fn ($q) => $q->where('tutor_id', $user->id)
+                            fn($q) => $q->where('tutor_id', $user->id)
                         )
                         ->sum('final_amount'),
                     'recentBookings' => Booking::where('tutor_id', $user->id)
@@ -403,7 +414,7 @@ Route::middleware(['auth', 'verified', 'role:companion'])
         Route::get('/bookings', [CompanionBookingController::class, 'index'])->name('bookings.index');
     });
 
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';
 
 // ── Error page preview (dev only) ────────────────────────────────────────────
 if (app()->environment('local')) {
