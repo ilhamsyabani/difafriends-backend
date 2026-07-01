@@ -37,14 +37,21 @@ import { login, register } from '@/routes';
                         >
                             Artikel
                         </Link>
+                      
                         <Link
                             href="/courses"
                             class="text-gray-600 transition-colors hover:text-primary dark:text-gray-400"
                         >
                             Kelas Parenting
                         </Link>
+                          <Link
+                            href="#"
+                            class="text-gray-400 dark:text-gray-600"
+                        >
+                            Pelatihan Guru
+                        </Link>
                         <p class="text-gray-400 dark:text-gray-600">
-                            Intervensi
+                            Asesmen
                         </p>
                     </nav>
 
