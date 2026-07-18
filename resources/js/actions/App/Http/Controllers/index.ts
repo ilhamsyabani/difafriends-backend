@@ -2,6 +2,7 @@ import CourseController from './CourseController'
 import CompanionController from './CompanionController'
 import ArticleController from './ArticleController'
 import CertificateController from './CertificateController'
+import PublicAttendanceController from './PublicAttendanceController'
 import Auth from './Auth'
 import OrderController from './OrderController'
 import ScalevWebhookController from './ScalevWebhookController'
@@ -21,6 +22,7 @@ const Controllers = {
     CompanionController: Object.assign(CompanionController, CompanionController),
     ArticleController: Object.assign(ArticleController, ArticleController),
     CertificateController: Object.assign(CertificateController, CertificateController),
+    PublicAttendanceController: Object.assign(PublicAttendanceController, PublicAttendanceController),
     Auth: Object.assign(Auth, Auth),
     OrderController: Object.assign(OrderController, OrderController),
     ScalevWebhookController: Object.assign(ScalevWebhookController, ScalevWebhookController),
