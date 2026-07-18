@@ -6,6 +6,8 @@ import ScheduleController from './ScheduleController'
 import OrderController from './OrderController'
 import CompanionController from './CompanionController'
 import BookingController from './BookingController'
+import ActivityController from './ActivityController'
+import AttendanceFormController from './AttendanceFormController'
 import ReportController from './ReportController'
 import ActivityLogController from './ActivityLogController'
 import ArticleController from './ArticleController'
@@ -21,6 +23,8 @@ const Admin = {
     OrderController: Object.assign(OrderController, OrderController),
     CompanionController: Object.assign(CompanionController, CompanionController),
     BookingController: Object.assign(BookingController, BookingController),
+    ActivityController: Object.assign(ActivityController, ActivityController),
+    AttendanceFormController: Object.assign(AttendanceFormController, AttendanceFormController),
     ReportController: Object.assign(ReportController, ReportController),
     ActivityLogController: Object.assign(ActivityLogController, ActivityLogController),
     ArticleController: Object.assign(ArticleController, ArticleController),

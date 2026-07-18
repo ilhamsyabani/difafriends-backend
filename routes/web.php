@@ -2,7 +2,9 @@
 
 use App\Enums\ArticlesStatus;
 use App\Enums\Roles;
+use App\Http\Controllers\Admin\ActivityController as AdminActivityController;
 use App\Http\Controllers\Admin\ActivityLogController as AdminActivityLogController;
+use App\Http\Controllers\Admin\AttendanceFormController as AdminAttendanceFormController;
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\CompanionController as AdminCompanionController;
@@ -31,6 +33,7 @@ use App\Http\Controllers\Instructor\QuizQuestionController;
 use App\Http\Controllers\Instructor\SectionController as InstructorSectionController;
 use App\Http\Controllers\LearnController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PublicAttendanceController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ScalevWebhookController;
@@ -66,7 +69,7 @@ Route::get('/', function () {
             ->inRandomOrder()
             ->take(3)
             ->get()
-            ->map(fn($c) => [
+            ->map(fn ($c) => [
                 'id' => $c->id,
                 'first_name' => $c->first_name,
                 'last_name' => $c->last_name,
@@ -92,6 +95,12 @@ Route::get('/articles', [ArticleController::class, 'index'])->name('articles.ind
 Route::get('/articles/{slug}', [ArticleController::class, 'show'])->name('articles.show');
 Route::get('/verify/{number}', [CertificateController::class, 'verify'])->name('certificates.verify');
 
+// Presensi publik (guest/peserta, tanpa login)
+Route::get('/absensi/{session}', [PublicAttendanceController::class, 'show'])->name('attendance.public');
+Route::post('/absensi/{session}', [PublicAttendanceController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('attendance.public.store');
+
 // ── Google OAuth (Socialite) ──────────────────────────
 Route::middleware('guest')->group(function () {
     Route::get('/auth/google/redirect', [GoogleController::class, 'redirect'])->name('google.redirect');
@@ -111,7 +120,7 @@ Route::post('/webhook/scalev', [ScalevWebhookController::class, 'handle'])
 // ── Authenticated Routes ──────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
+    Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
 
     // Orders
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
@@ -176,7 +185,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/notifications', function (Request $request) {
         return response()->json([
             'notifications' => $request->user()->notifications()->limit(10)->get()
-                ->map(fn($n) => [
+                ->map(fn ($n) => [
                     'id' => $n->id,
                     // Whitelist field — jangan expose seluruh data object
                     'title' => $n->data['title'] ?? '',
@@ -220,11 +229,10 @@ Route::middleware(['auth', 'verified', 'role:admin'])
                 ];
             });
 
-
             $dashboardStats['recentOrders'] = Order::with(['user' => function ($query) {
                 $query->withTrashed();
             }])->latest()->take(10)->get();
-            
+
             return Inertia::render('admin/Dashboard', [
                 'stats' => $dashboardStats,
             ]);
@@ -283,6 +291,18 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         // Bookings
         Route::get('/bookings', [AdminBookingController::class, 'index'])->name('bookings.index');
         Route::post('/bookings/{booking}/meeting', [AdminBookingController::class, 'generateMeet'])->name('bookings.meeting');
+
+        // Kegiatan & Presensi
+        Route::resource('activities', AdminActivityController::class);
+        Route::get('/activities/{activity}/attendance-forms/create', [AdminAttendanceFormController::class, 'create'])->name('activities.attendance-forms.create');
+        Route::post('/activities/{activity}/attendance-forms', [AdminAttendanceFormController::class, 'store'])->name('activities.attendance-forms.store');
+        Route::get('/attendance-forms/{attendanceForm}', [AdminAttendanceFormController::class, 'show'])->name('attendance-forms.show');
+        Route::get('/attendance-forms/{attendanceForm}/edit', [AdminAttendanceFormController::class, 'edit'])->name('attendance-forms.edit');
+        Route::put('/attendance-forms/{attendanceForm}', [AdminAttendanceFormController::class, 'update'])->name('attendance-forms.update');
+        Route::delete('/attendance-forms/{attendanceForm}', [AdminAttendanceFormController::class, 'destroy'])->name('attendance-forms.destroy');
+        Route::get('/attendance-forms/{attendanceForm}/attendances', [AdminAttendanceFormController::class, 'attendances'])->name('attendance-forms.attendances');
+        Route::get('/attendance-forms/{attendanceForm}/export', [AdminAttendanceFormController::class, 'export'])->name('attendance-forms.export');
+        Route::patch('/attendance-sessions/{session}/toggle', [AdminAttendanceFormController::class, 'toggleSession'])->name('attendance-sessions.toggle');
 
         // Reports / Laporan
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
@@ -346,8 +366,8 @@ Route::middleware(['auth', 'verified', 'role:instructor'])
 
         Route::get('/courses/{course}/manage', function (Course $course) {
             $course->load([
-                'sections' => fn($q) => $q->orderBy('sort_order'),
-                'sections.lectures' => fn($q) => $q->orderBy('sort_order'),
+                'sections' => fn ($q) => $q->orderBy('sort_order'),
+                'sections.lectures' => fn ($q) => $q->orderBy('sort_order'),
                 'sections.quiz',
             ]);
 
@@ -396,7 +416,7 @@ Route::middleware(['auth', 'verified', 'role:companion'])
                         ->whereHasMorph(
                             'orderable',
                             [Booking::class],
-                            fn($q) => $q->where('tutor_id', $user->id)
+                            fn ($q) => $q->where('tutor_id', $user->id)
                         )
                         ->sum('final_amount'),
                     'recentBookings' => Booking::where('tutor_id', $user->id)
@@ -414,7 +434,7 @@ Route::middleware(['auth', 'verified', 'role:companion'])
         Route::get('/bookings', [CompanionBookingController::class, 'index'])->name('bookings.index');
     });
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';
 
 // ── Error page preview (dev only) ────────────────────────────────────────────
 if (app()->environment('local')) {

@@ -12,6 +12,7 @@ import {
     BarChart2,
     Activity,
     FileImage,
+    CalendarCheck,
 } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
@@ -41,6 +42,7 @@ const adminNav: NavItem[] = [
     { title: 'Kategori', href: '/admin/categories', icon: Tag },
     { title: 'Kelas', href: '/admin/courses', icon: BookOpen },
     { title: 'Jadwal Sesi', href: '/admin/schedules', icon: Calendar },
+    { title: 'Kegiatan & Presensi', href: '/admin/activities', icon: CalendarCheck },
     { title: 'Artikel', href: '/admin/articles', icon: Newspaper },
     { title: 'Galeri', href: '/admin/gallery', icon: FileImage },
     { title: 'Transaksi', href: '/admin/orders', icon: ShoppingCart },
