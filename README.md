@@ -1,6 +1,6 @@
 # DifaFriends — Dokumentasi Project Lengkap
 > Platform Edukasi Inklusif untuk Anak Difabel
-> Versi Dokumentasi: 1.3 | April 2026
+> Versi Dokumentasi: 1.4 | April 2026
 
 ---
 
