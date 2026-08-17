@@ -1,3 +1,4 @@
+import Api from './Api'
 import CourseController from './CourseController'
 import CompanionController from './CompanionController'
 import ArticleController from './ArticleController'
@@ -18,6 +19,7 @@ import Companion from './Companion'
 import Settings from './Settings'
 
 const Controllers = {
+    Api: Object.assign(Api, Api),
     CourseController: Object.assign(CourseController, CourseController),
     CompanionController: Object.assign(CompanionController, CompanionController),
     ArticleController: Object.assign(ArticleController, ArticleController),

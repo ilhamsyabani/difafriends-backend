@@ -20,6 +20,8 @@ class Payment extends Model
         'amount',
         'status',
         'midtrans_response',
+        'linkid_transaction_id',
+        'linkid_response',
         'paid_at',
         'expired_at',
     ];
@@ -28,6 +30,7 @@ class Payment extends Model
         'amount' => 'decimal:2',
         'status' => PaymentStatus::class,
         'midtrans_response' => 'array',
+        'linkid_response' => 'array',
         'paid_at' => 'datetime',
         'expired_at' => 'datetime',
     ];
