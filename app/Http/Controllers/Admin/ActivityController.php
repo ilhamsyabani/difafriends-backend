@@ -64,6 +64,10 @@ class ActivityController extends Controller
     public function update(Request $request, Activity $activity)
     {
         $validated = $this->validateForUpdate($request);
+
+        // Preserve registration_code — tidak boleh di-overwrite saat edit
+        $validated['registration_code'] = $activity->registration_code;
+
         $activity->update($validated);
 
         return redirect()->route('admin.activities.show', $activity)
