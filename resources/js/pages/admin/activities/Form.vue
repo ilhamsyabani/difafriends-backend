@@ -114,8 +114,7 @@ function submit() {
                         {{ props.activity.registration_code.toString().padStart(2, '0') }}
                     </p>
                     <p class="mt-2 text-xs text-purple-600 dark:text-purple-400">
-                        Amount = Rp {{ (props.activity.price || 0).toLocaleString('id-ID') }}00 + {{ props.activity.registration_code.toString().padStart(2, '0') }}
-                        = Rp {{ ((props.activity.price || 0) * 100 + props.activity.registration_code).toLocaleString('id-ID') }}
+                        Amount = Rp {{ ((props.activity.price || 0) + props.activity.registration_code).toLocaleString('id-ID') }}
                     </p>
                 </div>
 
