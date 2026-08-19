@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { ArrowLeft, Plus, MapPin, CalendarDays, ClipboardList, Trash2, Edit2 } from 'lucide-vue-next';
+import { ArrowLeft, Plus, MapPin, CalendarDays, ClipboardList, Trash2, Edit2, Users, CreditCard } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { useConfirm } from '@/composables/useConfirm';
@@ -15,6 +15,13 @@ const props = defineProps<{
         end_date: string;
         location: string;
         description: string | null;
+        price: number | null;
+        registration_code: number | null;
+        registrations: Array<{
+            id: number;
+            user: { id: number; first_name: string; last_name: string; email: string };
+            registered_at: string;
+        }>;
         attendance_forms: Array<{
             id: number;
             title: string;
@@ -31,8 +38,19 @@ function formatDate(date: string): string {
     return new Date(date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+function formatDatetime(date: string): string {
+    return new Date(date).toLocaleDateString('id-ID', {
+        day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
+    });
+}
+
 function totalHadir(form: (typeof props.activity.attendance_forms)[number]): number {
     return form.sessions.reduce((sum, s) => sum + s.attendances_count, 0);
+}
+
+function encodedAmount(): number {
+    if (!props.activity.price || !props.activity.registration_code) return 0;
+    return props.activity.price * 100 + props.activity.registration_code;
 }
 
 async function destroyForm(id: number) {
@@ -77,6 +95,76 @@ async function destroyForm(id: number) {
                 class="mb-6 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700 dark:border-green-900/50 dark:bg-green-900/20 dark:text-green-400"
             >
                 {{ flash.success }}
+            </div>
+
+            <!-- LinkId Payment Info -->
+            <div v-if="activity.price" class="mb-6 rounded-2xl border border-purple-100 bg-purple-50 p-5 dark:border-purple-900/30 dark:bg-purple-900/10">
+                <div class="flex items-center gap-2 mb-3">
+                    <CreditCard class="h-5 w-5 text-purple-600" />
+                    <h2 class="text-base font-semibold text-purple-700 dark:text-purple-300">Pembayaran via LinkId</h2>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-3">
+                    <div>
+                        <p class="text-xs text-purple-500 dark:text-purple-400">Harga</p>
+                        <p class="text-lg font-bold text-purple-700 dark:text-purple-300">
+                            Rp {{ activity.price?.toLocaleString('id-ID') }}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-purple-500 dark:text-purple-400">Kode Registrasi</p>
+                        <p class="text-lg font-bold text-purple-700 dark:text-purple-300">
+                            {{ String(activity.registration_code).padStart(2, '0') }}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-purple-500 dark:text-purple-400">Amount LinkId</p>
+                        <p class="text-lg font-bold text-purple-700 dark:text-purple-300">
+                            Rp {{ encodedAmount().toLocaleString('id-ID') }}
+                        </p>
+                    </div>
+                </div>
+                <p class="mt-3 text-xs text-purple-500 dark:text-purple-400">
+                    Set harga <strong>Rp {{ encodedAmount().toLocaleString('id-ID') }}</strong> di LinkId dashboard.
+                    Gunakan kode <strong>{{ String(activity.registration_code).padStart(2, '0') }}</strong> sebagai identifier unik.
+                </p>
+            </div>
+
+            <!-- Peserta -->
+            <div v-if="activity.price" class="mb-6">
+                <div class="mb-3 flex items-center justify-between">
+                    <h2 class="flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-white">
+                        <Users class="h-5 w-5" />
+                        Peserta Terdaftar ({{ activity.registrations.length }})
+                    </h2>
+                </div>
+
+                <div
+                    v-if="activity.registrations.length === 0"
+                    class="rounded-2xl border border-dashed border-gray-200 bg-white p-8 text-center text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-900"
+                >
+                    Belum ada peserta. Peserta akan muncul otomatis setelah pembayaran via LinkId berhasil.
+                </div>
+
+                <div v-else class="overflow-hidden rounded-2xl border border-gray-100 dark:border-gray-800">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50 dark:bg-gray-800">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">Nama</th>
+                                <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">Email</th>
+                                <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-400">Terdaftar</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                            <tr v-for="reg in activity.registrations" :key="reg.id" class="bg-white dark:bg-gray-900">
+                                <td class="px-4 py-3 text-gray-900 dark:text-gray-100">
+                                    {{ reg.user.first_name }} {{ reg.user.last_name }}
+                                </td>
+                                <td class="px-4 py-3 text-gray-500 dark:text-gray-400">{{ reg.user.email }}</td>
+                                <td class="px-4 py-3 text-gray-500 dark:text-gray-400">{{ formatDatetime(reg.registered_at) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="mb-6 flex items-center justify-between">

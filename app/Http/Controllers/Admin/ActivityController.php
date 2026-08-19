@@ -31,8 +31,8 @@ class ActivityController extends Controller
     public function store(Request $request)
     {
         $validated = $this->validateData($request);
-
         $validated['created_by'] = $request->user()->id;
+        $validated['registration_code'] = $this->generateUniqueCode();
 
         Activity::create($validated);
 
@@ -43,6 +43,7 @@ class ActivityController extends Controller
     public function show(Activity $activity): Response
     {
         $activity->load([
+            'registrations',
             'attendanceForms.sessions' => function ($query) {
                 $query->withCount('attendances')->orderBy('session_date');
             },
@@ -63,7 +64,6 @@ class ActivityController extends Controller
     public function update(Request $request, Activity $activity)
     {
         $validated = $this->validateData($request);
-
         $activity->update($validated);
 
         return redirect()->route('admin.activities.show', $activity)
@@ -89,6 +89,20 @@ class ActivityController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'location' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'price' => 'required|integer|min:0',
         ]);
+    }
+
+    private function generateUniqueCode(): int
+    {
+        $maxAttempts = 20;
+        for ($i = 0; $i < $maxAttempts; $i++) {
+            $code = random_int(1, 99);
+            if (! Activity::where('registration_code', $code)->exists()) {
+                return $code;
+            }
+        }
+
+        throw new \RuntimeException('Gagal generate kode registrasi unik');
     }
 }
