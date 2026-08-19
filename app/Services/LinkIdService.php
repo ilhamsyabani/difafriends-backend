@@ -14,13 +14,13 @@ class LinkIdService
     public function __construct()
     {
         $this->baseUrl = config('linkid.is_production')
-            ? 'https://api.linkid.co.id'
-            : 'https://sandbox.linkid.co.id';
+            ? 'https://api.lynk.id'
+            : 'https://sandbox.lynk.id';
     }
 
     private function client(): PendingRequest
     {
-        return Http::withToken(config('linkid.api_key'))
+        return Http::withToken(config('linkid.merchant_key'))
             ->withHeaders([
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
@@ -33,21 +33,19 @@ class LinkIdService
     {
         $user = $order->user;
 
+        // NOTE: Endpoint dan payload sesuai dokumentasi API Lynk.id merchant.
+        // https://documenter.getpostman.com/view/43601478/2sBXc8o3kn
+        // Jika API tidak tersedia, Lynk.id mungkin hanya berfungsi via webhook
+        // (merchant membuat payment secara manual di dashboard Lynk.id).
         $payload = [
-            'external_id' => $order->invoice_number,
+            'refId' => $order->invoice_number,
             'amount' => (int) $order->final_amount,
-            'currency' => 'IDR',
-            'callback_url' => config('linkid.callback_url'),
-            'description' => $order->item_name ?? 'Pembayaran Order #'.$order->invoice_number,
+            'callback_url' => config('linkid.webhook_url'),
+            'productName' => $order->item_name ?? 'Order #'.$order->invoice_number,
             'customer' => [
                 'name' => trim($user->first_name.' '.$user->last_name),
                 'email' => $user->email,
                 'phone' => $user->phone ?? null,
-            ],
-            'metadata' => [
-                'order_id' => $order->id,
-                'orderable_type' => $order->orderable_type,
-                'orderable_id' => $order->orderable_id,
             ],
         ];
 
@@ -55,27 +53,27 @@ class LinkIdService
             $response = $this->client()->post("{$this->baseUrl}/v1/payment-links", $payload);
 
             if (! $response->successful()) {
-                Log::error('Link.id create payment link failed', [
+                Log::error('Lynk create payment link failed', [
                     'status' => $response->status(),
                     'body' => $response->body(),
                     'order_id' => $order->id,
                 ]);
 
-                throw new \Exception('Link.id API error: '.$response->status());
+                throw new \Exception('Lynk API error: '.$response->status());
             }
 
             return $response->json();
         } catch (\Exception $e) {
-            Log::error('Link.id service exception: '.$e->getMessage());
+            Log::error('Lynk service exception: '.$e->getMessage());
 
             throw $e;
         }
     }
 
-    public function getPaymentLinkStatus(string $externalId): ?array
+    public function getPaymentLinkStatus(string $refId): ?array
     {
         try {
-            $response = $this->client()->get("{$this->baseUrl}/v1/payment-links/{$externalId}");
+            $response = $this->client()->get("{$this->baseUrl}/v1/payment-links/{$refId}");
 
             if (! $response->successful()) {
                 return null;
@@ -83,7 +81,7 @@ class LinkIdService
 
             return $response->json();
         } catch (\Exception $e) {
-            Log::error('Link.id get status failed: '.$e->getMessage());
+            Log::error('Lynk get status failed: '.$e->getMessage());
 
             return null;
         }
