@@ -29,8 +29,8 @@ class Activity extends Model
     protected function casts(): array
     {
         return [
-            'start_date' => 'date',
-            'end_date' => 'date',
+            'start_date' => 'date:Y-m-d',
+            'end_date' => 'date:Y-m-d',
             'price' => 'integer',
         ];
     }
@@ -38,8 +38,8 @@ class Activity extends Model
     // ── Registration Code ─────────────────────────────────────
 
     /**
-     * Encode amount untuk LinkId: price * 100 + registration_code.
-     * Admin set harga 50000 + code 03 di LinkId dashboard → amount = 5000003
+     * Encode amount untuk LinkId: price + 2-digit registration_code.
+     * Admin set harga 50000 + code 03 di LinkId dashboard → amount = 50003
      */
     public function encodedAmount(): int
     {
@@ -47,13 +47,13 @@ class Activity extends Model
             return $this->price ?? 0;
         }
 
-        return (int) ($this->price * 100 + (int) $this->registration_code);
+        return (int) $this->price + (int) $this->registration_code;
     }
 
     /**
      * Decode registration code dari amount LinkId (2 digit terakhir).
-     * Amount = 5000003 → code = 3
-     * Amount = 5000032 → code = 32
+     * Amount = 50003 → code = 3
+     * Amount = 50012 → code = 12
      */
     public static function decodeRegistrationCode(int $amount): ?int
     {

@@ -30,7 +30,7 @@ class ActivityController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $this->validateData($request);
+        $validated = $this->validateForStore($request);
         $validated['created_by'] = $request->user()->id;
         $validated['registration_code'] = $this->generateUniqueCode();
 
@@ -63,7 +63,7 @@ class ActivityController extends Controller
 
     public function update(Request $request, Activity $activity)
     {
-        $validated = $this->validateData($request);
+        $validated = $this->validateForUpdate($request);
         $activity->update($validated);
 
         return redirect()->route('admin.activities.show', $activity)
@@ -81,7 +81,7 @@ class ActivityController extends Controller
     /**
      * @return array<string, mixed>
      */
-    private function validateData(Request $request): array
+    private function validateForStore(Request $request): array
     {
         return $request->validate([
             'name' => 'required|string|max:255',
@@ -90,6 +90,18 @@ class ActivityController extends Controller
             'location' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|integer|min:0',
+        ]);
+    }
+
+    private function validateForUpdate(Request $request): array
+    {
+        return $request->validate([
+            'name' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'location' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'nullable|integer|min:0',
         ]);
     }
 

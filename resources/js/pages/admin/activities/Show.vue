@@ -49,8 +49,10 @@ function totalHadir(form: (typeof props.activity.attendance_forms)[number]): num
 }
 
 function encodedAmount(): number {
-    if (!props.activity.price || !props.activity.registration_code) return 0;
-    return props.activity.price * 100 + props.activity.registration_code;
+    const price = Number(props.activity.price) || 0;
+    const code = Number(props.activity.registration_code) || 0;
+    if (!price || !code) return 0;
+    return price + code;
 }
 
 async function destroyForm(id: number) {
