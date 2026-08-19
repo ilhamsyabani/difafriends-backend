@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue'; // Tambahkan import ref & computed
 import { Form, Head } from '@inertiajs/vue3';
 import InputError from '@/components/InputError.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
@@ -8,6 +9,33 @@ import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { store } from '@/routes/register';
+
+// State lokal untuk validasi client-side
+const password = ref('');
+const password_confirmation = ref('');
+
+// Evaluasi kriteria password menggunakan regex
+const passwordCriteria = computed(() => {
+    const p = password.value;
+    return {
+        length: p.length >= 8, // Min 8 Karakter
+        upperLower: /(?=.*[a-z])(?=.*[A-Z])/.test(p), // Kombinasi besar kecil
+        number: /(?=.*\d)/.test(p), // Mengandung angka
+        special: /(?=.*[\W_])/.test(p), // Mengandung karakter spesial (!@#$% dll)
+    };
+});
+
+// Cek apakah semua kriteria terpenuhi
+const isPasswordValid = computed(() => {
+    const c = passwordCriteria.value;
+    return c.length && c.upperLower && c.number && c.special;
+});
+
+// Cek kecocokan konfirmasi password
+const isPasswordMatch = computed(() => {
+    if (!password_confirmation.value) return true; // Lewati jika belum diisi
+    return password.value === password_confirmation.value;
+});
 </script>
 
 <template>
@@ -109,6 +137,7 @@ import { store } from '@/routes/register';
                 >
                 <PasswordInput
                     id="password"
+                    v-model="password"
                     required
                     :tabindex="4"
                     autocomplete="new-password"
@@ -117,6 +146,22 @@ import { store } from '@/routes/register';
                     class="h-10 rounded-lg border-gray-200 bg-gray-50 text-sm transition-colors focus-visible:border-gray-900 focus-visible:ring-2 focus-visible:ring-gray-900/10 dark:border-gray-700 dark:bg-gray-900 dark:focus-visible:border-white"
                 />
                 <InputError :message="errors.password" />
+
+                <!-- Checklist Kriteria Password -->
+                <ul v-if="password" class="mt-1 space-y-1 text-xs">
+                    <li :class="passwordCriteria.length ? 'text-green-600 dark:text-green-400' : 'text-red-500'">
+                        {{ passwordCriteria.length ? '✓' : '✗' }} Minimal 8 karakter
+                    </li>
+                    <li :class="passwordCriteria.upperLower ? 'text-green-600 dark:text-green-400' : 'text-red-500'">
+                        {{ passwordCriteria.upperLower ? '✓' : '✗' }} Huruf besar & kecil
+                    </li>
+                    <li :class="passwordCriteria.number ? 'text-green-600 dark:text-green-400' : 'text-red-500'">
+                        {{ passwordCriteria.number ? '✓' : '✗' }} Terdapat angka
+                    </li>
+                    <li :class="passwordCriteria.special ? 'text-green-600 dark:text-green-400' : 'text-red-500'">
+                        {{ passwordCriteria.special ? '✓' : '✗' }} Karakter spesial
+                    </li>
+                </ul>
             </div>
 
             <!-- Konfirmasi Password -->
@@ -128,6 +173,7 @@ import { store } from '@/routes/register';
                 >
                 <PasswordInput
                     id="password_confirmation"
+                    v-model="password_confirmation"
                     required
                     :tabindex="5"
                     autocomplete="new-password"
@@ -136,6 +182,9 @@ import { store } from '@/routes/register';
                     class="h-10 rounded-lg border-gray-200 bg-gray-50 text-sm transition-colors focus-visible:border-gray-900 focus-visible:ring-2 focus-visible:ring-gray-900/10 dark:border-gray-700 dark:bg-gray-900 dark:focus-visible:border-white"
                 />
                 <InputError :message="errors.password_confirmation" />
+                <span v-if="password_confirmation && !isPasswordMatch" class="text-xs text-red-500">
+                    Password tidak cocok.
+                </span>
             </div>
 
             <!-- Submit -->
@@ -143,7 +192,7 @@ import { store } from '@/routes/register';
                 type="submit"
                 class="mt-1 h-11 w-full rounded-xl bg-primary text-sm font-semibold text-white shadow-md shadow-primary/25 transition-all hover:-translate-y-0.5 hover:bg-orange-500 hover:shadow-primary/40 disabled:opacity-70 disabled:hover:translate-y-0"
                 tabindex="6"
-                :disabled="processing"
+                :disabled="processing || (password.length > 0 && !isPasswordValid) || (password_confirmation.length > 0 && !isPasswordMatch)"
                 data-test="register-user-button"
             >
                 <Spinner v-if="processing" class="mr-2 h-4 w-4" />

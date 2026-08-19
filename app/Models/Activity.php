@@ -21,6 +21,8 @@ class Activity extends Model
         'end_date',
         'location',
         'description',
+        'price',
+        'registration_code',
         'created_by',
     ];
 
@@ -29,7 +31,35 @@ class Activity extends Model
         return [
             'start_date' => 'date',
             'end_date' => 'date',
+            'price' => 'integer',
         ];
+    }
+
+    // ── Registration Code ─────────────────────────────────────
+
+    /**
+     * Encode amount untuk LinkId: price * 100 + registration_code.
+     * Admin set harga 50000 + code 03 di LinkId dashboard → amount = 5000003
+     */
+    public function encodedAmount(): int
+    {
+        if (! $this->price || ! $this->registration_code) {
+            return $this->price ?? 0;
+        }
+
+        return (int) ($this->price * 100 + (int) $this->registration_code);
+    }
+
+    /**
+     * Decode registration code dari amount LinkId (2 digit terakhir).
+     * Amount = 5000003 → code = 3
+     * Amount = 5000032 → code = 32
+     */
+    public static function decodeRegistrationCode(int $amount): ?int
+    {
+        $code = (int) substr((string) $amount, -2);
+
+        return $code > 0 ? $code : null;
     }
 
     // ── Relationships ──────────────────────────────────────
@@ -42,6 +72,11 @@ class Activity extends Model
     public function attendanceForms(): HasMany
     {
         return $this->hasMany(AttendanceForm::class);
+    }
+
+    public function registrations(): HasMany
+    {
+        return $this->hasMany(ActivityRegistration::class);
     }
 
     // ── Accessors ──────────────────────────────────────────
