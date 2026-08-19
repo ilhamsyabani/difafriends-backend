@@ -19,13 +19,13 @@ use App\Notifications\OrderPaidNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class LinkIdWebhookController extends Controller
 {
     public function handle(Request $request): JsonResponse
     {
         $merchantKey = config('linkid.merchant_key');
-
         if (empty($merchantKey)) {
             Log::warning('Lynk webhook: merchant key not configured');
 
@@ -38,25 +38,12 @@ class LinkIdWebhookController extends Controller
         $data = $payload['data'] ?? [];
         $messageData = $data['message_data'] ?? [];
         $refId = $messageData['refId'] ?? null;
-        $amount = (int) ($messageData['totals']['grandTotal'] ?? 0);
-        $messageId = $data['message_id'] ?? '';
-        $transactionId = $messageId;
+        $grandTotal = (int) ($messageData['totals']['grandTotal'] ?? 0);
+        $transactionId = $data['message_id'] ?? '';
+        $item = $messageData['items'][0] ?? [];
 
-        // Try Activity registration first (price * 100 + registration_code)
-        // Skip refId signature validation for activity payments
-        $activityCode = Activity::decodeRegistrationCode($amount);
-        if ($activityCode) {
-            return $this->handleActivityRegistration(
-                $amount,
-                $activityCode,
-                $transactionId,
-                $payload,
-                $messageData
-            );
-        }
-
-        // Order-based signature: requires refId
-        $signatureString = (string) $amount.$refId.$messageId.$merchantKey;
+        // Signature tetap wajib, tidak peduli jalur activity atau order biasa
+        $signatureString = (string) $grandTotal.$refId.$transactionId.$merchantKey;
         $expectedSignature = hash('sha256', $signatureString);
 
         if (! hash_equals($expectedSignature, $providedSignature)) {
@@ -68,75 +55,66 @@ class LinkIdWebhookController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        $event = $payload['event'] ?? null;
-        $messageAction = $data['message_action'] ?? null;
-
-        if ($event !== 'payment.received') {
+        if (($payload['event'] ?? null) !== 'payment.received') {
             return response()->json(['message' => 'Event ignored']);
         }
-
-        if ($messageAction !== 'SUCCESS') {
+        if (($data['message_action'] ?? null) !== 'SUCCESS') {
             return response()->json(['message' => 'Payment not successful']);
         }
 
-        if (! $refId) {
-            Log::warning('Lynk webhook: missing refId', $payload);
+        // Coba resolve sebagai activity dulu (uuid)
+        $activity = $this->resolveActivity($item);
+        if ($activity) {
+            return $this->handleActivityRegistration($grandTotal, $activity, $transactionId, $payload, $messageData);
+        }
 
-            return response()->json(['message' => 'Missing refId'], 422);
+        // Bukan activity → treat sebagai order biasa (kelas/booking via refId)
+        if (! $refId) {
+            Log::warning('Lynk webhook: missing refId and no matching activity', $payload);
+
+            return response()->json(['message' => 'Order not found'], 404);
         }
 
         $order = Order::where('invoice_number', $refId)->first();
-
         if (! $order) {
             Log::warning("Lynk webhook: order not found for refId={$refId}");
 
             return response()->json(['message' => 'Order not found'], 404);
         }
 
-        // Idempotent
-        $existingPayment = Payment::where('linkid_transaction_id', $transactionId)->first();
-        if ($existingPayment) {
-            Log::info("Lynk webhook: payment already processed transactionId={$transactionId}");
+        if ($order->status === OrderStatus::Paid) {
+            return response()->json(['message' => 'OK (order already paid)']);
+        }
 
+        if (Payment::where('linkid_transaction_id', $transactionId)->exists()) {
             return response()->json(['message' => 'OK (already processed)']);
         }
 
-        $totals = $messageData['totals'] ?? [];
+        Payment::create([
+            'order_id' => $order->id,
+            'linkid_transaction_id' => $transactionId,
+            'payment_type' => 'lynk',
+            'amount' => $grandTotal,
+            'status' => PaymentStatus::Settlement,
+            'linkid_response' => $payload,
+            'paid_at' => now(),
+        ]);
 
-        Payment::updateOrCreate(
-            ['linkid_transaction_id' => $transactionId],
-            [
-                'order_id' => $order->id,
-                'payment_type' => 'lynk',
-                'amount' => $totals['grandTotal'] ?? $order->final_amount,
-                'status' => PaymentStatus::Settlement,
-                'linkid_response' => $payload,
-                'paid_at' => now(),
-            ]
-        );
-
+        $order->update(['status' => OrderStatus::Paid]);
         $this->handleSuccess($order);
 
-        Log::info("Lynk webhook: processed refId={$refId} grandTotal={$totals['grandTotal']}");
+        Log::info("Lynk webhook: processed refId={$refId} grandTotal={$grandTotal}");
 
         return response()->json(['message' => 'OK']);
     }
 
     private function handleActivityRegistration(
-        int $amount,
-        int $activityCode,
+        int $grandTotal,
+        Activity $activity,
         ?string $transactionId,
         array $payload,
         array $messageData
     ): JsonResponse {
-        $activity = Activity::where('registration_code', $activityCode)->first();
-
-        if (! $activity) {
-            Log::warning("Lynk webhook: activity not found for code={$activityCode}");
-
-            return response()->json(['message' => 'Activity not found'], 404);
-        }
-
         $customer = $messageData['customer'] ?? [];
         $email = $customer['email'] ?? null;
 
@@ -146,34 +124,48 @@ class LinkIdWebhookController extends Controller
             return response()->json(['message' => 'Missing customer email'], 422);
         }
 
-        $user = $this->findOrCreateUser($email, $customer);
+        // Idempotent check di awal, sebelum efek samping apapun
+        $existing = ActivityRegistration::where('linkid_transaction_id', $transactionId)->first();
+        if ($existing) {
+            Log::info("Lynk webhook: activity registration already processed transactionId={$transactionId}");
 
-        $registration = ActivityRegistration::where('user_id', $user->id)
-            ->where('activity_id', $activity->id)
-            ->first();
-
-        if ($registration) {
-            Log::info("Lynk webhook: registration already exists user_id={$user->id} activity_id={$activity->id}");
-
-            if (! $registration->linkid_transaction_id) {
-                $registration->update([
-                    'linkid_transaction_id' => $transactionId,
-                    'linkid_response' => $payload,
-                ]);
-            }
-
-            return response()->json(['message' => 'OK (already registered)']);
+            return response()->json(['message' => 'OK (already processed)']);
         }
 
-        ActivityRegistration::create([
+        $user = $this->findOrCreateUser($email, $customer);
+
+        $order = Order::create([
+            'user_id' => $user->id,
+            'orderable_type' => Activity::class,
+            'orderable_id' => $activity->id,
+            'item_name' => $activity->name,
+            'original_price' => $grandTotal,
+            'discount_amount' => 0,
+            'final_amount' => $grandTotal,
+            'status' => OrderStatus::Paid,
+            'invoice_number' => 'ACT-'.date('Ymd').'-'.strtoupper(Str::random(6)),
+        ]);
+
+        $registration = ActivityRegistration::create([
             'user_id' => $user->id,
             'activity_id' => $activity->id,
+            'order_id' => $order->id,
             'linkid_transaction_id' => $transactionId,
             'linkid_response' => $payload,
             'registered_at' => now(),
         ]);
 
-        Log::info("Lynk webhook: activity registration created user_id={$user->id} activity_id={$activity->id}");
+        Payment::create([
+            'order_id' => $order->id,
+            'linkid_transaction_id' => $transactionId,
+            'payment_type' => 'lynk',
+            'amount' => $grandTotal, // 0 tetap dicatat, bukan di-skip
+            'status' => PaymentStatus::Settlement,
+            'linkid_response' => $payload,
+            'paid_at' => now(),
+        ]);
+
+        Log::info("Lynk webhook: activity registration created user_id={$user->id} activity_id={$activity->id} amount={$grandTotal}");
 
         return response()->json(['message' => 'OK']);
     }
@@ -206,12 +198,6 @@ class LinkIdWebhookController extends Controller
 
     private function handleSuccess(Order $order): void
     {
-        if ($order->status === OrderStatus::Paid) {
-            return;
-        }
-
-        $order->update(['status' => OrderStatus::Paid]);
-
         if ($order->orderable_type === Course::class) {
             $this->activateEnrollment($order);
             $order->user->notify(new OrderPaidNotification($order));
@@ -249,5 +235,14 @@ class LinkIdWebhookController extends Controller
         ]);
 
         $booking->student->notify(new BookingConfirmedNotification($booking));
+    }
+
+    private function resolveActivity(array $item): ?Activity
+    {
+        if (! empty($item['uuid'])) {
+            return Activity::where('linkid_product_uuid', $item['uuid'])->first();
+        }
+
+        return null;
     }
 }
