@@ -12,8 +12,7 @@ const props = defineProps<{
         end_date: string;
         location: string;
         description: string | null;
-        price: number | null;
-        registration_code: number | null;
+        linkid_product_uuid: string | null;
     } | null;
 }>();
 
@@ -25,7 +24,7 @@ const form = useForm({
     end_date: props.activity?.end_date ?? '',
     location: props.activity?.location ?? '',
     description: props.activity?.description ?? '',
-    price: props.activity?.price ?? 0,
+    linkid_product_uuid: props.activity?.linkid_product_uuid ?? '',
 });
 
 function submit() {
@@ -103,19 +102,10 @@ function submit() {
                 </div>
 
                 <div>
-                    <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Harga (Rp)</label>
-                    <Input v-model.number="form.price" type="number" min="0" placeholder="0" />
-                    <p v-if="form.errors.price" class="mt-1 text-sm text-red-500">{{ form.errors.price }}</p>
-                </div>
-
-                <div v-if="isEdit && props.activity?.registration_code" class="rounded-lg border border-dashed border-purple-200 bg-purple-50 p-4 dark:border-purple-800 dark:bg-purple-900/20">
-                    <p class="text-sm font-medium text-purple-700 dark:text-purple-300">Kode LinkId</p>
-                    <p class="mt-1 text-2xl font-bold text-purple-600 dark:text-purple-400">
-                        {{ props.activity.registration_code.toString().padStart(2, '0') }}
-                    </p>
-                    <p class="mt-2 text-xs text-purple-600 dark:text-purple-400">
-                        Amount = Rp {{ ((props.activity.price || 0) + props.activity.registration_code).toLocaleString('id-ID') }}
-                    </p>
+                    <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">LinkId Product UUID</label>
+                    <Input v-model="form.linkid_product_uuid" type="text" placeholder="UUID produk dari dashboard Lynk.id" />
+                    <p class="mt-1 text-xs text-gray-400">UUID dari Lynk.id untuk identifikasi transaksi otomatis.</p>
+                    <p v-if="form.errors.linkid_product_uuid" class="mt-1 text-sm text-red-500">{{ form.errors.linkid_product_uuid }}</p>
                 </div>
 
                 <div class="flex justify-end border-t border-gray-100 pt-6 dark:border-gray-800">

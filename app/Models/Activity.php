@@ -21,8 +21,7 @@ class Activity extends Model
         'end_date',
         'location',
         'description',
-        'price',
-        'registration_code',
+        'linkid_product_uuid',
         'created_by',
     ];
 
@@ -31,35 +30,7 @@ class Activity extends Model
         return [
             'start_date' => 'date:Y-m-d',
             'end_date' => 'date:Y-m-d',
-            'price' => 'integer',
         ];
-    }
-
-    // ── Registration Code ─────────────────────────────────────
-
-    /**
-     * Encode amount untuk LinkId: price + 2-digit registration_code.
-     * Admin set harga 50000 + code 03 di LinkId dashboard → amount = 50003
-     */
-    public function encodedAmount(): int
-    {
-        if (! $this->price || ! $this->registration_code) {
-            return $this->price ?? 0;
-        }
-
-        return (int) $this->price + (int) $this->registration_code;
-    }
-
-    /**
-     * Decode registration code dari amount LinkId (2 digit terakhir).
-     * Amount = 50003 → code = 3
-     * Amount = 50012 → code = 12
-     */
-    public static function decodeRegistrationCode(int $amount): ?int
-    {
-        $code = (int) substr((string) $amount, -2);
-
-        return $code > 0 ? $code : null;
     }
 
     // ── Relationships ──────────────────────────────────────

@@ -32,7 +32,6 @@ class ActivityController extends Controller
     {
         $validated = $this->validateForStore($request);
         $validated['created_by'] = $request->user()->id;
-        $validated['registration_code'] = $this->generateUniqueCode();
 
         Activity::create($validated);
 
@@ -65,9 +64,6 @@ class ActivityController extends Controller
     {
         $validated = $this->validateForUpdate($request);
 
-        // Preserve registration_code — tidak boleh di-overwrite saat edit
-        $validated['registration_code'] = $activity->registration_code;
-
         $activity->update($validated);
 
         return redirect()->route('admin.activities.show', $activity)
@@ -93,7 +89,7 @@ class ActivityController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'location' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'price' => 'required|integer|min:0',
+            'linkid_product_uuid' => 'nullable|string|max:255',
         ]);
     }
 
@@ -105,20 +101,7 @@ class ActivityController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'location' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'price' => 'nullable|integer|min:0',
+            'linkid_product_uuid' => 'nullable|string|max:255',
         ]);
-    }
-
-    private function generateUniqueCode(): int
-    {
-        $maxAttempts = 20;
-        for ($i = 0; $i < $maxAttempts; $i++) {
-            $code = random_int(1, 99);
-            if (! Activity::where('registration_code', $code)->exists()) {
-                return $code;
-            }
-        }
-
-        throw new \RuntimeException('Gagal generate kode registrasi unik');
     }
 }

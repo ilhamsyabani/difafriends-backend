@@ -16,6 +16,7 @@ class ActivityRegistration extends Model
     protected $fillable = [
         'user_id',
         'activity_id',
+        'order_id',
         'linkid_transaction_id',
         'linkid_response',
         'registered_at',
@@ -35,5 +36,10 @@ class ActivityRegistration extends Model
     public function activity(): BelongsTo
     {
         return $this->belongsTo(Activity::class);
+    }
+
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
     }
 }
