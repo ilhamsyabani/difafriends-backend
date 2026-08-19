@@ -32,7 +32,10 @@ class LinkIdWebhookController extends Controller
             return response()->json(['message' => 'Server misconfigured'], 500);
         }
 
+
         $payload = $request->all();
+        Log::info('Lynk webhook: received', ['payload' => $payload]);
+        
         $providedSignature = $request->header('X-Lynk-Signature', '');
 
         $data = $payload['data'] ?? [];
